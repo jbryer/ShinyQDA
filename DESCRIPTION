@@ -18,3 +18,5 @@ Imports:
     ggplot2,
     shinyjs
 RoxygenNote: 7.2.1
+URL: https://github.com/jbryer/ShinyQDA
+BugReports: https://github.com/jbryer/ShinyQDA/issues
