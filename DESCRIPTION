@@ -12,16 +12,15 @@ License: GPL (>= 3)
 URL: https://github.com/jbryer/ShinyQDA
 BugReports: https://github.com/jbryer/ShinyQDA/issues
 Depends: 
-    shiny
+    R (>= 3.5.0)
 Imports: 
+    shiny,
     colourpicker,
     DBI,
     dplyr,
-    DT,
     ggplot2,
     lubridate,
     RSQLite,
-    shinyauthr,
     shinyjs,
     shinymanager,
     textutils

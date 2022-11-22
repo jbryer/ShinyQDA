@@ -4,13 +4,6 @@ codes_label <- 'Codes (domains/subdomains):'
 add_code_label <- 'Add new coding'
 edit_code_label <- 'Edit coding'
 
-#' Converts the text to something more reasonable to use as an input ID.
-#'
-#' @export
-# input_id_encoder <- function(txt, prefix = '', postfix = '') {
-# 	txt <-
-# }
-
 #' Highlights the codes within the text using HTML.
 #'
 #' @param text the text to highlight.
@@ -50,40 +43,42 @@ highlighter <- function(text, codings, codes) {
 
 #' Shiny Server for QDA
 #'
-#' @import shiny
+#' @importFrom shiny renderPrint reactive reactiveVal reactiveValuesToList renderUI HTML selectizeInput renderText req observe observeEvent showModal modalDialog removeModal actionButton uiOutput tagList checkboxGroupInput textAreaInput radioButtons div req
 #' @importFrom textutils HTMLencode
+#' @importFrom shinyjs enable disable
+#' @importFrom DT datatable renderDataTable JS formatRound
+#' @importFrom shinymanager secure_server check_credentials
 #' @export
 shiny_server <- function(input, output, session) {
 	############################################################################
 	##### User Authentication
 	# call the server part
 	# check_credentials returns a function to authenticate users
-	res_auth <- secure_server(
-		check_credentials = check_credentials(
+	res_auth <- shinymanager::secure_server(
+		check_credentials = shinymanager::check_credentials(
 			db = qda_data$db_file,
 			passphrase = qda_data$users_passphrase
 		)
 	)
 
-	output$auth_output <- renderPrint({
+	output$auth_output <- shiny::renderPrint({
 		reactiveValuesToList(res_auth)
 	})
 
-	get_username <- reactive({
-		username <- reactiveValuesToList(res_auth)$user
+	get_username <- shiny::reactive({
+		username <- shiny::reactiveValuesToList(res_auth)$user
 		if(is.null(username)) {
 			username <- Sys.info()['user']
 		}
 		return(username)
 	})
 
-	get_users <- reactive({
-		# dbReadTable(user_db, 'users')
+	get_users <- shiny::reactive({
+		qda_data$get_coders()
 	})
 
 	output$coders_table <- DT::renderDataTable({
-		get_users() |>
-			dplyr::select(!password)
+		get_users() |> dplyr::select(!password)
 	})
 
 	############################################################################
@@ -108,7 +103,7 @@ shiny_server <- function(input, output, session) {
 							  width = '100%')
 	})
 
-	selected_text <- reactiveVal('')
+	selected_text <- shiny::reactiveVal('')
 
 	# Text output. Note that this will replace new lines (i.e. \n) with <p/>
 	output$text_output <- shiny::renderText({
@@ -134,7 +129,7 @@ shiny_server <- function(input, output, session) {
 	})
 
 	# Enable/disable the add tag button when text is selected/deselected
-	observeEvent(input$text_selection, {
+	shiny::observeEvent(input$text_selection, {
 		if(nchar(input$text_selection) > 0) {
 			shinyjs::enable('add_tag_button')
 			code_edit_id(0)
@@ -225,9 +220,9 @@ shiny_server <- function(input, output, session) {
 		)
 	})
 
-	observeEvent(input$cancel_modal, {
+	shiny::observeEvent(input$cancel_modal, {
 		code_edit_id(0)
-		removeModal()
+		shiny::removeModal()
 	})
 
 	# Edit the tag and close the modal
@@ -372,7 +367,7 @@ shiny_server <- function(input, output, session) {
 
 	############################################################################
 	# UI for text questions
-	output$questions_ui <- renderUI({
+	output$questions_ui <- shiny::renderUI({
 		questions <- qda_data$get_text_questions()
 		responses <- qda_data$get_text_question_responses(input$selected_text,
 														  get_username())
@@ -434,7 +429,7 @@ shiny_server <- function(input, output, session) {
 		do.call(shiny::div, ui)
 	})
 
-	observe({
+	shiny::observe({
 		req(input$selected_text)
 		questions <- qda_data$get_text_questions()
 		for(i in seq_len(nrow(questions))) {
@@ -452,16 +447,13 @@ shiny_server <- function(input, output, session) {
 			)
 		}
 	})
-	# observeEvent(input$save_text_question_responses, {
-	#
-	# })
 
 	############################################################################
 	##### Table outputs ########################################################
 
 	# Coding table for the selected text
 	output$coding_table <- DT::renderDataTable({
-		req(input$selected_text)
+		shiny::req(input$selected_text)
 		input$add_tag
 		codes <- qda_data$get_codings() |>
 			dplyr::filter(id == input$selected_text)
@@ -482,7 +474,7 @@ shiny_server <- function(input, output, session) {
 		input$edit_tag
 		input$add_tag
 		df <- qda_data$get_text()
-		df$qda_text <- ShinyQDA::text_truncate(df$qda_text)
+		df$qda_text <- text_truncate(df$qda_text)
 		DT::datatable(
 			df,
 			rownames = FALSE,
@@ -499,13 +491,13 @@ shiny_server <- function(input, output, session) {
 	})
 
 	# Reactive function to determine if a row is selected
-	text_table_selection <- observe({
+	text_table_selection <- shiny::observe({
 		if(!is.null(input$text_table_rows_selected)) {
 			# TODO: Show tags for this text
 			txt <- qda_data$get_text()[input$text_table_rows_selected, 'qda_text', drop = TRUE]
 			txt <- gsub('\\n', '<p/>', txt)
-			showModal(
-				modalDialog(shiny::HTML(txt),
+			shiny::showModal(
+				shiny::modalDialog(shiny::HTML(txt),
 							title = 'Full Text',
 							size = modal_size)
 			)

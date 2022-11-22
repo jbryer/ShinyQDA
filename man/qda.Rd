@@ -4,30 +4,7 @@
 \alias{qda}
 \title{Data object for qualitative data analysis.}
 \usage{
-qda(file)
-}
-\arguments{
-\item{df}{data frame containing the text}
-
-\item{id_col}{name of the primary key column in the data frame.}
-
-\item{text_col}{name of the column containing the text to be coded.}
-
-\item{overwrite}{if TRUE existing data will be overwritten.
-See [DBI::dbWriteTable()] for more info.}
-
-\item{append}{if TRUE data will be appended to existing data.
-       See [DBI::dbWriteTable()] for more info.
-update_coding}
-
-\item{coding_id}{coding id}
-
-\item{codes}{codes to update
-delete_coding}
-
-\item{coder}{the coder.}
-
-\item{id}{id of the text}
+qda(file, users_passphrase = "ShinyQDA")
 }
 \description{
 This function creates an object to manipulate data for qualitative analysis.
@@ -40,3 +17,10 @@ you can manipulate the SQL database directly, we recommend using the methods
 * `get_text(id)`
 * `add_coding(id, text = NA, start = NA, end = NA, codes = NA, coder = NA)`
 }
+\section{Methods}{
+
+\describe{
+   \item{\code{add_text(df, id_col, text_col, overwrite = TRUE, append = FALSE)}}{Adds text data to the object. There needs to be at least two columns, the column containing the text and a column containing a unique identifier (i.e. primary key). You can include any other columns that will be available in the Shiny app for analysis.}
+}
+}
+

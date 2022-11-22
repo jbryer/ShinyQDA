@@ -15,7 +15,11 @@ Run the Shiny app with:
 ShinyQDA::shinyQDA()
 ```
 
+## Setup
 
+```
+qda_data <- qda(file = 'ShinyQDA.sqlite')
+```
 
 
 ### Todo

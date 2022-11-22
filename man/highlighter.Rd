@@ -2,7 +2,7 @@
 % Please edit documentation in R/shiny_server.R
 \name{highlighter}
 \alias{highlighter}
-\title{Converts the text to something more reasonable to use as an input ID.}
+\title{Highlights the codes within the text using HTML.}
 \usage{
 highlighter(text, codings, codes)
 }
@@ -14,5 +14,5 @@ highlighter(text, codings, codes)
 \item{codes}{a data.frame with the codes (and colors).}
 }
 \description{
-Converts the text to something more reasonable to use as an input ID.
+Highlights the codes within the text using HTML.
 }

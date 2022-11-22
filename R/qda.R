@@ -1,6 +1,8 @@
 #' This palette was created from https://colorbrewer2.org using qualitative
 #' type with 12 classes. There are two schemes given these parameters, the first
 #' 12 are from a lighter palette and the second 12 are from a darker palette.
+#'
+#' @docType data
 color_palette <- c('#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3','#fdb462',
 				   '#b3de69','#fccde5','#d9d9d9','#bc80bd','#ccebc5','#ffed6f',
 				   '#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c',
@@ -17,9 +19,14 @@ color_palette <- c('#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3','#fdb462',
 #' * `get_text(id)`
 #' * `add_coding(id, text = NA, start = NA, end = NA, codes = NA, coder = NA)`
 #'
+#' @section Methods:
+#' \describe{
+#'    \item{\code{add_text(df, id_col, text_col, overwrite = TRUE, append = FALSE)}}{Adds text data to the object. There needs to be at least two columns, the column containing the text and a column containing a unique identifier (i.e. primary key). You can include any other columns that will be available in the Shiny app for analysis.}
+#' }
 #' @import RSQLite
 #' @import DBI
 #' @import dplyr
+#' @importFrom shinymanager create_db read_db_decrypt
 #' @export
 qda <- function(
 		file,
@@ -47,15 +54,15 @@ qda <- function(
 						   ))
 	}
 
-	#' add_text
-	#'
-	#' @param df data frame containing the text
-	#' @param id_col name of the primary key column in the data frame.
-	#' @param text_col name of the column containing the text to be coded.
-	#' @param overwrite if TRUE existing data will be overwritten.
-	#'        See [DBI::dbWriteTable()] for more info.
-	#' @param append if TRUE data will be appended to existing data.
-	#'        See [DBI::dbWriteTable()] for more info.
+	# add_text
+	#
+	# @param df data frame containing the text
+	# @param id_col name of the primary key column in the data frame.
+	# @param text_col name of the column containing the text to be coded.
+	# @param overwrite if TRUE existing data will be overwritten.
+	#        See [DBI::dbWriteTable()] for more info.
+	# @param append if TRUE data will be appended to existing data.
+	#        See [DBI::dbWriteTable()] for more info.
 	qda_data$add_text <- function(df, id_col, text_col, overwrite = TRUE, append = FALSE) {
 		if(missing(id_col)) {
 			stop('id_col parameter is required. This should be a primary key.')
@@ -138,9 +145,9 @@ qda <- function(
 		return(coding_id)
 	}
 
-	#' update_coding
-	#' @param coding_id coding id
-	#' @param codes codes to update
+	# update_coding
+	# @param coding_id coding id
+	# @param codes codes to update
 	qda_data$update_coding <- function(coding_id, codes) {
 		DBI::dbExecute(
 			qda_db,
@@ -150,8 +157,8 @@ qda <- function(
 		)
 	}
 
-	#' delete_coding
-	#' @param id coding id
+	# delete_coding
+	# @param id coding id
 	qda_data$delete_coding <- function(coding_id) {
 		if(missing(coding_id)) {
 			stop('Must specify code coding_id')
@@ -195,6 +202,7 @@ qda <- function(
 						   data.frame(
 						   		code = character(),
 						   		color = character(),
+						   		description = character(),
 						   		parent = character(),
 						   		date_added = character()) )
 	}
@@ -205,14 +213,18 @@ qda <- function(
 	}
 
 	# add_codes
-	qda_data$add_codes <- function(codes, colors) {
+	qda_data$add_codes <- function(codes, colors, descriptions) {
 		codes_table <- DBI::dbReadTable(qda_db, 'codes')
 		if(missing(colors)) {
 			colors <- color_palette[seq_len(length(codes)) + nrow(codes_table) %% length(color_palette)]
 		}
+		if(missing(descriptions)) {
+			descriptions <- rep(NA_character_, length(codes))
+		}
 		new_rows <- data.frame(
 			code = codes,
 			color = colors,
+			description = descriptions,
 			parent = NA,
 			date_added = as.character(Sys.time())
 		)
@@ -445,9 +457,9 @@ qda <- function(
 						   ))
 	}
 
-	#' get_assignments
-	#' @param coder the coder.
-	#' @param id id of the text
+	# get_assignments
+	# @param coder the coder.
+	# @param id id of the text
 	qda_data$get_assignments <- function(coder, id) {
 		if(!missing(id) & !missing(coder)) {
 			DBI::dbGetQuery(
@@ -483,14 +495,23 @@ qda <- function(
 		email = "",
 		comment = 'ShinyQDA coders.',
 		stringsAsFactors = TRUE)
+
 	if(!'credentials' %in% tables) {
 		warning('Creating default user admin with password "pass". Recommend changing the password upon first login.')
 	}
+
 	qda_data$credentials <- shinymanager::create_db(
 		credentials_data = credentials,
 		sqlite_path = file,
 		passphrase = users_passphrase
 	)
+
+	qda_data$get_coders <- function() {
+		shinymanager::read_db_decrypt(
+			qda_data$db_conn,
+			name = 'credentials',
+			passphrase = users_passphrase) |> select(!password)
+	}
 
 	class(qda_data) <- 'qda'
 	return(qda_data)

@@ -1,14 +1,15 @@
 library(devtools)
 library(usethis)
 
-remotes::install_github("JohnCoene/marker")
+usethis::use_tidy_description()
 
+unlink("NAMESPACE")
 devtools::document()
 devtools::install(upgrade = 'never')
 devtools::build()
 devtools::check()
 
-usethis::use_package('shinyjs', type = 'Imports')
+usethis::use_package('lubridate', type = 'Imports')
 
 # Test dataset
 essays <- readr::read_csv('../../data-raw/writingrtf_ec.csv')
@@ -37,6 +38,6 @@ qda_data$save()
 qda_data <- ShinyQDA::qda(file = 'daacs_test.rqda', auto_save = FALSE)
 
 
-ShinyQDA::shinyQDA(my_qda)
+ShinyQDA::shinyQDA(qda_data)
 
 

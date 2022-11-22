@@ -1,8 +1,8 @@
 #' Shiny User Interface for QDA
 #'
-#' @import shinyauthr
-#' @import shiny
-#' @import DT
+#' @importFrom shiny tags navbarPage tabPanel fluidRow column uiOutput plotOutput tabsetPanel sidebarLayout sidebarPanel mainPanel actionButton htmlOutput verbatimTextOutput
+#' @importFrom DT dataTableOutput
+#' @importFrom shinyjs useShinyjs
 #' @export
 shiny_ui <- function(title = 'ShinyQDA') {
 	shiny::navbarPage(
@@ -10,7 +10,7 @@ shiny_ui <- function(title = 'ShinyQDA') {
 		shiny::tabPanel(
 			'Text Coding',
 			shinyjs::useShinyjs(),
-			tags$head(tags$style("
+			shiny::tags$head(tags$style("
 				.tooltip2 {
 				  position: relative;
 				  display: inline-block;
@@ -103,20 +103,20 @@ shiny_ui <- function(title = 'ShinyQDA') {
 		shiny::tabPanel(
 			'Data',
 			# uiOutput('codes_ui')
-			tabsetPanel(
-				tabPanel('Codes', DT::dataTableOutput('codes_table')),
-				tabPanel('Codings', DT::dataTableOutput('codings_table')),
-				tabPanel('Code Questions', DT::dataTableOutput('code_questions_table')),
-				tabPanel('Code Question Responses', DT::dataTableOutput('code_question_responses_table')),
-				tabPanel('Text Questions', DT::dataTableOutput('text_questions_table')),
-				tabPanel('Text Question Responses', DT::dataTableOutput('text_question_responses_table')),
-				tabPanel('Assignments', DT::dataTableOutput('assignments_table'))
+			shiny::tabsetPanel(
+				shiny::tabPanel('Codes', DT::dataTableOutput('codes_table')),
+				shiny::tabPanel('Codings', DT::dataTableOutput('codings_table')),
+				shiny::tabPanel('Code Questions', DT::dataTableOutput('code_questions_table')),
+				shiny::tabPanel('Code Question Responses', DT::dataTableOutput('code_question_responses_table')),
+				shiny::tabPanel('Text Questions', DT::dataTableOutput('text_questions_table')),
+				shiny::tabPanel('Text Question Responses', DT::dataTableOutput('text_question_responses_table')),
+				shiny::tabPanel('Assignments', DT::dataTableOutput('assignments_table'))
 			)
 
 		),
 		shiny::tabPanel(
 			'My Info',
-			verbatimTextOutput('auth_output')
+			shiny::verbatimTextOutput('auth_output')
 		)
 	)
 }
