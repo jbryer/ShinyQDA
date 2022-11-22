@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 build.R
 ^LICENSE\.md$
+/*.png
+/*.gif
