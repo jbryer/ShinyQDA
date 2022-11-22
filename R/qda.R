@@ -22,14 +22,17 @@ color_palette <- c('#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3','#fdb462',
 #' @import dplyr
 #' @export
 qda <- function(
-		file
+		file,
+		users_passphrase = 'ShinyQDA'
 ) {
 	qda_db <- DBI::dbConnect(RSQLite::SQLite(), file)
 
 	tables <- DBI::dbListTables(qda_db)
 
 	qda_data <- list(
-		db_conn = qda_db
+		db_conn = qda_db,
+		db_file = file,
+		users_passphrase = users_passphrase
 	)
 
 	##### text_data ############################################################
@@ -466,9 +469,28 @@ qda <- function(
 		}
 	}
 
-	# if(length(qda_data$codes) > length(color_palette)) {
-	# 	warning("There are more codes than colors in the default palette. Some codes will have the same color.")
-	# }
+	##### Shiny Manager ########################################################
+	# credentials_db <- DBI::dbConnect(RSQLite::SQLite(), 'users.sqlite')
+	# DBI::dbListTables(credentials_db)
+
+	credentials <- data.frame(
+		user = "admin",
+		name = "Administrator",
+		password = 'pass',
+		start = as.character(Sys.Date()),
+		expire = NA,
+		admin = TRUE,
+		email = "",
+		comment = 'ShinyQDA coders.',
+		stringsAsFactors = TRUE)
+	if(!'credentials' %in% tables) {
+		warning('Creating default user admin with password "pass". Recommend changing the password upon first login.')
+	}
+	qda_data$credentials <- shinymanager::create_db(
+		credentials_data = credentials,
+		sqlite_path = file,
+		passphrase = users_passphrase
+	)
 
 	class(qda_data) <- 'qda'
 	return(qda_data)

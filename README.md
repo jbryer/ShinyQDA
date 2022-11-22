@@ -9,10 +9,6 @@ To install, use the `remotes` package:
 remotes::install_github('jbryer/ShinyQDA')
 ```
 
-
-
-
-
 Run the Shiny app with:
 
 ```

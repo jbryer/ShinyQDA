@@ -60,8 +60,8 @@ shiny_server <- function(input, output, session) {
 	# check_credentials returns a function to authenticate users
 	res_auth <- secure_server(
 		check_credentials = check_credentials(
-			users_db_file,
-			passphrase = users_passphrase
+			db = qda_data$db_file,
+			passphrase = qda_data$users_passphrase
 		)
 	)
 

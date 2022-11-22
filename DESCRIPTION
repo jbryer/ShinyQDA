@@ -19,9 +19,11 @@ Imports:
     dplyr,
     DT,
     ggplot2,
+    lubridate,
     RSQLite,
     shinyauthr,
     shinyjs,
+    shinymanager,
     textutils
 Author@R: person("Jason", "Bryer", , "jason@bryer.org", role = c("aut",
     "cre"), comment = c(ORCID = "0000-0002-2454-0402"))
