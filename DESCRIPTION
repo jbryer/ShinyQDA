@@ -1,22 +1,30 @@
-Package: ShinyQDA
 Type: Package
-Title: What the Package Does (Title Case)
+Package: ShinyQDA
+Title: Shiny Application for Qualitative Data Analysis
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
-Encoding: UTF-8
-LazyData: true
+Maintainer: Jason Bryer <jason.bryer@cuny.edu>
+Description: This package provides tools to conduct qualitative data
+    analysis (QDA) in R. The Shiny application provide an interactive way
+    to code qualitative data. Utility functions are provided to then
+    analyze the data in R. Data is stored in a SQL database and works with
+    any database that works with the DBI R package.
+License: GPL (>= 3)
+URL: https://github.com/jbryer/ShinyQDA
+BugReports: https://github.com/jbryer/ShinyQDA/issues
 Depends: 
     shiny
 Imports: 
     colourpicker,
+    DBI,
     dplyr,
     DT,
     ggplot2,
-    shinyjs
+    RSQLite,
+    shinyauthr,
+    shinyjs,
+    textutils
+Author@R: person("Jason", "Bryer", , "jason@bryer.org", role = c("aut",
+    "cre"), comment = c(ORCID = "0000-0002-2454-0402"))
+Encoding: UTF-8
+LazyData: true
 RoxygenNote: 7.2.1
-URL: https://github.com/jbryer/ShinyQDA
-BugReports: https://github.com/jbryer/ShinyQDA/issues

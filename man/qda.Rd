@@ -2,17 +2,41 @@
 % Please edit documentation in R/qda.R
 \name{qda}
 \alias{qda}
-\title{Data object for qualitative data analysis}
+\title{Data object for qualitative data analysis.}
 \usage{
-qda(
-  file,
-  df,
-  id_col = names(df)[1],
-  text_col = names(df)[2],
-  codes = character(),
-  auto_save = TRUE
-)
+qda(file)
+}
+\arguments{
+\item{df}{data frame containing the text}
+
+\item{id_col}{name of the primary key column in the data frame.}
+
+\item{text_col}{name of the column containing the text to be coded.}
+
+\item{overwrite}{if TRUE existing data will be overwritten.
+See [DBI::dbWriteTable()] for more info.}
+
+\item{append}{if TRUE data will be appended to existing data.
+       See [DBI::dbWriteTable()] for more info.
+update_coding}
+
+\item{coding_id}{coding id}
+
+\item{codes}{codes to update
+delete_coding}
+
+\item{coder}{the coder.}
+
+\item{id}{id of the text}
 }
 \description{
-Data object for qualitative data analysis
+This function creates an object to manipulate data for qualitative analysis.
+The data is stored in a SQLite database by default, but can be configures to
+work with any SQL database through the `DBI` R package interface. Although
+you can manipulate the SQL database directly, we recommend using the methods
+(functions) defined in the returned object. This will ensure data integrity.
+}
+\details{
+* `get_text(id)`
+* `add_coding(id, text = NA, start = NA, end = NA, codes = NA, coder = NA)`
 }

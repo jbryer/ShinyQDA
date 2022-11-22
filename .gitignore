@@ -3,4 +3,5 @@
 .RData
 .Ruserdata
 data-raw/
-inst/shiny/daacs_test.rqda
+/*.png
+/*.gif

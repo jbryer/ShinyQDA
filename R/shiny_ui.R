@@ -1,25 +1,63 @@
 #' Shiny User Interface for QDA
 #'
+#' @import shinyauthr
+#' @import shiny
+#' @import DT
 #' @export
 shiny_ui <- function(title = 'ShinyQDA') {
 	shiny::navbarPage(
 		title = 'ShinyQDA',
-		# tabPanel(
-		# 	'Codebook'
-		# ),
 		shiny::tabPanel(
 			'Text Coding',
-			marker::useMarker(),
 			shinyjs::useShinyjs(),
-			shiny::tags$head(tags$style(textOutput('get_color_css'))),
+			tags$head(tags$style("
+				.tooltip2 {
+				  position: relative;
+				  display: inline-block;
+				  border-bottom: 1px dotted black;
+				}
+
+				.tooltip2 .tooltiptext2 {
+				  visibility: hidden;
+				  width: 120px;
+				  background-color: black;
+				  color: #fff;
+				  text-align: center;
+				  border-radius: 6px;
+				  padding: 5px 0;
+				  position: absolute;
+				  z-index: 1;
+				  bottom: 150%;
+				  left: 50%;
+				  margin-left: -60px;
+				}
+
+				.tooltip2 .tooltiptext2::after {
+				  content: '';
+				  position: absolute;
+				  top: 100%;
+				  left: 50%;
+				  margin-left: -5px;
+				  border-width: 5px;
+				  border-style: solid;
+				  border-color: black transparent transparent transparent;
+				}
+
+				.tooltip2:hover .tooltiptext2 {
+				  visibility: visible;
+				}
+			")),
 			# javascript code to send data to shiny server
+			# https://stackoverflow.com/questions/42274461/can-shiny-recognise-text-selection-with-mouse-highlighted-text
 			shiny::tags$script('
                 function getSelectionText() {
                     var text = "";
                     if (window.getSelection) {
                         text = window.getSelection().toString();
+                        /* text = window.getSelection().getRangeAt().toString(); */
                     } else if (document.selection) {
                         text = document.selection.createRange().text;
+                        /* text = document.selection.getRangeAt().toString(); */
                     }
                     return text;
                 }
@@ -36,11 +74,15 @@ shiny_ui <- function(title = 'ShinyQDA') {
 					'Code Editor',
 					shiny::sidebarLayout(
 						shiny::sidebarPanel(
+							width = 4,
 							shiny::actionButton('add_tag_button', 'Add Code'),
-							shiny::uiOutput('text_codes_ui')
+							shiny::uiOutput('text_codes_ui'),
+							hr(),
+							shiny::uiOutput('questions_ui')
 						),
 						shiny::mainPanel(
-							shiny::div(id="text-to-mark", shiny::htmlOutput('text_output'))
+							width = 8,
+							shiny::htmlOutput('text_output')
 						)
 					)
 				),
@@ -50,9 +92,31 @@ shiny_ui <- function(title = 'ShinyQDA') {
 				)
 			)
 		),
+		# shiny::tabPanel(
+		# 	'Coders',
+		# 	DT::dataTableOutput('coders_table')
+		# ),
 		shiny::tabPanel(
-			'Table View',
+			'Text Data',
 			DT::dataTableOutput('text_table')
+		),
+		shiny::tabPanel(
+			'Data',
+			# uiOutput('codes_ui')
+			tabsetPanel(
+				tabPanel('Codes', DT::dataTableOutput('codes_table')),
+				tabPanel('Codings', DT::dataTableOutput('codings_table')),
+				tabPanel('Code Questions', DT::dataTableOutput('code_questions_table')),
+				tabPanel('Code Question Responses', DT::dataTableOutput('code_question_responses_table')),
+				tabPanel('Text Questions', DT::dataTableOutput('text_questions_table')),
+				tabPanel('Text Question Responses', DT::dataTableOutput('text_question_responses_table')),
+				tabPanel('Assignments', DT::dataTableOutput('assignments_table'))
+			)
+
+		),
+		shiny::tabPanel(
+			'My Info',
+			verbatimTextOutput('auth_output')
 		)
 	)
 }

@@ -1,70 +1,475 @@
-#' Data object for qualitative data analysis
+#' This palette was created from https://colorbrewer2.org using qualitative
+#' type with 12 classes. There are two schemes given these parameters, the first
+#' 12 are from a lighter palette and the second 12 are from a darker palette.
+color_palette <- c('#8dd3c7','#ffffb3','#bebada','#fb8072','#80b1d3','#fdb462',
+				   '#b3de69','#fccde5','#d9d9d9','#bc80bd','#ccebc5','#ffed6f',
+				   '#a6cee3','#1f78b4','#b2df8a','#33a02c','#fb9a99','#e31a1c',
+				   '#fdbf6f','#ff7f00','#cab2d6','#6a3d9a','#ffff99','#b15928')
+
+#' Data object for qualitative data analysis.
 #'
+#' This function creates an object to manipulate data for qualitative analysis.
+#' The data is stored in a SQLite database by default, but can be configures to
+#' work with any SQL database through the `DBI` R package interface. Although
+#' you can manipulate the SQL database directly, we recommend using the methods
+#' (functions) defined in the returned object. This will ensure data integrity.
+#'
+#' * `get_text(id)`
+#' * `add_coding(id, text = NA, start = NA, end = NA, codes = NA, coder = NA)`
+#'
+#' @import RSQLite
+#' @import DBI
+#' @import dplyr
 #' @export
 qda <- function(
-		file,
-		df,
-		id_col = names(df)[1],
-		text_col = names(df)[2],
-		codes = character(),
-		auto_save = TRUE
+		file
 ) {
+	qda_db <- DBI::dbConnect(RSQLite::SQLite(), file)
 
-	if(!missing(file) & file.exists(file)) {
-		message(paste0('Reading QDA from ', file, '...'))
-		qda_data <- readRDS(file)
-		return(qda_data)
-	}
+	tables <- DBI::dbListTables(qda_db)
 
-	message('Creating a new QDA object...')
 	qda_data <- list(
-		df = df,
-		file = file,
-		id_col = id_col,
-		text_col = text_col,
-		codes = codes,
-		code_colors = color_palette[seq_len(length(codes)) %% length(color_palette)],
-		categories = list(),
-		codings = data.frame(
-			id = character(),
-			text = character(),
-			codes = character(),
-			memos = character()
-		),
-		auto_save = auto_save
+		db_conn = qda_db
 	)
 
-	if(length(qda_data$codes) > length(color_palette)) {
-		warning("There are more codes than colors in the default palette. Some codes will have the same color.")
+	##### text_data ############################################################
+	# create table
+	if(!'text_data' %in% tables) {
+		DBI::dbCreateTable(qda_db,
+						   'text_data',
+						   data.frame(
+						   		qda_id = character(),
+						   		qda_text = character(),
+						   		date_added = character()
+						   ))
 	}
 
-	qda_data$add_coding <- function(id, text = NA, codes = NA, memo = NA) {
-		new_codings <- rbind(
-			qda_data$codings,
-			data.frame(id = id,
-					   text = text,
-					   codes = paste0(codes, collapse=';'),
-					   memo = memo)
-		)
-		assign('codings', new_codings, envir = qda_data)
-		if(qda_data$auto_save) {
-			qda_data$save()
+	#' add_text
+	#'
+	#' @param df data frame containing the text
+	#' @param id_col name of the primary key column in the data frame.
+	#' @param text_col name of the column containing the text to be coded.
+	#' @param overwrite if TRUE existing data will be overwritten.
+	#'        See [DBI::dbWriteTable()] for more info.
+	#' @param append if TRUE data will be appended to existing data.
+	#'        See [DBI::dbWriteTable()] for more info.
+	qda_data$add_text <- function(df, id_col, text_col, overwrite = TRUE, append = FALSE) {
+		if(missing(id_col)) {
+			stop('id_col parameter is required. This should be a primary key.')
 		}
-		invisible(TRUE)
+		if(missing(text_col)) {
+			stop('text_col parameter is required.')
+		}
+		if(length(unique(df[,id_col,drop=TRUE])) != nrow(df)) {
+			stop('id_col must be a primary key. That is, no duplicate values.')
+		}
+
+		df <- df |>
+			dplyr::rename(qda_id = id_col,
+						  qda_text = text_col) |>
+			dplyr::mutate(qda_id = as.character(qda_id),
+						  date_added = as.character(Sys.time()))
+		DBI::dbWriteTable(qda_db,
+						  'text_data',
+						  df,
+						  overwrite = overwrite,
+						  append = append)
 	}
 
-	qda_data$save <- function(file = qda_data$file) {
-		message(paste0('Saving ', file, '...'))
-		saveRDS(qda_data, file)
+	# get_text
+	qda_data$get_text <- function(id) {
+		if(missing(id)) {
+			DBI::dbReadTable(qda_db, 'text_data')
+		} else {
+			DBI::dbGetQuery(
+				qda_db,
+				paste0('SELECT * FROM text_data WHERE qda_id = "', id, '"')
+			)
+		}
 	}
 
-	qda_data <- list2env(qda_data)
+	##### codings ##############################################################
+	# create table
+	if(!'codings' %in% tables) {
+		DBI::dbCreateTable(qda_db,
+					   'codings',
+					   data.frame(
+					   		coding_id = integer(),
+					   		qda_id = character(),
+					   		text = character(),
+					   		start = integer(),
+					   		end = integer(),
+					   		codes = character(),
+					   		coder = character(),
+					   		date_added = character()) )
+	}
+
+	# add_codings
+	# @return the id for the newly inserted coding.
+	qda_data$add_coding <- function(id, text = NA, start = NA, end = NA, codes = NA, coder = NA) {
+		codings <- DBI::dbGetQuery(
+			qda_db,
+			'SELECT coding_id FROM codings')
+		coding_id <- ifelse(nrow(codings > 0),
+							max(codings$coding_id) + 1,
+							1)
+		codes_table <- qda_data$get_codes()
+		missing_codes <- codes[!codes %in% codes_table$code]
+		if(length(missing_codes) > 0) {
+			qda_data$add_codes(missing_codes)
+		}
+		new_row <- data.frame(
+			coding_id = coding_id,
+			qda_id = id,
+			text = text,
+			start = start,
+			end = end,
+			codes = do.call(paste0, list(codes, collapse = ';')),
+			coder = coder,
+			date_added = as.character(Sys.time())
+		)
+		DBI::dbWriteTable(qda_db,
+						  'codings',
+						  new_row,
+						  append = TRUE)
+		return(coding_id)
+	}
+
+	#' update_coding
+	#' @param coding_id coding id
+	#' @param codes codes to update
+	qda_data$update_coding <- function(coding_id, codes) {
+		DBI::dbExecute(
+			qda_db,
+			paste0('UPDATE codings SET codes = "',
+				   do.call(paste0, list(codes, collapse = ';')),
+				   '" WHERE coding_id = "', coding_id, '"')
+		)
+	}
+
+	#' delete_coding
+	#' @param id coding id
+	qda_data$delete_coding <- function(coding_id) {
+		if(missing(coding_id)) {
+			stop('Must specify code coding_id')
+		}
+		DBI::dbExecute(
+			qda_db,
+			paste0('DELETE FROM codings WHERE coding_id = "', coding_id, '" ')
+		)
+	}
+
+	# get_codings
+	#
+	# @param id the text
+	# @param code_id the id for the coding
+	qda_data$get_codings <- function(id, coding_id) {
+		if(missing(id) & missing(coding_id)) {
+			DBI::dbReadTable(qda_db, 'codings')
+		} else if(missing(coding_id)) {
+			DBI::dbGetQuery(
+				qda_db,
+				paste0('SELECT * FROM codings WHERE qda_id = "', id, '"')
+			)
+		} else if(missing(id)) {
+			DBI::dbGetQuery(
+				qda_db,
+				paste0('SELECT * FROM codings WHERE coding_id = "', coding_id, '"')
+			)
+		} else {
+			DBI::dbGetQuery(
+				qda_db,
+				paste0('SELECT * FROM codings WHERE coding_id = "', coding_id, '" AND id = "', id, '"')
+			)
+		}
+	}
+
+	##### codes ################################################################
+	# create table
+	if(!'codes' %in% tables) {
+		DBI::dbCreateTable(qda_db,
+						   'codes',
+						   data.frame(
+						   		code = character(),
+						   		color = character(),
+						   		parent = character(),
+						   		date_added = character()) )
+	}
+
+	# get_codes
+	qda_data$get_codes <- function() {
+		DBI::dbReadTable(qda_db, 'codes')
+	}
+
+	# add_codes
+	qda_data$add_codes <- function(codes, colors) {
+		codes_table <- DBI::dbReadTable(qda_db, 'codes')
+		if(missing(colors)) {
+			colors <- color_palette[seq_len(length(codes)) + nrow(codes_table) %% length(color_palette)]
+		}
+		new_rows <- data.frame(
+			code = codes,
+			color = colors,
+			parent = NA,
+			date_added = as.character(Sys.time())
+		)
+		DBI::dbWriteTable(
+			qda_db,
+			'codes',
+			new_rows,
+			append = TRUE
+		)
+		invisible(new_rows)
+	}
+
+	###### code_questions ######################################################
+	# create table
+	if(!'code_questions' %in% tables) {
+		DBI::dbCreateTable(qda_db,
+						   'code_questions',
+						   data.frame(
+						   		stem = character(),
+						   		type = character(),
+						   		order = integer(),
+						   		options = character(),
+						   		date_added = character()) )
+	}
+
+	# add_code_question
+	qda_data$add_code_question <- function(stem,
+										   type = c('text', 'radio', 'checkbox'),
+										   options) {
+		code_questions <- DBI::dbReadTable(qda_db, 'code_questions')
+		new_order <- ifelse(nrow(code_questions) > 0,
+							max(code_questions$order + 1),
+							1)
+		new_row <- data.frame(
+			stem = stem,
+			type = type[1],
+			order = new_order,
+			options = ifelse(missing(options), '', paste0(options, collapse = ';')),
+			date_added = as.character(Sys.time())
+		)
+		DBI::dbWriteTable(qda_db, 'code_questions', new_row, append = TRUE)
+	}
+
+	# get_code_questions
+	qda_data$get_code_questions <- function() {
+		df <- DBI::dbReadTable(qda_db, 'code_questions')
+		df[order(df$order),]
+	}
+
+	##### code_question_responses ##############################################
+	# create table
+	if(!'code_question_responses' %in% tables) {
+		DBI::dbCreateTable(qda_db,
+						   'code_question_responses',
+						   data.frame(
+						   		coding_id = numeric(),
+						   		stem = character(),
+						   		answer = character(),
+						   		coder = character(),
+						   		date_added = character()) )
+	}
+
+	# get_code_question_responses
+	qda_data$get_code_question_responses <- function(coding_id) {
+		if(missing(coding_id)) {
+			DBI::dbReadTable(qda_db, 'code_question_responses')
+		} else {
+			DBI::dbGetQuery(
+				qda_db,
+				paste0('SELECT * FROM code_question_responses WHERE coding_id = "', coding_id, '"')
+			)
+		}
+	}
+
+	# delete_code_question_responses
+	# @param id the coding id
+	qda_data$delete_code_question_responses <- function(coding_id) {
+		if(missing(coding_id)) {
+			stop('Must specify code coding_id')
+		}
+		DBI::dbExecute(
+			qda_db,
+			paste0('DELETE FROM code_question_responses WHERE ',
+				   'coding_id = "', coding_id, '" ')
+		)
+	}
+
+	# add_code_question_response
+	# @param code_id the id from the codings table.
+	qda_data$add_code_question_response <- function(coding_id, stem, answer, coder = NA) {
+		new_row <- data.frame(
+			coding_id = coding_id,
+			stem = stem,
+			answer = answer,
+			coder = coder,
+			date_added = as.character(Sys.time())
+		)
+		DBI::dbWriteTable(qda_db, 'code_question_responses', new_row, append = TRUE)
+	}
+
+	qda_data$update_code_question_response <- function(coding_id, stem, answer, coder) {
+		if(missing(coding_id)) {
+			stop('coding_id parameter is required')
+		}
+
+		query <-
+		new_vals <- c()
+		if(!missing(stem)) {
+			new_vals <- c(new_vals, 'stem = "', stem, '"')
+		}
+		if(!missing(answer)) {
+			new_vals <- c(new_vals, 'answer = "', answer, '"')
+		}
+		if(!missing(coder)) {
+			new_vals <- c(new_vals, 'coder = "', coder, '"')
+		}
+		query <- paste0( 'UPDATE code_question_responses SET ',
+						 paste0(new_vals, collapse = ', '),
+						 ' WHERE coding_id = "', coding_id, '"')
+		DBI::dbExecute(qda_db, query)
+	}
+
+	##### text_questions #######################################################
+	# create table
+	if(!'text_questions' %in% tables) {
+		DBI::dbCreateTable(qda_db,
+						   'text_questions',
+						   data.frame(
+						   		stem = character(),
+						   		type = character(),
+						   		order = integer(),
+						   		options = character(),
+						   		date_added = character()) )
+	}
+
+	# add_text_question
+	qda_data$add_text_question <- function(stem, type, options) {
+		text_questions <- DBI::dbReadTable(qda_db, 'text_questions')
+		new_order <- ifelse(nrow(text_questions) > 0,
+							max(text_questions$order + 1),
+							1)
+
+		new_row <- data.frame(
+			stem = stem,
+			type = type[1],
+			order = new_order,
+			options = ifelse(missing(options), '', paste0(options, collapse = ';')),
+			date_added = as.character(Sys.time())
+		)
+		DBI::dbWriteTable(qda_db, 'text_questions', new_row, append = TRUE)
+	}
+
+	# get_text_questions
+	qda_data$get_text_questions <- function() {
+		df <- DBI::dbReadTable(qda_db, 'text_questions')
+		df[order(df$order),]
+	}
+
+	##### text_question_responses ##############################################
+	# create table
+	if(!'text_question_responses' %in% tables) {
+		DBI::dbCreateTable(qda_db,
+					   'text_question_responses',
+					   data.frame(
+					   		qda_id = character(),
+					   		stem = character(),
+					   		answer = character(),
+					   		coder = character(),
+					   		date_added = character()) )
+	}
+
+	# get_text_question_responses
+	# @param id text id
+	# @param coder the coder who entered the answers
+	qda_data$get_text_question_responses <- function(id, coder) {
+		if(missing(id) & missing(coder)) {
+			DBI::dbReadTable(qda_db, 'text_question_responses')
+		} else if(missing(coder)) {
+			DBI::dbGetQuery(
+				qda_db,
+				paste0('SELECT * FROM text_question_responses WHERE qda_id = "', id, '"')
+			)
+		} else if(missing(id)) {
+			DBI::dbGetQuery(
+				qda_db,
+				paste0('SELECT * FROM text_question_responses WHERE coder = "', coder, '"')
+			)
+		} else {
+			DBI::dbGetQuery(
+				qda_db,
+				paste0('SELECT * FROM text_question_responses WHERE qda_id = "', id, '" AND coder = "', coder, '"')
+			)
+		}
+	}
+
+	# delete_text_question_responses
+	# @param id the coding id
+	qda_data$delete_text_question_responses <- function(id, coder = NA) {
+		if(missing(id)) {
+			stop('Must specify id')
+		}
+		DBI::dbExecute(
+			qda_db,
+			paste0('DELETE FROM text_question_responses WHERE ',
+				   'qda_id = "', id, '" AND coder = "', coder, '"')
+		)
+	}
+
+	# add_text_question_response
+	qda_data$add_text_question_response <- function(id, stem, answer, coder = NA) {
+		new_row <- data.frame(
+			qda_id = id,
+			stem = stem,
+			answer = answer,
+			coder = coder,
+			date_added = as.character(Sys.time())
+		)
+		DBI::dbWriteTable(qda_db, 'text_question_responses', new_row, append = TRUE)
+	}
+
+	##### assignments ##########################################################
+	# create table
+	if(!'assignments' %in% tables) {
+		DBI::dbCreateTable(qda_db,
+						   'assignments',
+						   data.frame(
+						   		qda_id = character(),
+						   		coder = character(),
+						   		date_added = character()
+						   ))
+	}
+
+	#' get_assignments
+	#' @param coder the coder.
+	#' @param id id of the text
+	qda_data$get_assignments <- function(coder, id) {
+		if(!missing(id) & !missing(coder)) {
+			DBI::dbGetQuery(
+				qda_db,
+				paste0('SELECT * FROM assignments WHERE qda_id = "', id, '" AND coder = "', coder, '"')
+			)
+		} else if(!missing(coder)) {
+			DBI::dbGetQuery(
+				qda_db,
+				paste0('SELECT * FROM assignments WHERE coder = "', coder, '"')
+			)
+		} else if(!missing(id)) {
+			DBI::dbGetQuery(
+				qda_db,
+				paste0('SELECT * FROM assignments WHERE qda_id = "', id, '"')
+			)
+		} else {
+			DBI::dbReadTable(qda_db, 'assignments')
+		}
+	}
+
+	# if(length(qda_data$codes) > length(color_palette)) {
+	# 	warning("There are more codes than colors in the default palette. Some codes will have the same color.")
+	# }
 
 	class(qda_data) <- 'qda'
-
-	if(qda_data$auto_save) {
-		qda_data$save()
-	}
-
 	return(qda_data)
 }
