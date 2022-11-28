@@ -4,42 +4,6 @@ codes_label <- 'Codes (domains/subdomains):'
 add_code_label <- 'Add new coding'
 edit_code_label <- 'Edit coding'
 
-#' Highlights the codes within the text using HTML.
-#'
-#' @param text the text to highlight.
-#' @param codings a data.frame with the codings.
-#' @param codes a data.frame with the codes (and colors).
-#' @export
-highlighter <- function(text, codings, codes) {
-	# The color will be determined by the first code
-	first_code <- sapply(strsplit(codings$codes, ';'), FUN = function(x) { x[[1]]})
-	codes <- codes[!duplicated(codes$code),]
-	row.names(codes) <- codes$code
-	colors <- codes[first_code,]$color
-	if(any(is.na(colors))) {
-		colors[is.na(colors)] <- '#FFFF00'
-	}
-	hover_text <- paste0(codings$coder, ': ', codings$codes)
-	starts <- codings$start
-	names(starts) <- paste0(
-		"<span ",
-		"onclick='Shiny.onInputChange(\"edit_coding\", \"", codings$coding_id, ';', as.integer(Sys.time()), "\");' ",
-		"style='background-color: ", colors, "' ",
-		"class='tooltip2' ",
-		">"
-		, "<span class='tooltiptext2'>", hover_text, "</span>"
-	)
-	ends <- codings$end
-	names(ends) <- rep('</span>', nrow(codings))
-	tags <- c(starts, ends)
-	tags <- tags[order(tags, decreasing = TRUE)]
-	for(i in seq_len(length(tags))) {
-		left <- substr(text, 0, tags[i] - 1)
-		right <- substr(text, tags[i], nchar(text))
-		text <- paste0(left, names(tags)[i], right)
-	}
-	return(text)
-}
 
 #' Shiny Server for QDA
 #'
@@ -48,6 +12,7 @@ highlighter <- function(text, codings, codes) {
 #' @importFrom shinyjs enable disable
 #' @importFrom DT datatable renderDataTable JS formatRound
 #' @importFrom shinymanager secure_server check_credentials
+#' @importFrom shinyTree renderTree
 #' @export
 shiny_server <- function(input, output, session) {
 	############################################################################
@@ -364,6 +329,26 @@ shiny_server <- function(input, output, session) {
 		return(ui)
 	})
 
+	############################################################################
+	# Codebook Tree
+	output$tree <- shinyTree::renderTree({
+		list(
+			root3 = "234",
+			root1 = list(
+				SubListA = list(leaf1 = "", leaf2 = "")
+			),
+			root2 = list(
+				SubListA = list(leaf1 = "", leaf2 = "")
+			)
+		)
+	})
+
+	output$codebook_output <- renderPrint({
+		# shinyTrees will also be available as inputs so you can
+		# monitor changes that occur to the tree as the user interacts
+		# with it.
+		str(input$tree)
+	})
 
 	############################################################################
 	# UI for text questions
@@ -455,8 +440,11 @@ shiny_server <- function(input, output, session) {
 	output$coding_table <- DT::renderDataTable({
 		shiny::req(input$selected_text)
 		input$add_tag
-		codes <- qda_data$get_codings() |>
-			dplyr::filter(id == input$selected_text)
+		codes <- qda_data$get_codings()
+		if(nrow(codes) == 0) {
+			return(NULL)
+		}
+		codes <- codes |> dplyr::filter(qda_id == input$selected_text)
 		DT::datatable(
 			codes,
 			rownames = FALSE,
@@ -474,7 +462,7 @@ shiny_server <- function(input, output, session) {
 		input$edit_tag
 		input$add_tag
 		df <- qda_data$get_text()
-		df$qda_text <- text_truncate(df$qda_text)
+		df$qda_text <- ShinyQDA::text_truncate(df$qda_text)
 		DT::datatable(
 			df,
 			rownames = FALSE,
@@ -494,7 +482,13 @@ shiny_server <- function(input, output, session) {
 	text_table_selection <- shiny::observe({
 		if(!is.null(input$text_table_rows_selected)) {
 			# TODO: Show tags for this text
-			txt <- qda_data$get_text()[input$text_table_rows_selected, 'qda_text', drop = TRUE]
+			txt_data <- qda_data$get_text()[input$text_table_rows_selected, , drop = FALSE]
+			txt <- txt_data$qda_text
+			id <- txt_data$qda_id
+			codings <- qda_data$get_codings(id = id)
+			if(nrow(codings) > 0) {
+				txt <- highlighter(txt, codings, qda_data$get_codes(), link = FALSE)
+			}
 			txt <- gsub('\\n', '<p/>', txt)
 			shiny::showModal(
 				shiny::modalDialog(shiny::HTML(txt),

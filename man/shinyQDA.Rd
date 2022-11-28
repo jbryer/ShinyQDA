@@ -4,9 +4,23 @@
 \alias{shinyQDA}
 \title{Run the ShinyQDA application locally.}
 \usage{
-shinyQDA(qda_data, ...)
+shinyQDA(
+  qda_data,
+  authenticate = !interactive(),
+  enable_admin = TRUE,
+  keep_token = TRUE,
+  ...
+)
 }
 \arguments{
+\item{authenticate}{use [shinymanager:;secure_app()].}
+
+\item{enable_admin}{enable admin mode for `shinymanager`.}
+
+\item{keep_token}{Logical, keep the token used to authenticate in the URL,
+it allow to refresh the application in the browser, but careful the
+token can be shared between users.}
+
 \item{...}{other parmaeters passed to [shiny::runApp].}
 
 \item{df}{data.frame containing the essays}

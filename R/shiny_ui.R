@@ -3,6 +3,7 @@
 #' @importFrom shiny tags navbarPage tabPanel fluidRow column uiOutput plotOutput tabsetPanel sidebarLayout sidebarPanel mainPanel actionButton htmlOutput verbatimTextOutput
 #' @importFrom DT dataTableOutput
 #' @importFrom shinyjs useShinyjs
+#' @importFrom shinyTree shinyTree
 #' @export
 shiny_ui <- function(title = 'ShinyQDA') {
 	shiny::navbarPage(
@@ -89,6 +90,25 @@ shiny_ui <- function(title = 'ShinyQDA') {
 				shiny::tabPanel(
 					'View All Codes',
 					DT::dataTableOutput('coding_table')
+				)
+			)
+		),
+		shiny::tabPanel(
+			'Codebook',
+			shiny::sidebarLayout(
+				shiny::sidebarPanel(
+					shinyTree::shinyTree("tree",
+										 theme = "proton",
+										 multiple = FALSE,
+										 animation = FALSE,
+										 dragAndDrop = TRUE,
+										 sort = FALSE,
+										 wholerow = TRUE,
+										 unique = TRUE,
+										 contextmenu = TRUE)
+				),
+				shiny::mainPanel(
+					shiny::verbatimTextOutput('codebook_output')
 				)
 			)
 		),

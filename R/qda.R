@@ -189,7 +189,7 @@ qda <- function(
 		} else {
 			DBI::dbGetQuery(
 				qda_db,
-				paste0('SELECT * FROM codings WHERE coding_id = "', coding_id, '" AND id = "', id, '"')
+				paste0('SELECT * FROM codings WHERE coding_id = "', coding_id, '" AND qda_id = "', id, '"')
 			)
 		}
 	}
@@ -235,6 +235,25 @@ qda <- function(
 			append = TRUE
 		)
 		invisible(new_rows)
+	}
+
+	# update_code
+	qda_data$update_code <- function(code, color, description, parent) {
+		new_vals <- c()
+		if(!missing(color)) {
+			new_vals <- c(new_vals, paste0('color = "', color, '"'))
+		}
+		if(!missing(description)) {
+			new_vals <- c(new_vals, paste0('description = "', description, '"'))
+		}
+		if(!missing(parent)) {
+			new_vals <- c(new_vals, paste0('parent = "', parent, '"'))
+		}
+		query <- paste0( 'UPDATE codes SET ',
+						 # do.call(paste0, list(new_vals, collapse = ',')),
+						 paste0(new_vals, collapse = ','),
+						 ' WHERE code = "', code, '"')
+		DBI::dbExecute(qda_db, query)
 	}
 
 	###### code_questions ######################################################
@@ -330,16 +349,15 @@ qda <- function(
 			stop('coding_id parameter is required')
 		}
 
-		query <-
 		new_vals <- c()
 		if(!missing(stem)) {
-			new_vals <- c(new_vals, 'stem = "', stem, '"')
+			new_vals <- c(new_vals, paste0('stem = "', stem, '"'))
 		}
 		if(!missing(answer)) {
-			new_vals <- c(new_vals, 'answer = "', answer, '"')
+			new_vals <- c(new_vals, paste0('answer = "', answer, '"'))
 		}
 		if(!missing(coder)) {
-			new_vals <- c(new_vals, 'coder = "', coder, '"')
+			new_vals <- c(new_vals, paste0('coder = "', coder, '"'))
 		}
 		query <- paste0( 'UPDATE code_question_responses SET ',
 						 paste0(new_vals, collapse = ', '),

@@ -3,7 +3,7 @@ library(usethis)
 
 usethis::use_tidy_description()
 
-unlink("NAMESPACE")
+# unlink("NAMESPACE")
 devtools::document()
 devtools::install(upgrade = 'never')
 devtools::build()
