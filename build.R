@@ -9,7 +9,7 @@ devtools::install(upgrade = 'never')
 devtools::build()
 devtools::check()
 
-usethis::use_package('lubridate', type = 'Imports')
+usethis::use_package('RColorBrewer', type = 'Imports')
 
 # Test dataset
 essays <- readr::read_csv('../../data-raw/writingrtf_ec.csv')

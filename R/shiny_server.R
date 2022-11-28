@@ -13,8 +13,35 @@ edit_code_label <- 'Edit coding'
 #' @importFrom DT datatable renderDataTable JS formatRound
 #' @importFrom shinymanager secure_server check_credentials
 #' @importFrom shinyTree renderTree
+#' @importFrom shinyjs runjs
 #' @export
 shiny_server <- function(input, output, session) {
+	# Force refresh of an output based upon data changes. Add refresh() to any
+	# renderXXX function to ensure using the latest data.
+	refresh <- shiny::reactive({
+		input$add_code
+		input$add_tag
+		input$cancel_modal
+		input$code_color
+		input$code_description
+		input$edit_tag
+		input$save_text_question_responses
+		return(TRUE)
+	})
+
+	get_colors <- reactive({
+		colors <- color_palette
+		colors <- c(#colors,
+			RColorBrewer::brewer.pal(n = 12, name = 'Paired'),
+			RColorBrewer::brewer.pal(n = 9, name = 'Pastel1'),
+			RColorBrewer::brewer.pal(n = 12, name = 'Set3'),
+			RColorBrewer::brewer.pal(n = 8, name = 'Accent'),
+			RColorBrewer::brewer.pal(n = 8, name = 'Dark2')
+		)
+		colors <- unique(colors)
+		return(colors)
+	})
+
 	############################################################################
 	##### User Authentication
 	# call the server part
@@ -51,6 +78,7 @@ shiny_server <- function(input, output, session) {
 
 	# Select box for the current text to code
 	output$essay_selection <- shiny::renderUI({
+		refresh()
 		n_char_preview <- 60
 
 		text <- qda_data$get_text()
@@ -72,10 +100,7 @@ shiny_server <- function(input, output, session) {
 
 	# Text output. Note that this will replace new lines (i.e. \n) with <p/>
 	output$text_output <- shiny::renderText({
-		# Trigger re-rendering after canceling coding modal dialog so that the links get new values
-		input$cancel_modal
-		input$add_tag # Re-render after a new code is added
-		input$edit_tag
+		refresh()
 		code_edit_id()
 
 		shiny::req(input$selected_text)
@@ -167,7 +192,7 @@ shiny_server <- function(input, output, session) {
 	shiny::observeEvent(input$edit_coding, {
 		# HACK: The event value is formatted as coding_id;System_Time so that
 		# if the user clicks the same link the event is actually triggered. This
-		# relies on the text being rerendered when the user clicks cancel
+		# relies on the text being re-rendered when the user clicks cancel
 		coding_id <- strsplit(input$edit_coding, ';')[[1]][1]
 		coding <- qda_data$get_codings(coding_id = coding_id)
 		code_edit_id(coding_id)
@@ -187,6 +212,7 @@ shiny_server <- function(input, output, session) {
 
 	shiny::observeEvent(input$cancel_modal, {
 		code_edit_id(0)
+		add_code_message('')
 		shiny::removeModal()
 	})
 
@@ -313,7 +339,7 @@ shiny_server <- function(input, output, session) {
 	# Check box group of tags assigned to the current essay
 	output$text_codes_ui <- shiny::renderUI({
 		req(input$selected_text)
-		input$add_tag
+		refresh()
 		ui <- NULL
 		codes <- qda_data$get_codings() |>
 			dplyr::filter(qda_id == input$selected_text)
@@ -331,23 +357,174 @@ shiny_server <- function(input, output, session) {
 
 	############################################################################
 	# Codebook Tree
-	output$tree <- shinyTree::renderTree({
-		list(
-			root3 = "234",
-			root1 = list(
-				SubListA = list(leaf1 = "", leaf2 = "")
-			),
-			root2 = list(
-				SubListA = list(leaf1 = "", leaf2 = "")
+	output$codebook_tree <- shinyTree::renderTree({
+		# refresh()
+		codes <- qda_data$get_codes()
+		roots <- codes[is.na(codes$parent) | codes$parent == '',]
+
+		if(nrow(roots) == 0) {
+			# TODO: Good for now, but should display error to users
+			stop('No roots found')
+		}
+
+		build_tree <- function(roots, all_codes) {
+			tree <- as.list(roots$code)
+			names(tree) <- roots$code
+			for(i in seq_len(nrow(roots))) {
+				code <- roots[i,]$code
+				children <- codes[which(codes$parent == code),]
+				if(nrow(children) > 0) {
+					tree[[code]] <- build_tree(children, all_codes)
+				} else {
+					tree[[code]] <- code
+				}
+			}
+			return(tree)
+		}
+
+		build_tree(roots, children)
+	})
+
+	output$codebook_output <- shiny::renderUI({
+		req(input$codebook_tree)
+		# TODO: Would really like to have the tree expanded by default
+		# shinyjs::runjs(shiny::HTML('$("#codebook_tree").jstree("open_all");'))
+
+		selected_code <- NULL
+		node <- shinyTree::get_selected(input$codebook_tree)
+		ui <- list()
+		if(length(node) > 0) {
+			code <- node[[1]][1]
+			codes <- qda_data$get_codes()
+			selected_code <- codes[codes$code == code,]
+			# TODO: Maybe allow changing the code name. This would require changing
+			#       all references to this code as well.
+			# ui[[length(ui) + 1]] <- shiny::textInput(
+			# 	inputId = 'code_name',
+			# 	label = 'Code:',
+			# 	value = code
+			# )
+			ui[[length(ui) + 1]] <- shiny::p(strong('Code: '), code)
+			ui[[length(ui) + 1]] <- shiny::textAreaInput(
+				inputId = 'code_description',
+				label = 'Description:',
+				value = selected_code[1,]$description,
+				height = '150px'
+			)
+			colors <- get_colors()
+
+			ui[[length(ui) + 1]] <- colourpicker::colourInput(
+				inputId = 'code_color',
+				label = 'Color:',
+				value = selected_code[1,]$color,
+				palette = 'limited',
+				allowedCols = colors
+			)
+		}
+
+		do.call(shiny::wellPanel, ui)
+	})
+
+	observeEvent(input$codebook_tree, {
+		tree <- input$codebook_tree
+		traverse_tree <- function(node, parent = '') {
+			for(i in seq_len(length(node))) {
+				code <- names(node)[i]
+				qda_data$update_code(code = code,
+									 parent = parent)
+				if(!is.null(node[[i]]) & !is.null(names(node[[i]]))) {
+					traverse_tree(node[[i]], parent = names(node)[i])
+				}
+			}
+		}
+		traverse_tree(tree)
+	})
+
+	observeEvent(input$code_description, {
+		node <- shinyTree::get_selected(input$codebook_tree)
+		code <- node[[1]][1]
+		val <- input$code_description
+		if(!is.na(val) & val != 'NA') {
+			qda_data$update_code(code, description = val)
+		}
+	})
+
+	observeEvent(input$code_color, {
+		node <- shinyTree::get_selected(input$codebook_tree)
+		code <- node[[1]][1]
+		# selected_code <- codes[codes$code == code,]
+		qda_data$update_code(code, color = input$code_color)
+	})
+
+	shiny::observeEvent(input$closeAll, {
+		shinyjs::runjs(shiny::HTML('$("#codebook_tree").jstree("close_all");'))
+	})
+
+	shiny::observeEvent(input$openAll, {
+		shinyjs::runjs(shiny::HTML('$("#codebook_tree").jstree("open_all");'))
+	})
+
+	add_code_message <- reactiveVal('')
+
+	shiny::observeEvent(input$add_code_dialog, {
+		shiny::showModal(
+			shiny::modalDialog(
+				uiOutput('new_code_ui'),
+				title = 'Add New Code',
+				footer = shiny::tagList(
+					shiny::actionButton('cancel_modal', 'Cancel'),
+					shiny::actionButton('add_code', 'Add')
+				),
+				size = modal_size
 			)
 		)
 	})
 
-	output$codebook_output <- renderPrint({
-		# shinyTrees will also be available as inputs so you can
-		# monitor changes that occur to the tree as the user interacts
-		# with it.
-		str(input$tree)
+	output$new_code_ui <- renderUI({
+		colors <- get_colors()
+		codes_table <- qda_data$get_codes()
+		color <- colors[(nrow(codes_table) + 1) %% length(colors)]
+
+		ui <- list(
+			shiny::strong(add_code_message()),
+			shiny::textInput(
+				inputId = 'new_code_name',
+				label = 'Code:',
+				width = '100%'),
+			shiny::textAreaInput(
+				inputId = 'new_code_description',
+				label = 'Description:',
+				height = '150px',
+				width = '100%'),
+			colourpicker::colourInput(
+				inputId = 'new_code_color',
+				label = 'Color:',
+				value = color,
+				palette = 'limited',
+				allowedCols = colors
+			)
+		)
+		do.call(shiny::wellPanel, ui)
+	})
+
+	observeEvent(input$add_code, {
+		codes_table <- qda_data$get_codes()
+		if(input$new_code_name == '') {
+			add_code_message('Please enter a code name')
+			return()
+		} else if(input$new_code_name %in% codes_table$code) {
+			add_code_message(paste0(input$new_code_name, ' has already been used Use a unique code name.'))
+			return()
+		}
+
+		qda_data$add_codes(
+			codes = input$new_code_name,
+			colors = input$new_code_color,
+			descriptions = input$new_code_description
+		)
+
+		add_code_message('')
+		shiny::removeModal()
 	})
 
 	############################################################################
@@ -408,9 +585,6 @@ shiny_server <- function(input, output, session) {
 							   questions[i,]$stem))
 			}
 		}
-		# if(length(ui) > 0) {
-		# 	ui[[length(ui) + 1]] <- actionButton('save_text_question_responses', label = 'Save')
-		# }
 		do.call(shiny::div, ui)
 	})
 
@@ -439,7 +613,7 @@ shiny_server <- function(input, output, session) {
 	# Coding table for the selected text
 	output$coding_table <- DT::renderDataTable({
 		shiny::req(input$selected_text)
-		input$add_tag
+		refresh()
 		codes <- qda_data$get_codings()
 		if(nrow(codes) == 0) {
 			return(NULL)
@@ -459,8 +633,7 @@ shiny_server <- function(input, output, session) {
 
 	# Table view of the data
 	output$text_table <- DT::renderDataTable({
-		input$edit_tag
-		input$add_tag
+		refresh()
 		df <- qda_data$get_text()
 		df$qda_text <- ShinyQDA::text_truncate(df$qda_text)
 		DT::datatable(
@@ -500,9 +673,8 @@ shiny_server <- function(input, output, session) {
 
 	##### qda Table Views ######################################################
 	output$codes_table <- DT::renderDataTable({
-		input$edit_tag
-		input$add_tag
-		input$save_text_question_responses
+		refresh()
+		input$codebook_tree
 		qda_data$get_codes() |>
 			DT::datatable(
 				rownames = FALSE,
@@ -514,9 +686,7 @@ shiny_server <- function(input, output, session) {
 	})
 
 	output$code_questions_table <- DT::renderDataTable({
-		input$edit_tag
-		input$add_tag
-		input$save_text_question_responses
+		refresh()
 		qda_data$get_code_questions() |>
 			DT::datatable(
 				rownames = FALSE,
@@ -528,8 +698,7 @@ shiny_server <- function(input, output, session) {
 	})
 
 	output$code_question_responses_table <- DT::renderDataTable({
-		input$edit_tag
-		input$add_tag
+		refresh()
 		qda_data$get_code_question_responses() |>
 			DT::datatable(
 				rownames = FALSE,
@@ -541,9 +710,7 @@ shiny_server <- function(input, output, session) {
 	})
 
 	output$text_questions_table <- DT::renderDataTable({
-		input$edit_tag
-		input$add_tag
-		input$save_text_question_responses
+		refresh()
 		qda_data$get_text_questions() |>
 			DT::datatable(
 				rownames = FALSE,
@@ -555,9 +722,7 @@ shiny_server <- function(input, output, session) {
 	})
 
 	output$text_question_responses_table <- DT::renderDataTable({
-		# make sure this table is updated when values change.
-		input$edit_tag
-		input$add_tag
+		refresh()
 		questions <- qda_data$get_text_questions()
 		for(i in seq_len(nrow(questions))) {
 			stem <- questions[i,]$stem
@@ -575,9 +740,7 @@ shiny_server <- function(input, output, session) {
 	})
 
 	output$codings_table <- DT::renderDataTable({
-		input$edit_tag
-		input$add_tag
-		input$save_text_question_responses
+		refresh()
 		qda_data$get_codings() |>
 			DT::datatable(
 				rownames = FALSE,
@@ -589,9 +752,7 @@ shiny_server <- function(input, output, session) {
 	})
 
 	output$assignments_table <- DT::renderDataTable({
-		input$edit_tag
-		input$add_tag
-		input$save_text_question_responses
+		refresh()
 		qda_data$get_assignments() |>
 			DT::datatable(
 				rownames = FALSE,

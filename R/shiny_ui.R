@@ -9,6 +9,10 @@ shiny_ui <- function(title = 'ShinyQDA') {
 	shiny::navbarPage(
 		title = 'ShinyQDA',
 		shiny::tabPanel(
+			'Text Data',
+			DT::dataTableOutput('text_table')
+		),
+		shiny::tabPanel(
 			'Text Coding',
 			shinyjs::useShinyjs(),
 			shiny::tags$head(tags$style("
@@ -77,7 +81,8 @@ shiny_ui <- function(title = 'ShinyQDA') {
 						shiny::sidebarPanel(
 							width = 4,
 							shiny::actionButton('add_tag_button', 'Add Code'),
-							shiny::uiOutput('text_codes_ui'),
+							# TODO: enable selected highlighting
+							# shiny::uiOutput('text_codes_ui'),
 							hr(),
 							shiny::uiOutput('questions_ui')
 						),
@@ -97,7 +102,12 @@ shiny_ui <- function(title = 'ShinyQDA') {
 			'Codebook',
 			shiny::sidebarLayout(
 				shiny::sidebarPanel(
-					shinyTree::shinyTree("tree",
+					width = 6,
+					actionButton("add_code_dialog", "Add Code"),
+					actionButton("closeAll", "Collapse All"),
+					actionButton("openAll", "Expand All"),
+					hr(),
+					shinyTree::shinyTree("codebook_tree",
 										 theme = "proton",
 										 multiple = FALSE,
 										 animation = FALSE,
@@ -105,10 +115,11 @@ shiny_ui <- function(title = 'ShinyQDA') {
 										 sort = FALSE,
 										 wholerow = TRUE,
 										 unique = TRUE,
-										 contextmenu = TRUE)
+										 contextmenu = FALSE)
 				),
 				shiny::mainPanel(
-					shiny::verbatimTextOutput('codebook_output')
+					width = 6,
+					shiny::uiOutput('codebook_output')
 				)
 			)
 		),
@@ -117,12 +128,9 @@ shiny_ui <- function(title = 'ShinyQDA') {
 		# 	DT::dataTableOutput('coders_table')
 		# ),
 		shiny::tabPanel(
-			'Text Data',
-			DT::dataTableOutput('text_table')
-		),
-		shiny::tabPanel(
-			'Data',
+			'Raw Data',
 			# uiOutput('codes_ui')
+			p('These table represents the raw data stored in the ShinyQDA file (using SQLite).'),
 			shiny::tabsetPanel(
 				shiny::tabPanel('Codes', DT::dataTableOutput('codes_table')),
 				shiny::tabPanel('Codings', DT::dataTableOutput('codings_table')),
@@ -133,6 +141,18 @@ shiny_ui <- function(title = 'ShinyQDA') {
 				shiny::tabPanel('Assignments', DT::dataTableOutput('assignments_table'))
 			)
 
+		),
+		shiny::navbarMenu(
+			'Analysis',
+			shiny::tabPanel(
+				'Descriptives'
+			),
+			shiny::tabPanel(
+				'Sentiment'
+			),
+			shiny::tabPanel(
+				'Topic Modeling'
+			)
 		),
 		shiny::tabPanel(
 			'My Info',
