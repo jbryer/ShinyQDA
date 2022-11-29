@@ -28,8 +28,6 @@ shiny_server <- function(input, output, session) {
 		return(TRUE)
 	})
 
-
-
 	############################################################################
 	##### User Authentication
 	# call the server part
@@ -456,95 +454,5 @@ shiny_server <- function(input, output, session) {
 	data_view_server('ShinyQDA', qda_data)
 
 	##### qda Table Views ######################################################
-	output$codes_table <- DT::renderDataTable({
-		refresh()
-		input$codebook_tree
-		qda_data$get_codes() |>
-			DT::datatable(
-				rownames = FALSE,
-				options = list(
-					pageLength = 20
-				),
-				selection = 'single'
-			)
-	})
-
-	output$code_questions_table <- DT::renderDataTable({
-		refresh()
-		qda_data$get_code_questions() |>
-			DT::datatable(
-				rownames = FALSE,
-				options = list(
-					pageLength = 20
-				),
-				selection = 'single'
-			)
-	})
-
-	output$code_question_responses_table <- DT::renderDataTable({
-		refresh()
-		qda_data$get_code_question_responses() |>
-			DT::datatable(
-				rownames = FALSE,
-				options = list(
-					pageLength = 20
-				),
-				selection = 'single'
-			)
-	})
-
-	output$text_questions_table <- DT::renderDataTable({
-		refresh()
-		qda_data$get_text_questions() |>
-			DT::datatable(
-				rownames = FALSE,
-				options = list(
-					pageLength = 20
-				),
-				selection = 'single'
-			)
-	})
-
-	output$text_question_responses_table <- DT::renderDataTable({
-		refresh()
-		questions <- qda_data$get_text_questions()
-		for(i in seq_len(nrow(questions))) {
-			stem <- questions[i,]$stem
-			input[[paste0('text_', textutils::HTMLencode(stem))]]
-		}
-
-		qda_data$get_text_question_responses() |>
-			DT::datatable(
-				rownames = FALSE,
-				options = list(
-					pageLength = 20
-				),
-				selection = 'single'
-			)
-	})
-
-	output$codings_table <- DT::renderDataTable({
-		refresh()
-		qda_data$get_codings() |>
-			DT::datatable(
-				rownames = FALSE,
-				options = list(
-					pageLength = 20
-				),
-				selection = 'single'
-			)
-	})
-
-	output$assignments_table <- DT::renderDataTable({
-		refresh()
-		qda_data$get_assignments() |>
-			DT::datatable(
-				rownames = FALSE,
-				options = list(
-					pageLength = 20
-				),
-				selection = 'single'
-			)
-	})
-
+	qda_view_server('ShinyQDA', qda_data)
 }

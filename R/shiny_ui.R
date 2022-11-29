@@ -84,16 +84,7 @@ shiny_ui <- function(title = 'ShinyQDA') {
 			icon = shiny::icon('database'),
 			# uiOutput('codes_ui')
 			shiny::p('These table represents the raw data stored in the ShinyQDA file (using SQLite).'),
-			shiny::tabsetPanel(
-				shiny::tabPanel('Codes', DT::dataTableOutput('codes_table')),
-				shiny::tabPanel('Codings', DT::dataTableOutput('codings_table')),
-				shiny::tabPanel('Code Questions', DT::dataTableOutput('code_questions_table')),
-				shiny::tabPanel('Code Question Responses', DT::dataTableOutput('code_question_responses_table')),
-				shiny::tabPanel('Text Questions', DT::dataTableOutput('text_questions_table')),
-				shiny::tabPanel('Text Question Responses', DT::dataTableOutput('text_question_responses_table')),
-				shiny::tabPanel('Assignments', DT::dataTableOutput('assignments_table'))
-			)
-
+			qda_view_ui('ShinyQDA')
 		),
 		shiny::navbarMenu(
 			title = 'Analysis',
