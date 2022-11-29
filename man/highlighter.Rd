@@ -12,6 +12,8 @@ highlighter(text, codings, codes, link = TRUE)
 \item{codings}{a data.frame with the codings.}
 
 \item{codes}{a data.frame with the codes (and colors).}
+
+\item{link}{if TRUE codes will link to a modal dialog to edit them.}
 }
 \description{
 Highlights the codes within the text using HTML.

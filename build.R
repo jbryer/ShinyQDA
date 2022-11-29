@@ -9,7 +9,9 @@ devtools::install(upgrade = 'never')
 devtools::build()
 devtools::check()
 
-usethis::use_package('RColorBrewer', type = 'Imports')
+shiny::runApp('inst/shiny/')
+
+usethis::use_package('reshape2', type = 'Imports')
 
 # Test dataset
 essays <- readr::read_csv('../../data-raw/writingrtf_ec.csv')

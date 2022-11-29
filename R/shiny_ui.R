@@ -1,57 +1,23 @@
 #' Shiny User Interface for QDA
 #'
-#' @importFrom shiny tags navbarPage tabPanel fluidRow column uiOutput plotOutput tabsetPanel sidebarLayout sidebarPanel mainPanel actionButton htmlOutput verbatimTextOutput
+#' @importFrom shiny icon tags navbarPage tabPanel fluidRow column uiOutput plotOutput tabsetPanel sidebarLayout sidebarPanel mainPanel actionButton htmlOutput verbatimTextOutput
 #' @importFrom DT dataTableOutput
 #' @importFrom shinyjs useShinyjs
-#' @importFrom shinyTree shinyTree
 #' @export
 shiny_ui <- function(title = 'ShinyQDA') {
 	shiny::navbarPage(
 		title = 'ShinyQDA',
+		windowTitle = 'ShinyQDA: Qualitative Data Analysis',
+		inverse = FALSE,
+		collapsible = TRUE,
 		shiny::tabPanel(
-			'Text Data',
-			DT::dataTableOutput('text_table')
-		),
-		shiny::tabPanel(
-			'Text Coding',
+			title = 'Coding',
+			icon = shiny::icon('pen-to-square'),
 			shinyjs::useShinyjs(),
-			shiny::tags$head(tags$style("
-				.tooltip2 {
-				  position: relative;
-				  display: inline-block;
-				  border-bottom: 1px dotted black;
-				}
-
-				.tooltip2 .tooltiptext2 {
-				  visibility: hidden;
-				  width: 120px;
-				  background-color: black;
-				  color: #fff;
-				  text-align: center;
-				  border-radius: 6px;
-				  padding: 5px 0;
-				  position: absolute;
-				  z-index: 1;
-				  bottom: 150%;
-				  left: 50%;
-				  margin-left: -60px;
-				}
-
-				.tooltip2 .tooltiptext2::after {
-				  content: '';
-				  position: absolute;
-				  top: 100%;
-				  left: 50%;
-				  margin-left: -5px;
-				  border-width: 5px;
-				  border-style: solid;
-				  border-color: black transparent transparent transparent;
-				}
-
-				.tooltip2:hover .tooltiptext2 {
-				  visibility: visible;
-				}
-			")),
+			shiny::tags$style(
+				type = 'text/css',
+				'.modal-dialog { width: 90% !important; }'
+			),
 			# javascript code to send data to shiny server
 			# https://stackoverflow.com/questions/42274461/can-shiny-recognise-text-selection-with-mouse-highlighted-text
 			shiny::tags$script('
@@ -80,10 +46,11 @@ shiny_ui <- function(title = 'ShinyQDA') {
 					shiny::sidebarLayout(
 						shiny::sidebarPanel(
 							width = 4,
+							# shiny::p('Selected id: ', shiny::textOutput('selected_id')),
 							shiny::actionButton('add_tag_button', 'Add Code'),
 							# TODO: enable selected highlighting
 							# shiny::uiOutput('text_codes_ui'),
-							hr(),
+							shiny::hr(),
 							shiny::uiOutput('questions_ui')
 						),
 						shiny::mainPanel(
@@ -99,38 +66,24 @@ shiny_ui <- function(title = 'ShinyQDA') {
 			)
 		),
 		shiny::tabPanel(
-			'Codebook',
-			shiny::sidebarLayout(
-				shiny::sidebarPanel(
-					width = 6,
-					actionButton("add_code_dialog", "Add Code"),
-					actionButton("closeAll", "Collapse All"),
-					actionButton("openAll", "Expand All"),
-					hr(),
-					shinyTree::shinyTree("codebook_tree",
-										 theme = "proton",
-										 multiple = FALSE,
-										 animation = FALSE,
-										 dragAndDrop = TRUE,
-										 sort = FALSE,
-										 wholerow = TRUE,
-										 unique = TRUE,
-										 contextmenu = FALSE)
-				),
-				shiny::mainPanel(
-					width = 6,
-					shiny::uiOutput('codebook_output')
-				)
-			)
+			title = 'Data',
+			icon = shiny::icon('table'),
+			data_view_ui('ShinyQDA')
+		),
+		shiny::tabPanel(
+			title = 'Codebook',
+			icon = shiny::icon('book'),
+			codebook_ui('ShinyQDA')
 		),
 		# shiny::tabPanel(
 		# 	'Coders',
 		# 	DT::dataTableOutput('coders_table')
 		# ),
 		shiny::tabPanel(
-			'Raw Data',
+			title = 'Raw Data',
+			icon = shiny::icon('database'),
 			# uiOutput('codes_ui')
-			p('These table represents the raw data stored in the ShinyQDA file (using SQLite).'),
+			shiny::p('These table represents the raw data stored in the ShinyQDA file (using SQLite).'),
 			shiny::tabsetPanel(
 				shiny::tabPanel('Codes', DT::dataTableOutput('codes_table')),
 				shiny::tabPanel('Codings', DT::dataTableOutput('codings_table')),
@@ -143,7 +96,8 @@ shiny_ui <- function(title = 'ShinyQDA') {
 
 		),
 		shiny::navbarMenu(
-			'Analysis',
+			title = 'Analysis',
+			icon = shiny::icon('chart-simple'),
 			shiny::tabPanel(
 				'Descriptives'
 			),
@@ -155,7 +109,8 @@ shiny_ui <- function(title = 'ShinyQDA') {
 			)
 		),
 		shiny::tabPanel(
-			'My Info',
+			title = 'My Info',
+			icon = shiny::icon('user'),
 			shiny::verbatimTextOutput('auth_output')
 		)
 	)

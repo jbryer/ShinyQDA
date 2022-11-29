@@ -14,17 +14,18 @@ BugReports: https://github.com/jbryer/ShinyQDA/issues
 Depends: 
     R (>= 3.5.0)
 Imports: 
-    shiny,
     colourpicker,
     DBI,
     dplyr,
     ggplot2,
     lubridate,
+    RColorBrewer,
+    reshape2,
     RSQLite,
+    shiny,
     shinyjs,
     shinymanager,
-    textutils,
-    RColorBrewer
+    textutils
 Author@R: person("Jason", "Bryer", , "jason@bryer.org", role = c("aut",
     "cre"), comment = c(ORCID = "0000-0002-2454-0402"))
 Encoding: UTF-8
