@@ -126,7 +126,7 @@ data_view_server <- function(id, qda_data) {
 						rownames = FALSE,
 						filter = 'top',
 						options = list(
-							pageLength = 20
+							pageLength = 10
 						),
 						selection = 'single'
 					)
@@ -145,7 +145,7 @@ data_view_server <- function(id, qda_data) {
 						rownames = FALSE,
 						filter = 'top',
 						options = list(
-							pageLength = 20
+							pageLength = 10
 						),
 						selection = 'single'
 					)

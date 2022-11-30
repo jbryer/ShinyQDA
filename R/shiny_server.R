@@ -12,6 +12,7 @@ edit_code_label <- 'Edit coding'
 #' @importFrom shinymanager secure_server check_credentials
 #' @importFrom shinyTree renderTree
 #' @importFrom shinyjs runjs
+#' @importFrom stringr str_squish
 #' @export
 shiny_server <- function(input, output, session) {
 	############################################################################
@@ -69,13 +70,50 @@ shiny_server <- function(input, output, session) {
 	})
 
 	############################################################################
+	# Codebook Tree
+	codebook_server('ShinyQDA', qda_data)
+
+	############################################################################
+	# Questions (text and code)
+	questions_server('ShinyQDA', qda_data)
+
+	##### Overall view across all texts ########################################
+	data_view_server('ShinyQDA', qda_data)
+
+	##### qda Table Views ######################################################
+	qda_view_server('ShinyQDA', qda_data)
+
+	##### Descriptive Statistics ###############################################
+	descriptives_server('ShinyQDA', qda_data)
+
+	############################################################################
 	##### Text display and coding
 
 	# Select box for the current text to code
 	output$essay_selection <- shiny::renderUI({
 		n_char_preview <- 60
 
-		text <- qda_data()$get_text()
+		shiny::isolate({
+			text <- qda_data()$get_text()
+			codings <- qda_data()$get_codings()
+		})
+
+		if(input$essay_selection_subset == 'Not coded') {
+			text <- text |>
+				dplyr::filter(!qda_id %in% codings$qda_id)
+		} else if(input$essay_selection_subset == 'Not coded by me') {
+			codings <- codings |> dplyr::filter(coder == get_username())
+			text <- text |>
+				dplyr::filter(!qda_id %in% codings$qda_id)
+		} else if(input$essay_selection_subset == 'Coded') {
+			text <- text |>
+				dplyr::filter(qda_id %in% codings$qda_id)
+		} else if(input$essay_selection_subset == 'Coded by me') {
+			codings <- codings |> dplyr::filter(coder == get_username())
+			text <- text |>
+				dplyr::filter(qda_id %in% codings$qda_id)
+		}
+
 		choices <- text$qda_id
 		names(choices) <- text$qda_text
 		names(choices)[nchar(names(choices)) > n_char_preview] <- paste0(
@@ -83,6 +121,8 @@ shiny_server <- function(input, output, session) {
 			'...'
 		)
 		names(choices) <- paste0(text$qda_id, ': ', names(choices))
+
+
 		shiny::selectizeInput(inputId = 'selected_text',
 							  label = 'Select text:',
 							  choices = choices,
@@ -154,17 +194,23 @@ shiny_server <- function(input, output, session) {
 		thetext <- qda_data()$get_text(input$selected_text) |>
 			dplyr::select(qda_text)
 		thetext <- thetext[1,1,drop=TRUE]
+		thetext <- stringr::str_squish(thetext)
 		pos <- gregexpr(text_selection, thetext, fixed = TRUE)[[1]]
 		code_ids <- integer()
+		# TODO: Make sure there is a match and report error to user
+		if(length(pos[pos != -1]) == 0) {
+			warning('Could not match string.')
+		}
 		for(i in pos[pos != -1]) {
 			code_ids <- c(
 				code_ids,
-				qda_data()$add_coding(id = input$selected_text,
-									text = text_selection,
-									start = i,
-									end = i + nchar(text_selection),
-									codes = input$new_code,
-									coder = get_username())
+				qda_data()$add_coding(
+					id = input$selected_text,
+					text = text_selection,
+					start = i,
+					end = i + nchar(text_selection),
+					codes = input$new_code,
+					coder = get_username())
 			)
 		}
 
@@ -352,14 +398,6 @@ shiny_server <- function(input, output, session) {
 	})
 
 	############################################################################
-	# Codebook Tree
-	codebook_server('ShinyQDA', qda_data)
-
-	############################################################################
-	# Questions (text and code)
-	questions_server('ShinyQDA', qda_data)
-
-	############################################################################
 	# UI for text questions
 	output$questions_ui <- shiny::renderUI({
 		questions <- qda_data()$get_text_questions()
@@ -467,9 +505,4 @@ shiny_server <- function(input, output, session) {
 		)
 	})
 
-	##### Overall view across all texts ########################################
-	data_view_server('ShinyQDA', qda_data)
-
-	##### qda Table Views ######################################################
-	qda_view_server('ShinyQDA', qda_data)
 }

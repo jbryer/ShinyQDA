@@ -9,6 +9,14 @@ devtools::install(upgrade = 'never')
 devtools::build()
 devtools::check()
 
+shiny::runApp('inst/shiny/')
+
+
+usethis::use_package('wordcloud2', type = 'Imports')
+
+
+
+################################################################################
 qda_data <- ShinyQDA::qda(file = 'inst/shiny/daacs.sqlite')
 
 qda_data$get_last_update()
@@ -21,16 +29,54 @@ code_question_responses <- qda_data$get_code_question_responses()
 
 table(codings$qda_id) |> as.data.frame()
 
-codings <- ShinyQDA::get_coding_table(qda_data)
+text_df <- qda_data$get_text()
+extra_cols <- character()
+if(ncol(text_df) > 3) {
+	extra_cols <- names(text_df)[seq(3, ncol(text_df) - 1)]
+}
+extra_cols
+
+# codings <- ShinyQDA::get_coding_table(qda_data)
 df <- ShinyQDA::qda_merge(qda_data)
+code_cols <- names(df)[seq(ncol(text_df) + 2, ncol(df))]
+code_cols
 
+df_sum <- apply(df[,code_cols], 2, FUN = function(x) { sum(x, na.rm = TRUE )}) |>
+	as.data.frame()
+names(df_sum)[1] <- 'Count'
+df_sum$Code <- row.names(df_sum)
 
-shiny::runApp('inst/shiny/')
+library(ggplot2)
+ggplot(df_sum, aes(x = Code, y = Count)) +
+	geom_bar(stat = 'identity', fill = 'grey50') +
+	geom_text(aes(label = Count), hjust = -1) +
+	coord_flip() +
+	ggtitle('Number of codes across all text')
 
+# Word cloud
+library(wordcloud)
+library(tm)
+text_data <- qda_data$get_text()
+text <- text_data$qda_text
+docs <- tm::Corpus(VectorSource(text))
+docs <- docs %>%
+	tm::tm_map(tm::removeNumbers) %>%
+	tm::tm_map(tm::removePunctuation) %>%
+	tm::tm_map(tm::stripWhitespace)
+docs <- tm::tm_map(docs, content_transformer(tolower))
+docs <- tm::tm_map(docs, removeWords, stopwords("english"))
+dtm <- TermDocumentMatrix(docs)
+matrix <- as.matrix(dtm)
+words <- sort(rowSums(matrix),decreasing=TRUE)
+df <- data.frame(word = names(words), freq = words)
 
-usethis::use_package('shinyWidgets', type = 'Imports')
-
-
+wordcloud(words = df$word,
+		  freq = df$freq,
+		  min.freq = 2,
+		  max.words = 200,
+		  random.order = FALSE,
+		  rot.per = 0.35,
+		  colors = brewer.pal(8, "Dark2"))
 
 
 

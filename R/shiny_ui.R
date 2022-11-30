@@ -39,9 +39,10 @@ shiny_ui <- function(title = 'ShinyQDA') {
 			'),
 			shiny::fluidRow(
 				shiny::column(9, shiny::uiOutput('essay_selection')),
-				shiny::column(3, shiny::selectInput('essay_selection_subset',
-													label = 'Filter Text',
-													choices = c('All', 'Not coded', 'Not coded by me', 'Coded')))
+				shiny::column(3, shiny::selectInput(
+					inputId = 'essay_selection_subset',
+					label = 'Filter Text',
+					choices = c('All', 'Not coded', 'Not coded by me', 'Coded', 'Coded by me')))
 			),
 			shiny::tabsetPanel(
 				shiny::tabPanel(
@@ -103,7 +104,8 @@ shiny_ui <- function(title = 'ShinyQDA') {
 			icon = shiny::icon('chart-simple'),
 			shiny::tabPanel(
 				'Descriptives',
-				icon = shiny::icon('chart-bar')
+				icon = shiny::icon('chart-bar'),
+				descriptives_ui('ShinyQDA')
 			),
 			shiny::tabPanel(
 				'Sentiment',
