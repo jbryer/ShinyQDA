@@ -7,7 +7,7 @@
 #' (functions) defined in the returned object. This will ensure data integrity.
 #'
 #' * `get_text(id)`
-#' * `add_coding(id, text = NA, start = NA, end = NA, codes = NA, coder = NA)`
+#' * `add_coding(id, text = NA, start = NA, end = NA, codes = NA, coder = Sys.info()['user'])`
 #'
 #' @section Methods:
 #' \describe{
@@ -45,7 +45,7 @@ qda <- function(
 						   ))
 	}
 
-	qda_data$log <- function(coder, table, description, timestamp = as.character(Sys.time())) {
+	qda_data$log <- function(coder = 'system', table, description, timestamp = as.character(Sys.time())) {
 		new_row <- data.frame(
 			coder = coder,
 			table = table,
@@ -140,7 +140,7 @@ qda <- function(
 
 	# add_codings
 	# @return the id for the newly inserted coding.
-	qda_data$add_coding <- function(id, text = NA, start = NA, end = NA, codes = NA, coder = NA) {
+	qda_data$add_coding <- function(id, text = NA, start = NA, end = NA, codes = NA, coder = Sys.info()['user']) {
 		codings <- DBI::dbGetQuery(
 			qda_db,
 			'SELECT coding_id FROM codings')
@@ -180,7 +180,7 @@ qda <- function(
 				   do.call(paste0, list(codes, collapse = ';')),
 				   '" WHERE coding_id = "', coding_id, '"')
 		)
-		qda_data$log(coder, 'codings', paste0('updated coding_id = ', coding_id))
+		qda_data$log('system', 'codings', paste0('updated coding_id = ', coding_id))
 	}
 
 	# delete_coding
@@ -376,7 +376,7 @@ qda <- function(
 
 	# add_code_question_response
 	# @param code_id the id from the codings table.
-	qda_data$add_code_question_response <- function(coding_id, stem, answer, coder = NA) {
+	qda_data$add_code_question_response <- function(coding_id, stem, answer, coder = Sys.info()['user']) {
 		new_row <- data.frame(
 			coding_id = coding_id,
 			stem = stem,
@@ -385,7 +385,7 @@ qda <- function(
 			date_added = as.character(Sys.time())
 		)
 		DBI::dbWriteTable(qda_db, 'code_question_responses', new_row, append = TRUE)
-		qda_data$log('system', 'code_questions_responses', paste0(new_row[1,], collapse = ', '))
+		qda_data$log(coder, 'code_questions_responses', paste0(new_row[1,], collapse = ', '))
 	}
 
 	qda_data$update_code_question_response <- function(coding_id, stem, answer, coder) {
@@ -488,7 +488,7 @@ qda <- function(
 
 	# delete_text_question_responses
 	# @param id the coding id
-	qda_data$delete_text_question_responses <- function(id, coder = NA) {
+	qda_data$delete_text_question_responses <- function(id, coder = Sys.info()['user']) {
 		if(missing(id)) {
 			stop('Must specify id')
 		}
@@ -499,7 +499,7 @@ qda <- function(
 	}
 
 	# update_text_question_response
-	qda_data$update_text_question_response <- function(id, stem, new_answer, coder = NA) {
+	qda_data$update_text_question_response <- function(id, stem, new_answer, coder = Sys.info()['user']) {
 		query <- paste0('UPDATE text_question_responses SET answer = "', new_anser,
 						'" WHERE qda_id ="', id, '" AND stem = "', stem, '"')
 		DBI::dbExecute(qda_db, query)
@@ -507,7 +507,7 @@ qda <- function(
 	}
 
 	# add_text_question_response
-	qda_data$add_text_question_response <- function(id, stem, answer, coder = NA) {
+	qda_data$add_text_question_response <- function(id, stem, answer, coder = Sys.info()['user']) {
 		new_row <- data.frame(
 			qda_id = id,
 			stem = stem,

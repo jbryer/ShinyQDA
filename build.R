@@ -19,6 +19,7 @@ qda_data$get_code_questions()
 codings <- qda_data$get_codings()
 code_question_responses <- qda_data$get_code_question_responses()
 
+table(codings$qda_id) |> as.data.frame()
 
 codings <- ShinyQDA::get_coding_table(qda_data)
 df <- ShinyQDA::qda_merge(qda_data)
