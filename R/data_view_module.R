@@ -72,7 +72,6 @@ data_view_server <- function(id, qda_data) {
 
 			# Table view of the data
 			output$text_table <- DT::renderDataTable({
-				# refresh()
 				df <- get_text_data()
 				df$qda_text <- ShinyQDA::text_truncate(df$qda_text)
 				DT::datatable(
@@ -86,22 +85,80 @@ data_view_server <- function(id, qda_data) {
 				)
 			})
 
+			output$text_details <- shiny::renderUI({
+				ns <- session$ns
+				df <- get_text_data()
+				txt_data <- df[input$text_table_rows_selected, , drop = FALSE]
+				txt <- txt_data$qda_text
+				id <- txt_data$qda_id
+				codings <- qda_data()$get_codings(id = id)
+				if(nrow(codings) > 0) {
+					txt <- highlighter(txt, codings, qda_data()$get_codes(), link = FALSE)
+				}
+				txt <- gsub('\\n', '<p/>', txt)
+
+				tabsetPanel(
+					tabPanel(
+						title = 'Full Text',
+						shiny::HTML(txt)
+					),
+					tabPanel(
+						title = 'Text Questions',
+						DT::dataTableOutput(ns('text_details_text_questions'))
+					),
+					tabPanel(
+						title = 'Code Questions',
+						DT::dataTableOutput(ns('text_details_code_questions'))
+					)
+				)
+			})
+
+			output$text_details_text_questions <- DT::renderDataTable({
+				df <- get_text_data()
+				txt_data <- df[input$text_table_rows_selected, , drop = FALSE]
+				id <- txt_data$qda_id
+				text_questions <- qda_data()$get_text_question_responses(id)
+				if(nrow(text_questions) == 0) {
+					return(NULL)
+				}
+				text_questions |>
+					DT::datatable(
+						rownames = FALSE,
+						filter = 'top',
+						options = list(
+							pageLength = 20
+						),
+						selection = 'single'
+					)
+			})
+
+			output$text_details_code_questions <- DT::renderDataTable({
+				df <- get_text_data()
+				txt_data <- df[input$text_table_rows_selected, , drop = FALSE]
+				id <- txt_data$qda_id
+				code_questions <- qda_data()$get_code_question_responses(id = id)
+				if(nrow(code_questions) == 0) {
+					return(NULL)
+				}
+				code_questions |>
+					DT::datatable(
+						rownames = FALSE,
+						filter = 'top',
+						options = list(
+							pageLength = 20
+						),
+						selection = 'single'
+					)
+			})
+
 			# Reactive function to determine if a row is selected
 			shiny::observe({
+				ns <- session$ns
 				if(!is.null(input$text_table_rows_selected)) {
-					df <- get_text_data()
-					txt_data <- df[input$text_table_rows_selected, , drop = FALSE]
-					txt <- txt_data$qda_text
-					id <- txt_data$qda_id
-					codings <- qda_data()$get_codings(id = id)
-					if(nrow(codings) > 0) {
-						txt <- highlighter(txt, codings, qda_data()$get_codes(), link = FALSE)
-					}
-					txt <- gsub('\\n', '<p/>', txt)
 					shiny::showModal(
 						shiny::modalDialog(
-							shiny::HTML(txt),
-							title = 'Full Text',
+							shiny::uiOutput(ns('text_details')),
+							title = 'Details',
 							easyClose = TRUE)
 					)
 				}

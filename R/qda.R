@@ -351,14 +351,18 @@ qda <- function(
 	}
 
 	# get_code_question_responses
-	qda_data$get_code_question_responses <- function(coding_id) {
-		if(missing(coding_id)) {
-			DBI::dbReadTable(qda_db, 'code_question_responses')
-		} else {
+	qda_data$get_code_question_responses <- function(coding_id, id) {
+		if(!missing(id)) {
+			codings <- qda_data$get_codings(id = id)
+			DBI::dbReadTable(qda_db, 'code_question_responses') |>
+				dplyr::filter(coding_id %in% codings$coding_id)
+		} else if(!missing(coding_id)) {
 			DBI::dbGetQuery(
 				qda_db,
 				paste0('SELECT * FROM code_question_responses WHERE coding_id = "', coding_id, '"')
 			)
+		} else {
+			DBI::dbReadTable(qda_db, 'code_question_responses')
 		}
 	}
 
