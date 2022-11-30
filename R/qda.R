@@ -385,7 +385,7 @@ qda <- function(
 			date_added = as.character(Sys.time())
 		)
 		DBI::dbWriteTable(qda_db, 'code_question_responses', new_row, append = TRUE)
-		qda_data$log('system', 'code_questions_responses', aste0(new_row[1,], collapse = ', '))
+		qda_data$log('system', 'code_questions_responses', paste0(new_row[1,], collapse = ', '))
 	}
 
 	qda_data$update_code_question_response <- function(coding_id, stem, answer, coder) {

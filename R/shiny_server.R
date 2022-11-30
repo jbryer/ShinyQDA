@@ -32,7 +32,7 @@ shiny_server <- function(input, output, session) {
 			qda_data_db$get_last_update()
 		},
 		valueFunc = function() {
-print('Refreshing data...')
+			# print('Refreshing data...')
 			qda_data_db
 		}
 	)
