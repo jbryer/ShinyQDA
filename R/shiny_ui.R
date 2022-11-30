@@ -50,10 +50,9 @@ shiny_ui <- function(title = 'ShinyQDA') {
 						shiny::sidebarPanel(
 							width = 4,
 							# shiny::p('Selected id: ', shiny::textOutput('selected_id')),
-							# shiny::uiOutput('essay_selection'),
 							shiny::actionButton('add_tag_button', 'Add Code'),
-							# TODO: enable selected highlighting
-							# shiny::uiOutput('text_codes_ui'),
+							shiny::hr(),
+							shiny::uiOutput('text_coders_ui'),
 							shiny::hr(),
 							shiny::uiOutput('questions_ui')
 						),

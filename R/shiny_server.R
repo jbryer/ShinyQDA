@@ -14,37 +14,28 @@ edit_code_label <- 'Edit coding'
 #' @importFrom shinyjs runjs
 #' @export
 shiny_server <- function(input, output, session) {
-	# Setup the connection to SQLite database
+	############################################################################
+	##### Setup the connection to SQLite database
 	if(!exists('qda_data_file')) {
 		message('Creating ShinyQDA.sqlite file...')
 		qda_data_file <- 'ShinyQDA.sqlite'
 	}
 	qda_data_db <- qda(qda_data_file)
 	# Using reactivePoll to ensure the app is refreshed when the data changes.
+	last_file_date <- file.info(qda_data_file)$mtime[1]
 	qda_data <- reactivePoll(
-		intervalMillis = 1000, #
+		intervalMillis = 1000,
 		session,
 		checkFunc = function() {
-			tools::md5sum(qda_data_file)
+			# Why does this change even when the database doesn't
+			# v <- tools::md5sum(qda_data_file)
+			qda_data_db$get_last_update()
 		},
 		valueFunc = function() {
+print('Refreshing data...')
 			qda_data_db
 		}
 	)
-
-
-	# Force refresh of an output based upon data changes. Add refresh() to any
-	# renderXXX function to ensure using the latest data.
-	# refresh <- shiny::reactive({
-	# 	input$add_code
-	# 	input$add_tag
-	# 	input$cancel_modal
-	# 	input$code_color
-	# 	input$code_description
-	# 	input$edit_tag
-	# 	input$save_text_question_responses
-	# 	return(TRUE)
-	# })
 
 	############################################################################
 	##### User Authentication
@@ -82,7 +73,6 @@ shiny_server <- function(input, output, session) {
 
 	# Select box for the current text to code
 	output$essay_selection <- shiny::renderUI({
-		# refresh()
 		n_char_preview <- 60
 
 		text <- qda_data()$get_text()
@@ -108,7 +98,6 @@ shiny_server <- function(input, output, session) {
 
 	# Text output. Note that this will replace new lines (i.e. \n) with <p/>
 	output$text_output <- shiny::renderText({
-		# refresh()
 		code_edit_id()
 
 		shiny::req(input$selected_text)
@@ -118,8 +107,12 @@ shiny_server <- function(input, output, session) {
 
 		thetext <- thetext[1,1,drop=TRUE]
 		# Highlight codes
-		codings <- qda_data()$get_codings(input$selected_text)
+		codings <- qda_data()$get_codings(input$selected_text) |>
+			filter(coder %in% input$text_coder)
 		if(nrow(codings) > 0) {
+			# if(!is.null(input$text_coder)) {
+			#
+			# }
 			thetext <- highlighter(thetext, codings, qda_data()$get_codes())
 		}
 		# Convert line breaks to HTML line breaks
@@ -219,7 +212,6 @@ shiny_server <- function(input, output, session) {
 
 	shiny::observeEvent(input$cancel_modal, {
 		code_edit_id(0)
-		# add_code_message('')
 		shiny::removeModal()
 	})
 
@@ -344,20 +336,17 @@ shiny_server <- function(input, output, session) {
 
 	############################################################################
 	# Check box group of tags assigned to the current essay
-	output$text_codes_ui <- shiny::renderUI({
+	output$text_coders_ui <- shiny::renderUI({
 		req(input$selected_text)
-		# refresh()
 		ui <- NULL
-		codes <- qda_data()$get_codings() |>
-			dplyr::filter(qda_id == input$selected_text)
+		codes <- qda_data()$get_codings(input$selected_text)
 		if(nrow(codes) > 0) {
-			text_codes <- codes$codes
-			text_codes <- unique(text_codes)
+			coders <- unique(c(get_username(), codes$coder))
 			ui <- shiny::checkboxGroupInput(
-				inputId = 'text_codes',
-				label = 'Codes assigned to this text',
-				choices = text_codes,
-				selected = text_codes)
+				inputId = 'text_coder',
+				label = 'Coders who coded this text:',
+				choices = coders,
+				selected = get_username())
 		}
 		return(ui)
 	})
@@ -434,19 +423,26 @@ shiny_server <- function(input, output, session) {
 	shiny::observe({
 		shiny::req(input$selected_text)
 		questions <- qda_data()$get_text_questions()
+		responses <- qda_data()$get_text_question_responses(id = input$selected_text,
+															coder = get_username())
 		for(i in seq_len(nrow(questions))) {
 			stem <- questions[i,]$stem
-			value <- input[[paste0('text_', textutils::HTMLencode(stem))]]
-			qda_data()$delete_text_question_response(
-				id = input$selected_text,
-				coder = get_username()
-			)
-			qda_data()$add_text_question_response(
-				id = input$selected_text,
-				stem = stem,
-				answer = value,
-				coder = get_username()
-			)
+			new_value <- input[[paste0('text_', textutils::HTMLencode(stem))]]
+			old_value <- ifelse(nrow(responses) == 0,
+								'',
+								responses |> filter(stem == stem) |> select(answer) )
+			if(old_value != new_value) {
+				qda_data()$delete_text_question_response(
+					id = input$selected_text,
+					coder = get_username()
+				)
+				qda_data()$add_text_question_response(
+					id = input$selected_text,
+					stem = stem,
+					answer = new_value,
+					coder = get_username()
+				)
+			}
 		}
 	})
 
@@ -456,7 +452,6 @@ shiny_server <- function(input, output, session) {
 	# Coding table for the selected text
 	output$coding_table <- DT::renderDataTable({
 		shiny::req(input$selected_text)
-		# refresh()
 		codes <- qda_data()$get_codings()
 		if(nrow(codes) == 0) {
 			return(NULL)
