@@ -32,6 +32,37 @@ qda <- function(
 		users_passphrase = users_passphrase
 	)
 
+	##### change_log ###########################################################
+	# create table
+	if(!'change_log' %in% tables) {
+		DBI::dbCreateTable(qda_db,
+						   'change_log',
+						   data.frame(
+								coder = character(),
+								table = character(),
+								description = character(),
+								timestamp = character()
+						   ))
+	}
+
+	qda_data$log <- function(coder, table, description, timestamp = as.character(Sys.time())) {
+		new_row <- data.frame(
+			coder = coder,
+			table = table,
+			description = description,
+			timestamp = timestamp
+		)
+		DBI::dbWriteTable(qda_db, 'change_log', new_row, append = TRUE)
+	}
+
+	qda_data$get_log <- function() {
+		DBI::dbReadTable(qda_db, 'change_log')
+	}
+
+	qda_data$get_last_update <- function() {
+		DBI::dbGetQuery(qda_db, 'SELECT MAX(timestamp) FROM change_log') |> unname()
+	}
+
 	##### text_data ############################################################
 	# create table
 	if(!'text_data' %in% tables) {
@@ -42,6 +73,7 @@ qda <- function(
 						   		qda_text = character(),
 						   		date_added = character()
 						   ))
+		qda_data$log('system', 'text_data', 'created table')
 	}
 
 	# add_text
@@ -74,6 +106,7 @@ qda <- function(
 						  df,
 						  overwrite = overwrite,
 						  append = append)
+		qda_data$log('system', 'text_data', paste0('added ', nrow(df), ' rows to text_data'))
 	}
 
 	# get_text
@@ -102,6 +135,7 @@ qda <- function(
 					   		codes = character(),
 					   		coder = character(),
 					   		date_added = character()) )
+		qda_data$log('system', 'codings', 'created table')
 	}
 
 	# add_codings
@@ -132,6 +166,7 @@ qda <- function(
 						  'codings',
 						  new_row,
 						  append = TRUE)
+		qda_data$log(coder, 'codings', paste0(new_row[1,], collapse = ', '))
 		return(coding_id)
 	}
 
@@ -145,6 +180,7 @@ qda <- function(
 				   do.call(paste0, list(codes, collapse = ';')),
 				   '" WHERE coding_id = "', coding_id, '"')
 		)
+		qda_data$log(coder, 'codings', paste0('updated coding_id = ', coding_id))
 	}
 
 	# delete_coding
@@ -153,10 +189,9 @@ qda <- function(
 		if(missing(coding_id)) {
 			stop('Must specify code coding_id')
 		}
-		DBI::dbExecute(
-			qda_db,
-			paste0('DELETE FROM codings WHERE coding_id = "', coding_id, '" ')
-		)
+		query <- paste0('DELETE FROM codings WHERE coding_id = "', coding_id, '" ')
+		DBI::dbExecute(qda_db, query)
+		qda_data$log(coder, 'codings', query)
 	}
 
 	# get_codings
@@ -195,6 +230,7 @@ qda <- function(
 						   		description = character(),
 						   		parent = character(),
 						   		date_added = character()) )
+		qda_data$log('system', 'codes', 'created table')
 	}
 
 	# get_codes
@@ -225,6 +261,7 @@ qda <- function(
 			new_rows,
 			append = TRUE
 		)
+		qda_data$log(coder, 'system', paste0('added ', nrow(new_rows), ' rows to codes'))
 		invisible(new_rows)
 	}
 
@@ -245,6 +282,7 @@ qda <- function(
 						 paste0(new_vals, collapse = ','),
 						 ' WHERE code = "', code, '"')
 		DBI::dbExecute(qda_db, query)
+		qda_data$log('system', 'codes', query)
 	}
 
 	###### code_questions ######################################################
@@ -258,6 +296,7 @@ qda <- function(
 						   		order = integer(),
 						   		options = character(),
 						   		date_added = character()) )
+		qda_data$log('system', 'code_questions', 'created table')
 	}
 
 	# add_code_question
@@ -281,15 +320,14 @@ qda <- function(
 			date_added = as.character(Sys.time())
 		)
 		DBI::dbWriteTable(qda_db, 'code_questions', new_row, append = TRUE)
+		qda_data$log('system', 'code_questions', paste0(new_row[1,], collapse = ', '))
 	}
 
 	qda_data$delete_code_question <- function(stem) {
-		DBI::dbExecute(
-			qda_db,
-			paste0('DELETE FROM code_questions WHERE ',
-				   'stem = "', stem, '" ')
-		)
-
+		query <- paste0('DELETE FROM code_questions WHERE ',
+						'stem = "', stem, '" ')
+		DBI::dbExecute(qda_db, query)
+		qda_data$log('system', 'code_questions', query)
 	}
 
 	# get_code_questions
@@ -309,6 +347,7 @@ qda <- function(
 						   		answer = character(),
 						   		coder = character(),
 						   		date_added = character()) )
+		qda_data$log('system', 'code_questions_responses', 'created table')
 	}
 
 	# get_code_question_responses
@@ -329,11 +368,10 @@ qda <- function(
 		if(missing(coding_id)) {
 			stop('Must specify code coding_id')
 		}
-		DBI::dbExecute(
-			qda_db,
-			paste0('DELETE FROM code_question_responses WHERE ',
-				   'coding_id = "', coding_id, '" ')
-		)
+		query <- paste0('DELETE FROM code_question_responses WHERE ',
+						'coding_id = "', coding_id, '" ')
+		DBI::dbExecute(qda_db, query )
+		qda_data$log('system', 'code_questions_responses', query)
 	}
 
 	# add_code_question_response
@@ -347,6 +385,7 @@ qda <- function(
 			date_added = as.character(Sys.time())
 		)
 		DBI::dbWriteTable(qda_db, 'code_question_responses', new_row, append = TRUE)
+		qda_data$log('system', 'code_questions_responses', aste0(new_row[1,], collapse = ', '))
 	}
 
 	qda_data$update_code_question_response <- function(coding_id, stem, answer, coder) {
@@ -368,6 +407,7 @@ qda <- function(
 						 paste0(new_vals, collapse = ', '),
 						 ' WHERE coding_id = "', coding_id, '"')
 		DBI::dbExecute(qda_db, query)
+		qda_data$log('system', 'code_questions_responses', query)
 	}
 
 	##### text_questions #######################################################
@@ -381,6 +421,7 @@ qda <- function(
 						   		order = integer(),
 						   		options = character(),
 						   		date_added = character()) )
+		qda_data$log('system', 'text_questions', 'created table')
 	}
 
 	# add_text_question
@@ -398,6 +439,7 @@ qda <- function(
 			date_added = as.character(Sys.time())
 		)
 		DBI::dbWriteTable(qda_db, 'text_questions', new_row, append = TRUE)
+		qda_data$log('system', 'text_questions', paste0(new_row[1,], collapse = ', '))
 	}
 
 	# get_text_questions
@@ -417,6 +459,7 @@ qda <- function(
 					   		answer = character(),
 					   		coder = character(),
 					   		date_added = character()) )
+		qda_data$log('system', 'text_questions_responses', 'created table')
 	}
 
 	# get_text_question_responses
@@ -449,11 +492,18 @@ qda <- function(
 		if(missing(id)) {
 			stop('Must specify id')
 		}
-		DBI::dbExecute(
-			qda_db,
-			paste0('DELETE FROM text_question_responses WHERE ',
-				   'qda_id = "', id, '" AND coder = "', coder, '"')
-		)
+		query <- paste0('DELETE FROM text_question_responses WHERE ',
+						'qda_id = "', id, '" AND coder = "', coder, '"')
+		DBI::dbExecute(qda_db, query)
+		qda_data$log(coder, 'text_questions_responses', query)
+	}
+
+	# update_text_question_response
+	qda_data$update_text_question_response <- function(id, stem, new_answer, coder = NA) {
+		query <- paste0('UPDATE text_question_responses SET answer = "', new_anser,
+						'" WHERE qda_id ="', id, '" AND stem = "', stem, '"')
+		DBI::dbExecute(qda_db, query)
+		qda_data$log(coder, 'text_question_responses', query)
 	}
 
 	# add_text_question_response
@@ -466,6 +516,7 @@ qda <- function(
 			date_added = as.character(Sys.time())
 		)
 		DBI::dbWriteTable(qda_db, 'text_question_responses', new_row, append = TRUE)
+		qda_data$log(coder, 'text_questions_responses', paste0(new_row, collapse = ', '))
 	}
 
 	##### assignments ##########################################################
@@ -478,6 +529,7 @@ qda <- function(
 						   		coder = character(),
 						   		date_added = character()
 						   ))
+		qda_data$log('system', 'assignments', 'created table')
 	}
 
 	# get_assignments
