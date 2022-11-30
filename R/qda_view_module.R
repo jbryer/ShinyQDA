@@ -13,7 +13,8 @@ qda_view_ui <- function(id) {
 			shiny::tabPanel('Code Question Responses', DT::dataTableOutput(ns('qda_code_question_responses_table'))),
 			shiny::tabPanel('Text Questions', DT::dataTableOutput(ns('qda_text_questions_table'))),
 			shiny::tabPanel('Text Question Responses', DT::dataTableOutput(ns('qda_text_question_responses_table'))),
-			shiny::tabPanel('Assignments', DT::dataTableOutput(ns('qda_assignments_table')))
+			shiny::tabPanel('Assignments', DT::dataTableOutput(ns('qda_assignments_table'))),
+			shiny::tabPanel('Log', DT::dataTableOutput(ns('qda_log_table')))
 		)
 	)
 }
@@ -113,6 +114,19 @@ qda_view_server <- function(id, qda_data, page_length = 20) {
 			output$qda_assignments_table <- DT::renderDataTable({
 				# refresh()
 				qda_data()$get_assignments() |>
+					DT::datatable(
+						rownames = FALSE,
+						filter = 'top',
+						options = list(
+							pageLength = page_length
+						),
+						selection = 'single'
+					)
+			})
+
+			output$qda_log_table <- DT::renderDataTable({
+				qda_data()$get_log() |>
+					dplyr::arrange(desc(timestamp)) |>
 					DT::datatable(
 						rownames = FALSE,
 						filter = 'top',
