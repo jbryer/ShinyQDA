@@ -11,6 +11,8 @@ devtools::check()
 
 qda_data <- ShinyQDA::qda(file = 'inst/shiny/daacs.sqlite')
 
+qda_data$get_last_update()
+
 qda_data$get_code_questions()
 
 

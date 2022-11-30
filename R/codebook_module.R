@@ -46,8 +46,7 @@ codebook_server <- function(id, qda_data) {
 			})
 
 			output$codebook_tree <- shinyTree::renderTree({
-				# ns <- session$ns
-				# refresh()
+				ns <- session$ns
 				codes <- qda_data()$get_codes()
 				roots <- codes[is.na(codes$parent) | codes$parent == '',]
 
@@ -71,8 +70,24 @@ codebook_server <- function(id, qda_data) {
 					return(tree)
 				}
 
+				# shinyjs::runjs(shiny::HTML(paste0('$("#', ns('codebook_tree'), '").jstree("open_all");')))
+				execute_at_next_input(expand_tree(input, output, session))
+
 				build_tree(roots, children)
 			})
+
+			# TODO: this only partially works
+			# https://github.com/rstudio/shiny/issues/3348
+			expand_tree <- function(input, output, session){
+				ns <- session$ns
+				shinyjs::runjs(shiny::HTML(paste0('$("#', ns('codebook_tree'), '").jstree("open_all");')))
+			}
+
+			execute_at_next_input <- function(expr, session = getDefaultReactiveDomain()) {
+				observeEvent(once = TRUE, reactiveValuesToList(session$input), {
+					force(expr)
+				}, ignoreInit = TRUE)
+			}
 
 			output$codebook_output <- shiny::renderUI({
 				ns <- session$ns
@@ -115,13 +130,18 @@ codebook_server <- function(id, qda_data) {
 				do.call(shiny::wellPanel, ui)
 			})
 
+			# Update the database if the user changed the position of a code in the tree
 			observeEvent(input$codebook_tree, {
+				codes <- qda_data()$get_codes()
+				row.names(codes) <- codes$code
 				tree <- input$codebook_tree
 				traverse_tree <- function(node, parent = '') {
 					for(i in seq_len(length(node))) {
 						code <- names(node)[i]
-						qda_data()$update_code(code = code,
-											 parent = parent)
+						if(codes[code,]$parent != parent) {
+							qda_data()$update_code(code = code,
+												   parent = parent)
+						}
 						if(!is.null(node[[i]]) & !is.null(names(node[[i]]))) {
 							traverse_tree(node[[i]], parent = names(node)[i])
 						}
@@ -131,19 +151,24 @@ codebook_server <- function(id, qda_data) {
 			})
 
 			observeEvent(input$code_description, {
+				codes <- qda_data()$get_codes()
+				row.names(codes) <- codes$code
 				node <- shinyTree::get_selected(input$codebook_tree)
 				code <- node[[1]][1]
 				val <- input$code_description
-				if(!is.na(val) & val != 'NA') {
+				if(!is.na(val) & val != 'NA' & val != codes[code,]$description) {
 					qda_data()$update_code(code, description = val)
 				}
 			})
 
 			observeEvent(input$code_color, {
+				codes <- qda_data()$get_codes()
+				row.names(codes) <- codes$code
 				node <- shinyTree::get_selected(input$codebook_tree)
 				code <- node[[1]][1]
-				# selected_code <- codes[codes$code == code,]
-				qda_data()$update_code(code, color = input$code_color)
+				if(codes[code,]$color != input$code_color) {
+					qda_data()$update_code(code, color = input$code_color)
+				}
 			})
 
 			shiny::observeEvent(input$closeAll, {
