@@ -9,9 +9,33 @@ devtools::install(upgrade = 'never')
 devtools::build()
 devtools::check()
 
+qda_data <- ShinyQDA::qda(file = 'inst/shiny/daacs.sqlite')
+
+qda_data$get_code_questions()
+
+
+codings <- qda_data$get_codings()
+code_question_responses <- qda_data$get_code_question_responses()
+
+
+codings <- ShinyQDA::get_coding_table(qda_data)
+df <- ShinyQDA::qda_merge(qda_data)
+
+
 shiny::runApp('inst/shiny/')
 
-usethis::use_package('reshape2', type = 'Imports')
+
+usethis::use_package('shinyWidgets', type = 'Imports')
+
+
+
+
+
+
+
+
+
+
 
 # Test dataset
 essays <- readr::read_csv('../../data-raw/writingrtf_ec.csv')

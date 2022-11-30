@@ -30,13 +30,14 @@ get_coding_table <- function(qda_data, aggregate_fun = sum) {
 #' @param aggregate_fun function used to aggregate multiple tags per text per
 #'        per coder. See [reshape2::dcast()] for more information.
 #' @export
-qda_merge <- function(qda_data, ..) {
+qda_merge <- function(qda_data, ...) {
 	df <- qda_data$get_text()
-	df <- merge(df, codes, by = 'qda_id', all = TRUE)
+	codings <- get_coding_table(qda_data, ...)
+	df <- merge(df, codings, by = 'qda_id', all = TRUE)
 	# TODO: Merge in code questions
-	code_questions <- qda_data$get_code_question_responses()
-	codes <- get_code_table(qda_data, ...)
+	# code_questions <- qda_data$get_code_question_responses()
 	# TODO: Merge in text questions
-	text_questions <- qda_data$get_code_questions()
+	text_questions <- qda_data$get_code_question_responses()
+
 	return(df)
 }

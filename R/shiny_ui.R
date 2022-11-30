@@ -38,7 +38,10 @@ shiny_ui <- function(title = 'ShinyQDA') {
         		};
 			'),
 			shiny::fluidRow(
-				shiny::column(12, shiny::uiOutput('essay_selection'))
+				shiny::column(9, shiny::uiOutput('essay_selection')),
+				shiny::column(3, shiny::selectInput('essay_selection_subset',
+													label = 'Filter Text',
+													choices = c('All', 'Not coded', 'Not coded by me', 'Coded')))
 			),
 			shiny::tabsetPanel(
 				shiny::tabPanel(
@@ -47,6 +50,7 @@ shiny_ui <- function(title = 'ShinyQDA') {
 						shiny::sidebarPanel(
 							width = 4,
 							# shiny::p('Selected id: ', shiny::textOutput('selected_id')),
+							# shiny::uiOutput('essay_selection'),
 							shiny::actionButton('add_tag_button', 'Add Code'),
 							# TODO: enable selected highlighting
 							# shiny::uiOutput('text_codes_ui'),
@@ -70,33 +74,45 @@ shiny_ui <- function(title = 'ShinyQDA') {
 			icon = shiny::icon('table'),
 			data_view_ui('ShinyQDA')
 		),
-		shiny::tabPanel(
-			title = 'Codebook',
-			icon = shiny::icon('book'),
-			codebook_ui('ShinyQDA')
+		shiny::navbarMenu(
+			title = 'Setup',
+			icon = shiny::icon('gears'),
+			shiny::tabPanel(
+				title = 'Codebook',
+				icon = shiny::icon('book'),
+				codebook_ui('ShinyQDA')
+			),
+			shiny::tabPanel(
+				title = 'Questions',
+				icon = shiny::icon('clipboard-question'),
+				questions_ui('ShinyQDA')
+			),
+			shiny::tabPanel(
+				title = 'Raw Data',
+				icon = shiny::icon('database'),
+				# uiOutput('codes_ui')
+				shiny::p('These tables represents the raw data stored in the ShinyQDA file (using SQLite).'),
+				qda_view_ui('ShinyQDA')
+			)
 		),
 		# shiny::tabPanel(
 		# 	'Coders',
 		# 	DT::dataTableOutput('coders_table')
 		# ),
-		shiny::tabPanel(
-			title = 'Raw Data',
-			icon = shiny::icon('database'),
-			# uiOutput('codes_ui')
-			shiny::p('These table represents the raw data stored in the ShinyQDA file (using SQLite).'),
-			qda_view_ui('ShinyQDA')
-		),
 		shiny::navbarMenu(
 			title = 'Analysis',
 			icon = shiny::icon('chart-simple'),
 			shiny::tabPanel(
-				'Descriptives'
+				'Descriptives',
+				icon = shiny::icon('chart-bar')
 			),
 			shiny::tabPanel(
-				'Sentiment'
+				'Sentiment',
+				icon = shiny::icon('face-smile')
 			),
 			shiny::tabPanel(
-				'Topic Modeling'
+				'Topic Modeling',
+				icon = shiny::icon('comments')
 			)
 		),
 		shiny::tabPanel(

@@ -4,7 +4,7 @@
 \alias{qda_merge}
 \title{Merges codings with the text data.}
 \usage{
-qda_merge(qda_data, ..)
+qda_merge(qda_data, ...)
 }
 \arguments{
 \item{qda_data}{a [ShinyQDA::qda()] object.}

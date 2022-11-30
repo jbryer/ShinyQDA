@@ -54,8 +54,8 @@ data_view_server <- function(id, qda_data) {
 		function(input, output, session) {
 			get_text_data <- reactive({
 				# qda_merge(qda_data)
-				df <- qda_data$get_text()
-				codes_table <- get_coding_table(qda_data)
+				df <- qda_data()$get_text()
+				codes_table <- get_coding_table(qda_data())
 				codes_table <- cbind(codes_table[,1:2], n_codes = apply(codes_table[,3:ncol(codes_table)], 1, sum))
 				merge(df, codes_table, by = c('qda_id'), all.x = TRUE)
 			})
@@ -83,9 +83,9 @@ data_view_server <- function(id, qda_data) {
 					txt_data <- df[input$text_table_rows_selected, , drop = FALSE]
 					txt <- txt_data$qda_text
 					id <- txt_data$qda_id
-					codings <- qda_data$get_codings(id = id)
+					codings <- qda_data()$get_codings(id = id)
 					if(nrow(codings) > 0) {
-						txt <- highlighter(txt, codings, qda_data$get_codes(), link = FALSE)
+						txt <- highlighter(txt, codings, qda_data()$get_codes(), link = FALSE)
 					}
 					txt <- gsub('\\n', '<p/>', txt)
 					shiny::showModal(

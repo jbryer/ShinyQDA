@@ -4,7 +4,7 @@
 \alias{qda_view_server}
 \title{Server the raw data view.}
 \usage{
-qda_view_server(id, qda_data)
+qda_view_server(id, qda_data, page_length = 20)
 }
 \description{
 Server the raw data view.

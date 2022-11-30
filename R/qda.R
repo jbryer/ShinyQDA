@@ -206,7 +206,8 @@ qda <- function(
 	qda_data$add_codes <- function(codes, colors, descriptions) {
 		codes_table <- DBI::dbReadTable(qda_db, 'codes')
 		if(missing(colors)) {
-			colors <- color_palette[seq_len(length(codes)) + nrow(codes_table) %% length(color_palette)]
+			new_colors <- get_colors()
+			colors <- new_colors[seq_len(length(codes)) + nrow(codes_table) %% length(new_colors)]
 		}
 		if(missing(descriptions)) {
 			descriptions <- rep(NA_character_, length(codes))
@@ -262,11 +263,16 @@ qda <- function(
 	# add_code_question
 	qda_data$add_code_question <- function(stem,
 										   type = c('text', 'radio', 'checkbox'),
+										   order,
 										   options) {
-		code_questions <- DBI::dbReadTable(qda_db, 'code_questions')
-		new_order <- ifelse(nrow(code_questions) > 0,
-							max(code_questions$order + 1),
-							1)
+		if(missing(order)) {
+			code_questions <- DBI::dbReadTable(qda_db, 'code_questions')
+			new_order <- ifelse(nrow(code_questions) > 0,
+								max(code_questions$order + 1),
+								1)
+		} else {
+			new_order <- order
+		}
 		new_row <- data.frame(
 			stem = stem,
 			type = type[1],
@@ -275,6 +281,15 @@ qda <- function(
 			date_added = as.character(Sys.time())
 		)
 		DBI::dbWriteTable(qda_db, 'code_questions', new_row, append = TRUE)
+	}
+
+	qda_data$delete_code_question <- function(stem) {
+		DBI::dbExecute(
+			qda_db,
+			paste0('DELETE FROM code_questions WHERE ',
+				   'stem = "', stem, '" ')
+		)
+
 	}
 
 	# get_code_questions

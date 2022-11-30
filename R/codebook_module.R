@@ -48,7 +48,7 @@ codebook_server <- function(id, qda_data) {
 			output$codebook_tree <- shinyTree::renderTree({
 				# ns <- session$ns
 				# refresh()
-				codes <- qda_data$get_codes()
+				codes <- qda_data()$get_codes()
 				roots <- codes[is.na(codes$parent) | codes$parent == '',]
 
 				if(nrow(roots) == 0) {
@@ -85,7 +85,7 @@ codebook_server <- function(id, qda_data) {
 				ui <- list()
 				if(length(node) > 0) {
 					code <- node[[1]][1]
-					codes <- qda_data$get_codes()
+					codes <- qda_data()$get_codes()
 					selected_code <- codes[codes$code == code,]
 					# TODO: Maybe allow changing the code name. This would require changing
 					#       all references to this code as well.
@@ -120,7 +120,7 @@ codebook_server <- function(id, qda_data) {
 				traverse_tree <- function(node, parent = '') {
 					for(i in seq_len(length(node))) {
 						code <- names(node)[i]
-						qda_data$update_code(code = code,
+						qda_data()$update_code(code = code,
 											 parent = parent)
 						if(!is.null(node[[i]]) & !is.null(names(node[[i]]))) {
 							traverse_tree(node[[i]], parent = names(node)[i])
@@ -135,7 +135,7 @@ codebook_server <- function(id, qda_data) {
 				code <- node[[1]][1]
 				val <- input$code_description
 				if(!is.na(val) & val != 'NA') {
-					qda_data$update_code(code, description = val)
+					qda_data()$update_code(code, description = val)
 				}
 			})
 
@@ -143,7 +143,7 @@ codebook_server <- function(id, qda_data) {
 				node <- shinyTree::get_selected(input$codebook_tree)
 				code <- node[[1]][1]
 				# selected_code <- codes[codes$code == code,]
-				qda_data$update_code(code, color = input$code_color)
+				qda_data()$update_code(code, color = input$code_color)
 			})
 
 			shiny::observeEvent(input$closeAll, {
@@ -175,7 +175,7 @@ codebook_server <- function(id, qda_data) {
 			output$new_code_ui <- renderUI({
 				ns <- session$ns
 				colors <- get_colors()
-				codes_table <- qda_data$get_codes()
+				codes_table <- qda_data()$get_codes()
 				color <- colors[(nrow(codes_table) + 1) %% length(colors)]
 
 				ui <- list(
@@ -201,7 +201,7 @@ codebook_server <- function(id, qda_data) {
 			})
 
 			observeEvent(input$add_code, {
-				codes_table <- qda_data$get_codes()
+				codes_table <- qda_data()$get_codes()
 				if(input$new_code_name == '') {
 					add_code_message('Please enter a code name')
 					return()
@@ -210,7 +210,7 @@ codebook_server <- function(id, qda_data) {
 					return()
 				}
 
-				qda_data$add_codes(
+				qda_data()$add_codes(
 					codes = input$new_code_name,
 					colors = input$new_code_color,
 					descriptions = input$new_code_description
