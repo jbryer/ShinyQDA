@@ -5,7 +5,10 @@ edit_code_label <- 'Edit coding'
 
 #' Shiny Server for QDA
 #'
-#' @importFrom shiny renderPrint reactive reactiveVal reactiveValuesToList renderUI HTML selectizeInput renderText req observe observeEvent showModal modalDialog removeModal actionButton uiOutput tagList checkboxGroupInput textAreaInput radioButtons div req
+#' @param input Shiny input object.
+#' @param output Shiny output object.
+#' @param session Shiny session object.
+#' @importFrom shiny renderPrint reactive reactiveVal reactivePoll reactiveValuesToList renderUI HTML selectizeInput renderText req observe observeEvent showModal modalDialog removeModal actionButton uiOutput tagList checkboxGroupInput textAreaInput radioButtons div req
 #' @importFrom textutils HTMLencode
 #' @importFrom shinyjs enable disable
 #' @importFrom DT datatable renderDataTable JS formatRound
@@ -24,7 +27,7 @@ shiny_server <- function(input, output, session) {
 	qda_data_db <- qda(qda_data_file)
 	# Using reactivePoll to ensure the app is refreshed when the data changes.
 	last_file_date <- file.info(qda_data_file)$mtime[1]
-	qda_data <- reactivePoll(
+	qda_data <- shiny::reactivePoll(
 		intervalMillis = 1000,
 		session,
 		checkFunc = function() {
@@ -313,7 +316,7 @@ shiny_server <- function(input, output, session) {
 		}
 
 		ui <- list(
-			shiny::p(strong('Selected text: '), txt),
+			shiny::p(shiny::strong('Selected text: '), txt),
 			shiny::selectizeInput(inputId = 'new_code',
 								  label = codes_label,
 								  choices = qda_data()$get_codes()$code,

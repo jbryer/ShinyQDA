@@ -9,10 +9,8 @@ text_wrap_mod(value, width = 25)
 \arguments{
 \item{value}{vector (converted using \code{\link{as.character}}) to be wrapped.}
 
-\item{width}{the maximum width of each line in characters.
-
-Adapted from https://github.com/hadley/ggplot2/wiki/labeller}
+\item{width}{the maximum width of each line in characters.}
 }
 \description{
-Wrap label text.
+Adapted from https://github.com/hadley/ggplot2/wiki/labeller
 }

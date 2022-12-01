@@ -4,3 +4,7 @@ build.R
 ^LICENSE\.md$
 /*.png
 /*.gif
+Icon
+articles/
+data-raw/
+private/

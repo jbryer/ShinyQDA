@@ -1,8 +1,10 @@
 #' UI for the descriptive statistics.
 #'
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @export
 #' @importFrom shiny NS
 #' @importFrom shinyTree shinyTree renderTree
+#' @importFrom RColorBrewer brewer.pal.info
 descriptives_ui <- function(id) {
 	ns <- shiny::NS(id)
 	shiny::tagList(
@@ -27,7 +29,7 @@ descriptives_ui <- function(id) {
 					shiny::selectInput(
 						inputId = ns('wordcloud_palette'),
 						label = 'Color palette',
-						choices = row.names(brewer.pal.info[brewer.pal.info$category == 'qual',]),
+						choices = row.names(RColorBrewer::brewer.pal.info[RColorBrewer::brewer.pal.info$category == 'qual',]),
 						selected = 'Dark2'
 					)
 				),
@@ -63,6 +65,8 @@ descriptives_ui <- function(id) {
 
 #' Server for the descriptive statistics.
 #'
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @param qda_data QDA data object, see [@ShinyQDA::qda()].
 #' @export
 #' @importFrom wordcloud wordcloud
 #' @importFrom RColorBrewer brewer.pal brewer.pal.info

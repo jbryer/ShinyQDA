@@ -13,10 +13,15 @@
 #' \describe{
 #'    \item{\code{add_text(df, id_col, text_col, overwrite = TRUE, append = FALSE)}}{Adds text data to the object. There needs to be at least two columns, the column containing the text and a column containing a unique identifier (i.e. primary key). You can include any other columns that will be available in the Shiny app for analysis.}
 #' }
+#' @param file the filename and path to the file this function will save data to.
+#' @param users_passphrase passpharse used to encrypt the user authentication table.
+#'        See [shinymanager::create_db()] for more info.
+#' @return a list with functions to access and edit qualitiative data.
 #' @import RSQLite
 #' @import DBI
 #' @import dplyr
 #' @importFrom shinymanager create_db read_db_decrypt
+#' @importFrom utils timestamp
 #' @export
 qda <- function(
 		file,

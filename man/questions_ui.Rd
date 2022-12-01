@@ -6,6 +6,9 @@
 \usage{
 questions_ui(id)
 }
+\arguments{
+\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+}
 \description{
 This will display at tab group for each table in the [qda()] data object.
 }

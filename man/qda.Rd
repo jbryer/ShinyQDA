@@ -6,6 +6,15 @@
 \usage{
 qda(file, users_passphrase = "ShinyQDA")
 }
+\arguments{
+\item{file}{the filename and path to the file this function will save data to.}
+
+\item{user_passpharse}{passpharse used to encrypt the user authentication table.
+See [shinymanager::create_db()] for more info.}
+}
+\value{
+a list with functions to access and edit qualitiative data.
+}
 \description{
 This function creates an object to manipulate data for qualitative analysis.
 The data is stored in a SQLite database by default, but can be configures to
@@ -15,7 +24,7 @@ you can manipulate the SQL database directly, we recommend using the methods
 }
 \details{
 * `get_text(id)`
-* `add_coding(id, text = NA, start = NA, end = NA, codes = NA, coder = NA)`
+* `add_coding(id, text = NA, start = NA, end = NA, codes = NA, coder = Sys.info()['user'])`
 }
 \section{Methods}{
 

@@ -1,5 +1,6 @@
 #' Shiny User Interface for QDA
 #'
+#' @param title title displayed in the top left of the Shiny app.
 #' @importFrom shiny icon tags navbarPage tabPanel fluidRow column uiOutput plotOutput tabsetPanel sidebarLayout sidebarPanel mainPanel actionButton htmlOutput verbatimTextOutput
 #' @importFrom DT dataTableOutput
 #' @importFrom shinyjs useShinyjs

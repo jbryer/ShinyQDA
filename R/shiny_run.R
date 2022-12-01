@@ -1,14 +1,15 @@
 #' Run the ShinyQDA application locally.
 #'
 #' @param qda_data_file file name to save results. See [ShinyQDA::qda()] for more information.
-#' @param authenticate use [shinymanager:;secure_app()].
+#' @param authenticate use [shinymanager::secure_app()].
 #' @param enable_admin enable admin mode for `shinymanager`.
 #' @param keep_token Logical, keep the token used to authenticate in the URL,
 #'        it allow to refresh the application in the browser, but careful the
 #'        token can be shared between users.
-#' @param ... other parmaeters passed to [shiny::runApp].
+#' @param ... other parameters passed to [shiny::runApp].
 #' @export
-#' @importFrom shiny runApp
+#' @importFrom shiny runApp shinyApp
+#' @importFrom shinymanager secure_app
 shinyQDA <- function(qda_data_file,
 					 authenticate = !interactive(),
 					 enable_admin = TRUE,
@@ -18,6 +19,9 @@ shinyQDA <- function(qda_data_file,
 
 	if(!missing(qda_data_file)) {
 		assign('qda_data_file', qda_data_file, shiny_env)
+	} else {
+		warning('qda_data_file not provided, saving data to ShinyQDA.sqlite')
+		qda_data_file <- 'ShinyQDA.sqlite'
 	}
 
 	environment(shiny_ui) <- shiny_env
@@ -29,14 +33,13 @@ shinyQDA <- function(qda_data_file,
 			ui = shinymanager::secure_app(shiny_ui,
 										  enable_admin = enable_admin,
 										  keep_token = keep_token,
-										  db = qda_data$db_file),
+										  db = qda_data_file),
 			server = shiny_server)
 	} else {
 		app <- shiny::shinyApp(
 			ui = shiny_ui,
 			server = shiny_server
 		)
-
 	}
 	shiny::runApp(app, ...)
 }

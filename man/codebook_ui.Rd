@@ -6,6 +6,9 @@
 \usage{
 codebook_ui(id)
 }
+\arguments{
+\item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+}
 \description{
 UI for the codebook.
 }

@@ -1,5 +1,6 @@
 #' UI for the codebook.
 #'
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @export
 #' @importFrom shiny NS
 #' @importFrom shinyTree shinyTree renderTree
@@ -35,6 +36,8 @@ codebook_ui <- function(id) {
 
 #' Server for the codebook.
 #'
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @param qda_data QDA data object, see [@ShinyQDA::qda()].
 #' @export
 codebook_server <- function(id, qda_data) {
 	shiny::moduleServer(
@@ -109,7 +112,7 @@ codebook_server <- function(id, qda_data) {
 					# 	label = 'Code:',
 					# 	value = code
 					# )
-					ui[[length(ui) + 1]] <- shiny::p(strong('Code: '), code)
+					ui[[length(ui) + 1]] <- shiny::p(shiny::strong('Code: '), code)
 					ui[[length(ui) + 1]] <- shiny::textAreaInput(
 						inputId = ns('code_description'),
 						label = 'Description:',

@@ -2,6 +2,7 @@
 #'
 #' This will display at tab group for each table in the [qda()] data object.
 #'
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @export
 questions_ui <- function(id) {
 	ns <- NS(id)
@@ -25,6 +26,8 @@ questions_ui <- function(id) {
 
 #' Server the raw data view.
 #'
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @param qda_data QDA data object, see [@ShinyQDA::qda()].
 #' @importFrom shinyWidgets ask_confirmation
 #' @export
 questions_server <- function(id, qda_data, page_length = 20) {
@@ -129,7 +132,7 @@ questions_server <- function(id, qda_data, page_length = 20) {
 					selected_code_stem(df[1,]$stem)
 					shiny::showModal(
 						shiny::modalDialog(
-							p("Note: Editing code questions will not change the stems
+							shiny::p("Note: Editing code questions will not change the stems
 							  or responses already entered. Changes will be reflected in any new codings completed."),
 							shiny::uiOutput(ns('code_question_ui')),
 							title = 'Edit Code Question',
@@ -173,7 +176,7 @@ questions_server <- function(id, qda_data, page_length = 20) {
 					df <- df[input$text_questions_table_rows_selected, , drop = FALSE]
 					shiny::showModal(
 						shiny::modalDialog(
-							p("Note: Editing code questions will not change the stems
+							shiny::p("Note: Editing code questions will not change the stems
 							  or responses already entered. Changes will be reflected in any new codings completed."),
 							shiny::textInput(
 								inputId = ns('text_question_stem'),

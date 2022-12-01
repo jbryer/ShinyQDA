@@ -3,3 +3,5 @@
 .RData
 .Ruserdata
 data-raw/
+articles/
+private/

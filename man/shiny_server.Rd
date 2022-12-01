@@ -6,6 +6,13 @@
 \usage{
 shiny_server(input, output, session)
 }
+\arguments{
+\item{input}{Shiny input object.}
+
+\item{output}{Shiny output object.}
+
+\item{session}{Shiny session object.}
+}
 \description{
 Shiny Server for QDA
 }

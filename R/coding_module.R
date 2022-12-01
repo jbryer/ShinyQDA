@@ -1,5 +1,6 @@
 #' UI for text coding.
 #'
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @export
 coding_ui <- function(id) {
 	ns <- NS(id)
@@ -49,6 +50,8 @@ coding_ui <- function(id) {
 
 #' Server text coding.
 #'
+#' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @param qda_data QDA data object, see [@ShinyQDA::qda()].
 #' @export
 coding_server <- function(id, qda_data) {
 	shiny::moduleServer(

@@ -12,7 +12,7 @@ devtools::check()
 shiny::runApp('inst/shiny/')
 
 
-usethis::use_package('wordcloud2', type = 'Imports')
+usethis::use_package('shinyTree', type = 'Imports')
 
 
 
@@ -115,4 +115,23 @@ qda_data <- ShinyQDA::qda(file = 'daacs_test.rqda', auto_save = FALSE)
 
 ShinyQDA::shinyQDA(qda_data)
 
-
+##### Hex Logo #################################################################
+library(hexSticker)
+library(showtext)
+font_add_google("Gochi Hand", 'gochi')
+p <- "man/figures/highlight.png"
+hexSticker::sticker(p,
+					filename = 'man/figures/ShinyQDA.png',
+					p_size = 10,
+					package = 'ShinyQDA',
+					url = "github.com/jbryer/ShinyQDA",
+					p_family = 'gochi',
+					u_size = 5.5,
+					s_width = .75, s_height = .75,
+					s_x = 1, s_y = 1,
+					p_x = 0.9, p_y = 1.6,
+					p_color = "#3A66FF",
+					h_fill = '#fff7dc',
+					h_color = '#FFD33A',
+					u_color = '#3A66FF',
+					white_around_sticker = FALSE)

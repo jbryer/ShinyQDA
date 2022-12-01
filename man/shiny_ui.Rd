@@ -6,6 +6,9 @@
 \usage{
 shiny_ui(title = "ShinyQDA")
 }
+\arguments{
+\item{title}{title displayed in the top left of the Shiny app.}
+}
 \description{
 Shiny User Interface for QDA
 }
