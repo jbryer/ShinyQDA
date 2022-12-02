@@ -58,9 +58,11 @@ data_view_server <- function(id, qda_data) {
 			get_text_data <- reactive({
 				# qda_merge(qda_data)
 				df <- qda_data()$get_text()
+				if(nrow(df) == 0) {
+					return(data.frame())
+				}
 				codes_table <- get_coding_table(qda_data())
 				codes_table <- cbind(codes_table[,1:2], n_codes = apply(codes_table[,3:ncol(codes_table)], 1, sum))
-
 
 				codings <- qda_data()$get_codings()
 				highlights_table <- table(codings$qda_id) |>

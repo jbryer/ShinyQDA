@@ -10,7 +10,10 @@ devtools::build()
 devtools::check()
 
 shiny::runApp('inst/shiny/')
+shiny::runApp('inst/shiny_template')
 
+ShinyQDA::shinyQDA()
+unlink('ShinyQDA.sqlite')
 
 usethis::use_package('shinyTree', type = 'Imports')
 

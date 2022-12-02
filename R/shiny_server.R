@@ -101,6 +101,10 @@ shiny_server <- function(input, output, session) {
 			codings <- qda_data()$get_codings()
 		})
 
+		if(nrow(text) == 0) {
+			return(NULL)
+		}
+
 		if(input$essay_selection_subset == 'Not coded') {
 			text <- text |>
 				dplyr::filter(!qda_id %in% codings$qda_id)

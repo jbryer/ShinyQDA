@@ -51,6 +51,10 @@ codebook_server <- function(id, qda_data) {
 			output$codebook_tree <- shinyTree::renderTree({
 				ns <- session$ns
 				codes <- qda_data()$get_codes()
+				if(nrow(codes) == 0) {
+					return(NULL)
+				}
+
 				roots <- codes[is.na(codes$parent) | codes$parent == '',]
 
 				if(nrow(roots) == 0) {
