@@ -23,7 +23,7 @@ shinyQDA(
 it allow to refresh the application in the browser, but careful the
 token can be shared between users.}
 
-\item{...}{other parameters passed to [shiny::runApp].}
+\item{...}{other parameters passed to [shiny::runApp()] and [shiny::shinyApp()].}
 }
 \description{
 Run the ShinyQDA application locally.

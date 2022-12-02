@@ -9,6 +9,7 @@ codebook_ui <- function(id) {
 	tagList(
 		shiny::sidebarLayout(
 			shiny::sidebarPanel(
+				style = "height: 90vh; overflow-y: auto;",
 				width = 6,
 				shiny::actionButton(ns("add_code_dialog"), "Add Code"),
 				shiny::actionButton(ns("closeAll"), "Collapse All"),

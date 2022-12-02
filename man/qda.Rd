@@ -9,7 +9,7 @@ qda(file, users_passphrase = "ShinyQDA")
 \arguments{
 \item{file}{the filename and path to the file this function will save data to.}
 
-\item{user_passpharse}{passpharse used to encrypt the user authentication table.
+\item{users_passphrase}{passpharse used to encrypt the user authentication table.
 See [shinymanager::create_db()] for more info.}
 }
 \value{

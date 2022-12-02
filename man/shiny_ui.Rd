@@ -4,10 +4,50 @@
 \alias{shiny_ui}
 \title{Shiny User Interface for QDA}
 \usage{
-shiny_ui(title = "ShinyQDA")
+shiny_ui(
+  title = "ShinyQDA",
+  windowTitle = "ShinyQDA: Qualitative Data Analysis",
+  position = "fixed-top",
+  inverse = FALSE,
+  collapsible = TRUE,
+  fluid = TRUE,
+  theme = NULL
+)
 }
 \arguments{
 \item{title}{title displayed in the top left of the Shiny app.}
+
+\item{windowTitle}{the browser window title (as a character string). The
+default value, \code{NA}, means to use any character strings that appear in
+\code{title} (if none are found, the host URL of the page is displayed by
+default).}
+
+\item{position}{Determines whether the navbar should be displayed at the top
+of the page with normal scrolling behavior (\code{"static-top"}), pinned at
+the top (\code{"fixed-top"}), or pinned at the bottom
+(\code{"fixed-bottom"}). Note that using \code{"fixed-top"} or
+\code{"fixed-bottom"} will cause the navbar to overlay your body content,
+unless you add padding, e.g.: \code{tags$style(type="text/css", "body
+  {padding-top: 70px;}")}}
+
+\item{inverse}{\code{TRUE} to use a dark background and light text for the
+navigation bar}
+
+\item{collapsible}{\code{TRUE} to automatically collapse the navigation
+elements into a menu when the width of the browser is less than 940 pixels
+(useful for viewing on smaller touchscreen device)}
+
+\item{fluid}{\code{TRUE} to use a fluid layout. \code{FALSE} to use a fixed
+layout.}
+
+\item{theme}{One of the following:
+\itemize{
+\item \code{NULL} (the default), which implies a "stock" build of Bootstrap 3.
+\item A \code{\link[bslib:bs_theme]{bslib::bs_theme()}} object. This can be used to replace a stock
+build of Bootstrap 3 with a customized version of Bootstrap 3 or higher.
+\item A character string pointing to an alternative Bootstrap stylesheet
+(normally a css file within the www directory, e.g. \code{www/bootstrap.css}).
+}}
 }
 \description{
 Shiny User Interface for QDA

@@ -1,16 +1,22 @@
 #' Shiny User Interface for QDA
 #'
+#' @inheritParams shiny::navbarPage
 #' @param title title displayed in the top left of the Shiny app.
 #' @importFrom shiny icon tags navbarPage tabPanel fluidRow column uiOutput plotOutput tabsetPanel sidebarLayout sidebarPanel mainPanel actionButton htmlOutput verbatimTextOutput
 #' @importFrom DT dataTableOutput
 #' @importFrom shinyjs useShinyjs
 #' @export
-shiny_ui <- function(title = 'ShinyQDA') {
+shiny_ui <- function() {
 	shiny::navbarPage(
+		# TODO: Would be nice if these were parameters. Not allowed on shiny_ui
+		# function definition, would need to be passed through the environment
 		title = 'ShinyQDA',
 		windowTitle = 'ShinyQDA: Qualitative Data Analysis',
+		# position = 'fixed-top',
 		inverse = FALSE,
 		collapsible = TRUE,
+		fluid = TRUE,
+		theme = NULL,
 		shiny::tabPanel(
 			title = 'Coding',
 			icon = shiny::icon('pen-to-square'),
@@ -50,6 +56,7 @@ shiny_ui <- function(title = 'ShinyQDA') {
 					'Code Editor',
 					shiny::sidebarLayout(
 						shiny::sidebarPanel(
+							# style = "height: 90vh; overflow-y: auto;",
 							width = 4,
 							# shiny::p('Selected id: ', shiny::textOutput('selected_id')),
 							shiny::actionButton('add_tag_button', 'Add Code'),

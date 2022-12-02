@@ -25,8 +25,8 @@ shiny_server <- function(input, output, session) {
 		qda_data_file <- 'ShinyQDA.sqlite'
 	}
 	qda_data_db <- qda(qda_data_file)
+
 	# Using reactivePoll to ensure the app is refreshed when the data changes.
-	last_file_date <- file.info(qda_data_file)$mtime[1]
 	qda_data <- shiny::reactivePoll(
 		intervalMillis = 1000,
 		session,
@@ -506,6 +506,8 @@ shiny_server <- function(input, output, session) {
 			codes,
 			rownames = FALSE,
 			options = list(
+				# scrollX = TRUE,
+				# scrollY = "200px",
 				pageLength = 20
 			),
 			selection = 'single'

@@ -18,6 +18,8 @@ unlink('ShinyQDA.sqlite')
 usethis::use_package('shinyTree', type = 'Imports')
 
 
+##### Data Prep
+reviews <- read.csv('data-raw/archive/Musical_instruments_reviews.csv')
 
 ################################################################################
 qda_data <- ShinyQDA::qda(file = 'inst/shiny/daacs.sqlite')

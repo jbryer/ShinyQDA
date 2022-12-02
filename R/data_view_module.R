@@ -56,10 +56,9 @@ data_view_server <- function(id, qda_data) {
 		id,
 		function(input, output, session) {
 			get_text_data <- reactive({
-				# qda_merge(qda_data)
 				df <- qda_data()$get_text()
 				if(nrow(df) == 0) {
-					return(data.frame())
+					return(data.frame
 				}
 				codes_table <- get_coding_table(qda_data())
 				codes_table <- cbind(codes_table[,1:2], n_codes = apply(codes_table[,3:ncol(codes_table)], 1, sum))
@@ -84,6 +83,9 @@ data_view_server <- function(id, qda_data) {
 					rownames = FALSE,
 					filter = 'top',
 					options = list(
+						# https://stackoverflow.com/questions/50922686/freeze-header-and-footer-in-datatable-shiny
+						# scrollX = TRUE,
+						# scrollY = "400px"
 						pageLength = 20
 					),
 					selection = 'single'

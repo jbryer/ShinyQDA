@@ -10,6 +10,7 @@ descriptives_ui <- function(id) {
 	shiny::tagList(
 		shiny::sidebarLayout(
 			shiny::sidebarPanel(
+				style = "height: 90vh; overflow-y: auto;",
 				shiny::selectInput(
 					inputId = 'plot_type',
 					label = 'Analysis Type',
