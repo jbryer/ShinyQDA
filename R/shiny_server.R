@@ -154,12 +154,12 @@ shiny_server <- function(input, output, session) {
 
 		thetext <- thetext[1,1,drop=TRUE]
 		# Highlight codes
-		codings <- qda_data()$get_codings(input$selected_text) |>
-			filter(coder %in% input$text_coder)
+		codings <- qda_data()$get_codings(input$selected_text)
+		# req(!is.null(input$text_coder))
+		if(shiny::isTruthy(input$text_coder) & !is.null(input$text_coder)) {
+			codings <- codings |> filter(coder %in% input$text_coder)
+		}
 		if(nrow(codings) > 0) {
-			# if(!is.null(input$text_coder)) {
-			#
-			# }
 			thetext <- highlighter(thetext, codings, qda_data()$get_codes())
 		}
 		# Convert line breaks to HTML line breaks
@@ -187,6 +187,7 @@ shiny_server <- function(input, output, session) {
 			shiny::modalDialog(
 				shiny::uiOutput('coding_ui'),
 				title = add_code_label,
+				size = 'l',
 				footer = shiny::tagList(
 					shiny::actionButton('cancel_modal', 'Cancel'),
 					shiny::actionButton('add_tag', 'Add')
@@ -255,6 +256,7 @@ shiny_server <- function(input, output, session) {
 			shiny::modalDialog(
 				shiny::uiOutput('coding_ui'),
 				title = edit_code_label,
+				size = 'l',
 				footer = shiny::tagList(
 					shiny::actionButton('cancel_modal', 'Cancel'),
 					shiny::actionButton('edit_tag', 'Save')
@@ -395,7 +397,8 @@ shiny_server <- function(input, output, session) {
 		codes <- qda_data()$get_codings(input$selected_text)
 		if(nrow(codes) > 0) {
 			coders <- unique(c(get_username(), codes$coder))
-			ui <- shiny::checkboxGroupInput(
+			# ui <- shiny::checkboxGroupInput(
+			ui <- shiny::checkboxInput(
 				inputId = 'text_coder',
 				label = 'Coders who coded this text:',
 				choices = coders,
@@ -473,20 +476,23 @@ shiny_server <- function(input, output, session) {
 		for(i in seq_len(nrow(questions))) {
 			stem <- questions[i,]$stem
 			new_value <- input[[paste0('text_', textutils::HTMLencode(stem))]]
-			old_value <- ifelse(nrow(responses) == 0,
-								'',
-								responses |> filter(stem == stem) |> select(answer) )
-			if(old_value != new_value) {
-				qda_data()$delete_text_question_response(
-					id = input$selected_text,
-					coder = get_username()
-				)
-				qda_data()$add_text_question_response(
-					id = input$selected_text,
-					stem = stem,
-					answer = new_value,
-					coder = get_username()
-				)
+			if(!is.null(new_value)) {
+
+				old_value <- ifelse(nrow(responses) == 0,
+									'',
+									responses |> filter(stem == stem) |> select(answer) )
+				if(old_value != new_value) {
+					qda_data()$delete_text_question_response(
+						id = input$selected_text,
+						coder = get_username()
+					)
+					qda_data()$add_text_question_response(
+						id = input$selected_text,
+						stem = stem,
+						answer = new_value,
+						coder = get_username()
+					)
+				}
 			}
 		}
 	})

@@ -6,13 +6,11 @@
 #' you can manipulate the SQL database directly, we recommend using the methods
 #' (functions) defined in the returned object. This will ensure data integrity.
 #'
-#' * `get_text(id)`
-#' * `add_coding(id, text = NA, start = NA, end = NA, codes = NA, coder = Sys.info()['user'])`
-#'
 #' @section Methods:
-#' \describe{
-#'    \item{\code{add_text(df, id_col, text_col, overwrite = TRUE, append = FALSE)}}{Adds text data to the object. There needs to be at least two columns, the column containing the text and a column containing a unique identifier (i.e. primary key). You can include any other columns that will be available in the Shiny app for analysis.}
-#' }
+#'
+#' ```{r, child = "man/rmd/qda.Rmd"}
+#' ```
+#'
 #' @param file the filename and path to the file this function will save data to.
 #' @param users_passphrase passpharse used to encrypt the user authentication table.
 #'        See [shinymanager::create_db()] for more info.
@@ -28,6 +26,9 @@ qda <- function(
 		users_passphrase = 'ShinyQDA'
 ) {
 	qda_db <- DBI::dbConnect(RSQLite::SQLite(), file)
+
+	# TODO: The name should be the function name, the value should be the documentation.
+	methods_docs <- character()
 
 	tables <- DBI::dbListTables(qda_db)
 
@@ -50,6 +51,7 @@ qda <- function(
 						   ))
 	}
 
+	methods_docs['log'] <- 'Adds an entry to the log file when data has been changed. For internal use only.'
 	qda_data$log <- function(coder = 'system', table, description, timestamp = as.character(Sys.time())) {
 		new_row <- data.frame(
 			coder = coder,
@@ -528,6 +530,100 @@ qda <- function(
 		qda_data$log(coder, 'text_questions_responses', paste0(new_row, collapse = ', '))
 	}
 
+	##### rubrics ##############################################################
+	# create table
+	if(!'rubrics' %in% tables) {
+		DBI::dbCreateTable(qda_db,
+						   'rubrics',
+						   data.frame(
+						   		rubric_name = character(),
+						   		n_scoring_levels = integer(),
+						   		scoring_levels = character(),
+						   		description = character(),
+						   		enabled = logical(),
+						   		date_added = character()
+						   ))
+	}
+
+	if(!'rubric_criteria' %in% tables) {
+		DBI::dbCreateTable(qda_db,
+						   'rubric_criteria',
+						   data.frame(
+						   		rubric_name = character(),
+						   		criteria = character(),
+						   		scoring_level = integer(),
+						   		description = character(),
+						   		date_added = character()
+						   	))
+	}
+
+	qda_data$get_rubrics <- function() {
+		DBI::dbReadTable(qda_db, 'rubrics')
+	}
+
+	qda_data$get_rubric <- function(rubric_name) {
+		query <- paste0(
+			'SELECT * FROM rubric_criteria WHERE rubric_name = "', rubric_name, '"'
+		)
+		DBI::dbGetQuery(qda_db, query)
+	}
+
+	# add_rubric
+	qda_data$add_rubric <- function(
+		rubric_name,
+		description = NA,
+		rubric,
+		scoring_levels = names(rubric)[2:ncol(rubric)],
+		enabled = TRUE
+	) {
+		# rubric_tab <- get_rubrics()
+
+		rubrics_new_row <- data.frame(
+			rubric_name = rubric_name,
+			n_scoring_levels = length(scoring_levels),
+			scoring_levels = paste0(scoring_levels, collapse = ';'),
+			description = description,
+			enabled = enabled,
+			date_added = as.character(Sys.time())
+		)
+
+		rubric_criteria_new_row <- reshape2::melt(rubric, id.var = names(rubric)[1])
+		names(rubric_criteria_new_row)[1:3] <- c('criteria', 'scoring_level', 'description')
+		rubric_criteria_new_row$rubric_name <- rubric_name
+		rubric_criteria_new_row$date_added <- as.character(Sys.time())
+		rubric_criteria_new_row <- rubric_criteria_new_row[,c('rubric_name', 'criteria', 'scoring_level', 'description', 'date_added')]
+		rubric_criteria_new_row$scoring_level <- factor(as.character(rubric_criteria_new_row$scoring_level),
+														levels = scoring_levels,
+														ordered = TRUE) |>
+			as.integer() - 1
+
+		DBI::dbWriteTable(qda_db, 'rubrics', rubrics_new_row, append = TRUE)
+		qda_data$log('system', 'rubrics', paste0('Added new rubric ', rubric_name))
+		DBI::dbWriteTable(qda_db, 'rubric_criteria', rubric_criteria_new_row, append = TRUE)
+		qda_data$log('system', 'rubric_criteria', paste0('Added new rubric ', rubric_name))
+	}
+
+	if(!'rubric_responses' %in% tables) {
+		DBI::dbCreateTable(qda_db,
+						   'rubric_responses',
+						   data.frame(
+						   		qda_id = character(),
+						   		rubric_name = character(),
+						   		coder = character(),
+						   		criteria = character(),
+						   		score = integer(),
+						   		date_added = character()
+						   ))
+	}
+
+	qda_data$add_rubric_response <- function() {
+
+	}
+
+	qda_data$get_rubric_responses <- function(rubric_name, qda_id) {
+
+	}
+
 	##### assignments ##########################################################
 	# create table
 	if(!'assignments' %in% tables) {
@@ -596,6 +692,8 @@ qda <- function(
 			name = 'credentials',
 			passphrase = users_passphrase) |> select(!password)
 	}
+
+	qda_data$methods_docs <- methods_docs
 
 	class(qda_data) <- 'qda'
 	return(qda_data)

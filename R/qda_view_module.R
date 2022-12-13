@@ -23,7 +23,7 @@ qda_view_ui <- function(id) {
 #' Server the raw data view.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
-#' @param qda_data QDA data object, see [@ShinyQDA::qda()].
+#' @param qda_data QDA data object, see [ShinyQDA::qda()].
 #' @export
 qda_view_server <- function(id, qda_data, page_length = 20) {
 	shiny::moduleServer(

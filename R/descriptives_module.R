@@ -8,6 +8,21 @@
 descriptives_ui <- function(id) {
 	ns <- shiny::NS(id)
 	shiny::tagList(
+		# shiny::navlistPanel(
+		# 	tabPanel(
+		# 		title = 'Barplot',
+		# 		shiny::plotOutput(ns('code_barplot'), height = '600px')
+		# 	),
+		# 	tabPanel(
+		# 		title = 'Wordcloud',
+		# 		shiny::plotOutput(ns('wordcloud_plot'), height = '600px')
+		# 	),
+		# 	tabPanel(
+		# 		title = 'Wordcloud 2',
+		#
+		# 		wordcloud2::wordcloud2Output(ns('wordcloud2_plot'), height = '600px')
+		# 	)
+		# )
 		shiny::sidebarLayout(
 			shiny::sidebarPanel(
 				style = "height: 90vh; overflow-y: auto;",
@@ -67,7 +82,7 @@ descriptives_ui <- function(id) {
 #' Server for the descriptive statistics.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
-#' @param qda_data QDA data object, see [@ShinyQDA::qda()].
+#' @param qda_data QDA data object, see [ShinyQDA::qda()].
 #' @export
 #' @importFrom wordcloud wordcloud
 #' @importFrom RColorBrewer brewer.pal brewer.pal.info

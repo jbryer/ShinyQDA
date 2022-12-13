@@ -1,6 +1,5 @@
 #' Shiny User Interface for QDA
 #'
-#' @inheritParams shiny::navbarPage
 #' @param title title displayed in the top left of the Shiny app.
 #' @importFrom shiny icon tags navbarPage tabPanel fluidRow column uiOutput plotOutput tabsetPanel sidebarLayout sidebarPanel mainPanel actionButton htmlOutput verbatimTextOutput
 #' @importFrom DT dataTableOutput
@@ -17,6 +16,11 @@ shiny_ui <- function() {
 		collapsible = TRUE,
 		fluid = TRUE,
 		theme = NULL,
+		shiny::tabPanel(
+			title = 'Data',
+			icon = shiny::icon('table'),
+			data_view_ui('ShinyQDA')
+		),
 		shiny::tabPanel(
 			title = 'Coding',
 			icon = shiny::icon('pen-to-square'),
@@ -72,15 +76,15 @@ shiny_ui <- function() {
 					)
 				),
 				shiny::tabPanel(
+					'Rubric',
+					shiny::tags$style(shiny::HTML("div.highlight { background-color: #fff7bc; color: blue; width: 100%; height: 100% }")),
+					shiny::htmlOutput('rubric')
+				),
+				shiny::tabPanel(
 					'View All Codes',
 					DT::dataTableOutput('coding_table')
 				)
 			)
-		),
-		shiny::tabPanel(
-			title = 'Data',
-			icon = shiny::icon('table'),
-			data_view_ui('ShinyQDA')
 		),
 		shiny::navbarMenu(
 			title = 'Setup',

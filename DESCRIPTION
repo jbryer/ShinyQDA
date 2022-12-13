@@ -1,7 +1,7 @@
 Type: Package
 Package: ShinyQDA
 Title: Shiny Application for Qualitative Data Analysis
-Version: 0.1.0
+Version: 0.5.0
 Maintainer: Jason Bryer <jason.bryer@cuny.edu>
 Description: This package provides tools to conduct qualitative data
     analysis (QDA) in R. The Shiny application provide an interactive way
@@ -37,3 +37,4 @@ Authors@R: c(person("Jason", "Bryer", , "jason@bryer.org", role = c("aut",
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 7.2.1
+Roxygen: list(markdown = TRUE)

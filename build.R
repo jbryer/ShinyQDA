@@ -9,7 +9,7 @@ devtools::install(upgrade = 'never')
 devtools::build()
 devtools::check()
 
-shiny::runApp('inst/shiny/')
+shiny::runApp('inst/daacs/')
 shiny::runApp('inst/shiny_template')
 
 ShinyQDA::shinyQDA()
@@ -20,6 +20,21 @@ usethis::use_package('shinyTree', type = 'Imports')
 
 ##### Data Prep
 reviews <- read.csv('data-raw/archive/Musical_instruments_reviews.csv')
+
+asep8 <- readxl::read_excel('data-raw/asap-aes/training_set_rel3.xlsx') |>
+	dplyr::filter(essay_set == 8)
+usethis::use_data(asep8, overwrite = TRUE)
+
+asep8_rubric <- readxl::read_excel('data-raw/asap8_rubric.xlsx')
+usethis::use_data(asep8_rubric, overwrite = TRUE)
+
+asep7 <- readxl::read_excel('data-raw/asap-aes/training_set_rel3.xlsx') |>
+	dplyr::filter(essay_set == 7)
+usethis::use_data(asep7, overwrite = TRUE)
+
+asep7_rubric <- readxl::read_excel('data-raw/asap7_rubric.xlsx')
+usethis::use_data(asep7_rubric, overwrite = TRUE)
+
 
 ################################################################################
 qda_data <- ShinyQDA::qda(file = 'inst/shiny/daacs.sqlite')

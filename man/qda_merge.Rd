@@ -7,10 +7,10 @@
 qda_merge(qda_data, ...)
 }
 \arguments{
-\item{qda_data}{a [ShinyQDA::qda()] object.}
+\item{qda_data}{a \code{\link[=qda]{qda()}} object.}
 
 \item{aggregate_fun}{function used to aggregate multiple tags per text per
-per coder. See [reshape2::dcast()] for more information.}
+per coder. See \code{\link[reshape2:cast]{reshape2::dcast()}} for more information.}
 }
 \description{
 Merges codings with the text data.

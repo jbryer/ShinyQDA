@@ -5,7 +5,7 @@
 \title{Run the ShinyQDA application locally.}
 \usage{
 shinyQDA(
-  qda_data_file,
+  qda_data_file = "ShinyQDA.sqlite",
   authenticate = !interactive(),
   enable_admin = TRUE,
   keep_token = TRUE,
@@ -13,17 +13,17 @@ shinyQDA(
 )
 }
 \arguments{
-\item{qda_data_file}{file name to save results. See [ShinyQDA::qda()] for more information.}
+\item{qda_data_file}{file name to save results. See \code{\link[=qda]{qda()}} for more information.}
 
-\item{authenticate}{use [shinymanager::secure_app()].}
+\item{authenticate}{use \code{\link[shinymanager:secure-app]{shinymanager::secure_app()}}.}
 
-\item{enable_admin}{enable admin mode for `shinymanager`.}
+\item{enable_admin}{enable admin mode for \code{shinymanager}.}
 
 \item{keep_token}{Logical, keep the token used to authenticate in the URL,
 it allow to refresh the application in the browser, but careful the
 token can be shared between users.}
 
-\item{...}{other parameters passed to [shiny::runApp()] and [shiny::shinyApp()].}
+\item{...}{other parameters passed to \code{\link[shiny:runApp]{shiny::runApp()}} and \code{\link[shiny:shinyApp]{shiny::shinyApp()}}.}
 }
 \description{
 Run the ShinyQDA application locally.

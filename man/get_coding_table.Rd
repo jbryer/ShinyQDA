@@ -8,10 +8,10 @@ column represents the number of codes present by that coder.}
 get_coding_table(qda_data, aggregate_fun = sum)
 }
 \arguments{
-\item{qda_data}{a [ShinyQDA::qda()] object.}
+\item{qda_data}{a \code{\link[=qda]{qda()}} object.}
 
 \item{aggregate_fun}{function used to aggregate multiple tags per text per
-per coder. See [reshape2::dcast()] for more information.}
+per coder. See \code{\link[reshape2:cast]{reshape2::dcast()}} for more information.}
 }
 \description{
 Returns a table where each row represents a text coded by a coder and each

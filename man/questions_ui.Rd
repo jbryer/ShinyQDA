@@ -10,5 +10,5 @@ questions_ui(id)
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
 }
 \description{
-This will display at tab group for each table in the [qda()] data object.
+This will display at tab group for each table in the \code{\link[=qda]{qda()}} data object.
 }

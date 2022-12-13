@@ -9,7 +9,7 @@ questions_server(id, qda_data, page_length = 20)
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
 
-\item{qda_data}{QDA data object, see [@ShinyQDA::qda()].}
+\item{qda_data}{QDA data object, see \code{\link[=qda]{qda()}}.}
 }
 \description{
 Server the raw data view.

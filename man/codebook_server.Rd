@@ -9,7 +9,7 @@ codebook_server(id, qda_data)
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
 
-\item{qda_data}{QDA data object, see [@ShinyQDA::qda()].}
+\item{qda_data}{QDA data object, see \code{\link[=qda]{qda()}}.}
 }
 \description{
 Server for the codebook.

@@ -38,7 +38,7 @@ codebook_ui <- function(id) {
 #' Server for the codebook.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
-#' @param qda_data QDA data object, see [@ShinyQDA::qda()].
+#' @param qda_data QDA data object, see [ShinyQDA::qda()].
 #' @export
 codebook_server <- function(id, qda_data) {
 	shiny::moduleServer(

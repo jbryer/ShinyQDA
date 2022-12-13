@@ -1,0 +1,20 @@
+```{r, echo=FALSE, results='asis', warning=FALSE, error=FALSE, message=FALSE}
+qda_file <- tempfile()
+qda_obj <- suppressWarnings(ShinyQDA::qda(file = qda_file))
+
+isfun <- sapply(qda_obj, FUN = function(x) { if(is.function(x)) return(TRUE) }) |> unlist()
+for(i in names(isfun)) {
+	params <- formals(qda_obj[[i]])
+	
+	# TODO: add default parameter values
+	# param_vals <- sapply(params, as.character) |> unlist()
+	# pasrams_str <- names(params)
+	# sapply(params, length)
+	
+	cat(paste0('* `', i, '(', 
+			   paste0(names(params), collapse = ', '),
+			   ')` \n'))
+}
+```
+
+

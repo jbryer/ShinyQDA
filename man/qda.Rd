@@ -10,7 +10,7 @@ qda(file, users_passphrase = "ShinyQDA")
 \item{file}{the filename and path to the file this function will save data to.}
 
 \item{users_passphrase}{passpharse used to encrypt the user authentication table.
-See [shinymanager::create_db()] for more info.}
+See \code{\link[shinymanager:create_db]{shinymanager::create_db()}} for more info.}
 }
 \value{
 a list with functions to access and edit qualitiative data.
@@ -18,18 +18,45 @@ a list with functions to access and edit qualitiative data.
 \description{
 This function creates an object to manipulate data for qualitative analysis.
 The data is stored in a SQLite database by default, but can be configures to
-work with any SQL database through the `DBI` R package interface. Although
+work with any SQL database through the \code{DBI} R package interface. Although
 you can manipulate the SQL database directly, we recommend using the methods
 (functions) defined in the returned object. This will ensure data integrity.
 }
-\details{
-* `get_text(id)`
-* `add_coding(id, text = NA, start = NA, end = NA, codes = NA, coder = Sys.info()['user'])`
-}
 \section{Methods}{
 
-\describe{
-   \item{\code{add_text(df, id_col, text_col, overwrite = TRUE, append = FALSE)}}{Adds text data to the object. There needs to be at least two columns, the column containing the text and a column containing a unique identifier (i.e. primary key). You can include any other columns that will be available in the Shiny app for analysis.}
+\itemize{
+\item \code{log(coder, table, description, timestamp)}
+\item \code{get_log()}
+\item \code{get_last_update()}
+\item \code{add_text(df, id_col, text_col, overwrite, append)}
+\item \code{get_text(id)}
+\item \code{add_coding(id, text, start, end, codes, coder)}
+\item \code{update_coding(coding_id, codes)}
+\item \code{delete_coding(coding_id)}
+\item \code{get_codings(id, coding_id)}
+\item \code{get_codes()}
+\item \code{add_codes(codes, colors, descriptions)}
+\item \code{update_code(code, color, description, parent)}
+\item \code{add_code_question(stem, type, order, options)}
+\item \code{delete_code_question(stem)}
+\item \code{get_code_questions()}
+\item \code{get_code_question_responses(coding_id, id)}
+\item \code{delete_code_question_responses(coding_id)}
+\item \code{add_code_question_response(coding_id, stem, answer, coder)}
+\item \code{update_code_question_response(coding_id, stem, answer, coder)}
+\item \code{add_text_question(stem, type, options)}
+\item \code{get_text_questions()}
+\item \code{get_text_question_responses(id, coder)}
+\item \code{delete_text_question_responses(id, coder)}
+\item \code{update_text_question_response(id, stem, new_answer, coder)}
+\item \code{add_text_question_response(id, stem, answer, coder)}
+\item \code{get_rubrics()}
+\item \code{get_rubric(rubric_name)}
+\item \code{add_rubric(rubric_name, description, rubric, scoring_levels, enabled)}
+\item \code{add_rubric_response()}
+\item \code{get_rubric_responses(rubric_name, qda_id)}
+\item \code{get_assignments(coder, id)}
+\item \code{get_coders()}
 }
 }
 
