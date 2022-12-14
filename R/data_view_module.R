@@ -166,6 +166,7 @@ data_view_server <- function(id, qda_data) {
 						shiny::modalDialog(
 							shiny::uiOutput(ns('text_details')),
 							title = 'Details',
+							size = 'l',
 							easyClose = TRUE)
 					)
 				}

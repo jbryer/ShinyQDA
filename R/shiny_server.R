@@ -156,7 +156,8 @@ shiny_server <- function(input, output, session) {
 		# Highlight codes
 		codings <- qda_data()$get_codings(input$selected_text)
 		# req(!is.null(input$text_coder))
-		if(shiny::isTruthy(input$text_coder) & !is.null(input$text_coder)) {
+		# print(input$text_coder)
+		if(!is.null(input$text_coder)) {
 			codings <- codings |> filter(coder %in% input$text_coder)
 		}
 		if(nrow(codings) > 0) {
@@ -254,6 +255,7 @@ shiny_server <- function(input, output, session) {
 		text_selection(coding[1,]$text)
 		shiny::showModal(
 			shiny::modalDialog(
+			# modalDialog2(
 				shiny::uiOutput('coding_ui'),
 				title = edit_code_label,
 				size = 'l',
@@ -397,12 +399,17 @@ shiny_server <- function(input, output, session) {
 		codes <- qda_data()$get_codings(input$selected_text)
 		if(nrow(codes) > 0) {
 			coders <- unique(c(get_username(), codes$coder))
-			# ui <- shiny::checkboxGroupInput(
-			ui <- shiny::checkboxInput(
+			ui <- shiny::checkboxGroupInput(
 				inputId = 'text_coder',
 				label = 'Coders who coded this text:',
 				choices = coders,
 				selected = get_username())
+			# ui <- shiny::selectizeInput(
+			# 	inputId = 'text_coder',
+			# 	label = 'Coders who coded this text:',
+			# 	choices = coders,
+			# 	selected = get_username(),
+			# 	multiple = TRUE)
 		}
 		return(ui)
 	})

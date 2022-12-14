@@ -197,6 +197,8 @@ codebook_server <- function(id, qda_data) {
 					shiny::modalDialog(
 						uiOutput(ns('new_code_ui')),
 						title = 'Add New Code',
+						size = 'l',
+						easyClose = TRUE,
 						footer = shiny::tagList(
 							shiny::actionButton(ns('cancel_modal'), 'Cancel'),
 							shiny::actionButton(ns('add_code'), 'Add')

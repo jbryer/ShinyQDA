@@ -98,6 +98,7 @@ questions_server <- function(id, qda_data, page_length = 20) {
 					shiny::modalDialog(
 						shiny::uiOutput(ns('code_question_ui')),
 						title = 'New Code Question',
+						size = 'l',
 						easyClose = FALSE,
 						footer = shiny::tagList(
 							shiny::actionButton(ns('cancel_modal'), 'Cancel'),
@@ -136,6 +137,7 @@ questions_server <- function(id, qda_data, page_length = 20) {
 							  or responses already entered. Changes will be reflected in any new codings completed."),
 							shiny::uiOutput(ns('code_question_ui')),
 							title = 'Edit Code Question',
+							size = 'l',
 							easyClose = FALSE,
 							footer = shiny::tagList(
 								shiny::actionButton(ns('cancel_modal'), 'Cancel'),
@@ -195,6 +197,7 @@ questions_server <- function(id, qda_data, page_length = 20) {
 								value = df[1,]$order
 							),
 							title = 'Edit Text Question',
+							size = 'l',
 							easyClose = FALSE,
 							footer = shiny::tagList(
 								shiny::actionButton('cancel_modal', 'Cancel'),
