@@ -1,8 +1,3 @@
-# TODO: add localization options
-codes_label <- 'Codes (domains/subdomains):'
-add_code_label <- 'Add new coding'
-edit_code_label <- 'Edit coding'
-
 #' Shiny Server for QDA
 #'
 #' @param input Shiny input object.
@@ -18,6 +13,11 @@ edit_code_label <- 'Edit coding'
 #' @importFrom stringr str_squish
 #' @export
 shiny_server <- function(input, output, session) {
+	# TODO: add localization options
+	codes_label <- 'Codes (domains/subdomains):'
+	add_code_label <- 'Add new coding'
+	edit_code_label <- 'Edit coding'
+
 	############################################################################
 	##### Setup the connection to SQLite database
 	if(!exists('qda_data_file')) {
