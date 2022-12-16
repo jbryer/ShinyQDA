@@ -53,7 +53,7 @@ shiny_server <- function(input, output, session) {
 	)
 
 	output$auth_output <- shiny::renderPrint({
-		reactiveValuesToList(res_auth)
+		shiny::reactiveValuesToList(res_auth)
 	})
 
 	get_username <- shiny::reactive({

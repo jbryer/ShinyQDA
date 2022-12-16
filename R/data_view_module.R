@@ -60,17 +60,22 @@ data_view_server <- function(id, qda_data) {
 				if(nrow(df) == 0) {
 					return(data.frame)
 				}
+				tab <- df
 				codes_table <- get_coding_table(qda_data())
-				codes_table <- cbind(codes_table[,1:2], n_codes = apply(codes_table[,3:ncol(codes_table)], 1, sum))
+				if(nrow(codes_table) > 0) {
+					codes_table <- cbind(codes_table[,1:2], n_codes = apply(codes_table[,3:ncol(codes_table)], 1, sum))
+					tab <- merge(tab, codes_table, by = c('qda_id'), all.x = TRUE)
+				}
 
 				codings <- qda_data()$get_codings()
-				highlights_table <- table(codings$qda_id) |>
-					as.data.frame() |>
-					dplyr::rename(n_highlights = Freq,
-								  qda_id = Var1)
+				if(nrow(codings) > 0) {
+					highlights_table <- table(codings$qda_id) |>
+						as.data.frame() |>
+						dplyr::rename(n_highlights = Freq,
+									  qda_id = Var1)
+					tab <- merge(tab, highlights_table, by = 'qda_id', all.x = TRUE)
+				}
 
-				tab <- merge(df, codes_table, by = c('qda_id'), all.x = TRUE)
-				tab <- merge(tab, highlights_table, by = 'qda_id', all.x = TRUE)
 				return(tab)
 			})
 

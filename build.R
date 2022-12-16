@@ -11,6 +11,7 @@ devtools::check()
 
 shiny::runApp('inst/daacs/')
 shiny::runApp('inst/shiny_template')
+shiny::runApp('inst/daacs_writing/')
 
 ShinyQDA::shinyQDA()
 unlink('ShinyQDA.sqlite')

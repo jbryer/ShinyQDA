@@ -9,6 +9,7 @@ shinyQDA(
   authenticate = !interactive(),
   enable_admin = TRUE,
   keep_token = TRUE,
+  users_passphrase = "ShinyQDA",
   ...
 )
 }

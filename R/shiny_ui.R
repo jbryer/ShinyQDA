@@ -5,7 +5,7 @@
 #' @importFrom DT dataTableOutput
 #' @importFrom shinyjs useShinyjs
 #' @export
-shiny_ui <- function() {
+shiny_ui <- function(request) {
 	shiny::navbarPage(
 		# TODO: Would be nice if these were parameters. Not allowed on shiny_ui
 		# function definition, would need to be passed through the environment

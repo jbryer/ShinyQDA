@@ -27,6 +27,8 @@ qda <- function(
 ) {
 	qda_db <- DBI::dbConnect(RSQLite::SQLite(), file)
 
+	# on.exit(DBI::dbDisconnect(qda_db))
+
 	# TODO: The name should be the function name, the value should be the documentation.
 	methods_docs <- character()
 
@@ -173,7 +175,7 @@ qda <- function(
 						  'codings',
 						  new_row,
 						  append = TRUE)
-		qda_data$log(coder, 'codings', paste0(new_row[1,], collapse = ', '))
+		qda_data$log('system', 'codings', paste0(new_row[1,], collapse = ', '))
 		return(coding_id)
 	}
 
@@ -253,7 +255,7 @@ qda <- function(
 			colors <- new_colors[seq_len(length(codes)) + nrow(codes_table) %% length(new_colors)]
 		}
 		if(missing(descriptions)) {
-			descriptions <- rep(NA_character_, length(codes))
+			descriptions <- character(length(codes))
 		}
 		new_rows <- data.frame(
 			code = codes,
@@ -268,7 +270,7 @@ qda <- function(
 			new_rows,
 			append = TRUE
 		)
-		qda_data$log(coder, 'system', paste0('added ', nrow(new_rows), ' rows to codes'))
+		qda_data$log('system', paste0('added ', nrow(new_rows), ' rows to codes'))
 		invisible(new_rows)
 	}
 
@@ -665,26 +667,26 @@ qda <- function(
 	# credentials_db <- DBI::dbConnect(RSQLite::SQLite(), 'users.sqlite')
 	# DBI::dbListTables(credentials_db)
 
-	credentials <- data.frame(
-		user = "admin",
-		name = "Administrator",
-		password = 'pass',
-		start = as.character(Sys.Date()),
-		expire = NA,
-		admin = TRUE,
-		email = "",
-		comment = 'ShinyQDA coders.',
-		stringsAsFactors = TRUE)
 
 	if(!'credentials' %in% tables) {
 		warning('Creating default user admin with password "pass". Recommend changing the password upon first login.')
-	}
+		credentials <- data.frame(
+			user = "admin",
+			name = "Administrator",
+			password = 'pass',
+			start = as.character(Sys.Date()),
+			expire = NA,
+			admin = TRUE,
+			email = "",
+			comment = 'ShinyQDA coders.',
+			stringsAsFactors = TRUE)
+		credentials <- shinymanager::create_db(
+			credentials_data = credentials,
+			sqlite_path = file,
+			passphrase = users_passphrase
+		)
 
-	qda_data$credentials <- shinymanager::create_db(
-		credentials_data = credentials,
-		sqlite_path = file,
-		passphrase = users_passphrase
-	)
+	}
 
 	qda_data$get_coders <- function() {
 		shinymanager::read_db_decrypt(

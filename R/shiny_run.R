@@ -14,18 +14,22 @@ shinyQDA <- function(qda_data_file = 'ShinyQDA.sqlite',
 					 authenticate = !interactive(),
 					 enable_admin = TRUE,
 					 keep_token = TRUE,
+					 users_passphrase = 'ShinyQDA',
 					 ...) {
 	shiny_env <- new.env()
 	assign('qda_data_file', qda_data_file, shiny_env)
 	environment(shiny_ui) <- shiny_env
 	environment(shiny_server) <- shiny_env
 
+	qda_data <- qda(file = qda_data_file,
+					users_passphrase = users_passphrase)
+
 	app <- NULL
 	if(authenticate) {
 		app <- shiny::shinyApp(
-			ui = shinymanager::secure_app(shiny_ui,
+			ui = shinymanager::secure_app(ui = shiny_ui,
 										  enable_admin = enable_admin,
-										  keep_token = keep_token,
+										  # keep_token = keep_token,
 										  db = qda_data_file),
 			server = shiny_server,
 			...)
