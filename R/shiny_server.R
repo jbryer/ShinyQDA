@@ -261,10 +261,29 @@ shiny_server <- function(input, output, session) {
 				size = 'l',
 				footer = shiny::tagList(
 					shiny::actionButton('cancel_modal', 'Cancel'),
+					shiny::actionButton('delete_tag', 'Delete'),
 					shiny::actionButton('edit_tag', 'Save')
 				)
 			)
 		)
+	})
+
+	shiny::observeEvent(input$delete_tag, {
+		ns <- session$ns
+		shinyWidgets::ask_confirmation(
+			inputId = ns('confirm_delete_tag'),
+			title = 'Confirm Deletion',
+			text = 'Are you sure you wish to delete this code?',
+			btn_labels = c('No', 'Yes'))
+	})
+
+	shiny::observeEvent(input$confirm_delete_tag, {
+		if(input$confirm_delete_tag) {
+			edit_id <- code_edit_id()
+			qda_data()$delete_coding(edit_id)
+			qda_data()$delete_code_question_responses(edit_id)
+		}
+		shiny::removeModal()
 	})
 
 	shiny::observeEvent(input$cancel_modal, {

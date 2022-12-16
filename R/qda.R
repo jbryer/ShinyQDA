@@ -200,7 +200,7 @@ qda <- function(
 		}
 		query <- paste0('DELETE FROM codings WHERE coding_id = "', coding_id, '" ')
 		DBI::dbExecute(qda_db, query)
-		qda_data$log(coder, 'codings', query)
+		qda_data$log('system', 'codings', query)
 	}
 
 	# get_codings
