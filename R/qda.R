@@ -109,6 +109,7 @@ qda <- function(
 			dplyr::rename(qda_id = id_col,
 						  qda_text = text_col) |>
 			dplyr::mutate(qda_id = as.character(qda_id),
+						  qda_text = stringr::str_squish(qda_text),
 						  date_added = as.character(Sys.time()))
 		DBI::dbWriteTable(qda_db,
 						  'text_data',

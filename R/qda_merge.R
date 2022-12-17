@@ -10,6 +10,9 @@
 get_coding_table <- function(qda_data, aggregate_fun = sum) {
 	# Merge in codings
 	codings <- qda_data$get_codings()
+	if(nrow(codings) > 0) {
+		codings <- codings[nchar(codings$codes) > 0,]
+	}
 	if(nrow(codings) == 0) {
 		return(data.frame())
 	}
