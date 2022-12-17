@@ -155,11 +155,9 @@ shiny_server <- function(input, output, session) {
 		thetext <- thetext[1,1,drop=TRUE]
 		# Highlight codes
 		codings <- qda_data()$get_codings(input$selected_text)
-		# req(!is.null(input$text_coder))
-		# print(input$text_coder)
-		if(!is.null(input$text_coder)) {
+		# if(!is.null(input$text_coder)) {
 			codings <- codings |> dplyr::filter(coder %in% input$text_coder)
-		}
+		# }
 		if(nrow(codings) > 0) {
 			thetext <- highlighter(thetext, codings, qda_data()$get_codes())
 		}

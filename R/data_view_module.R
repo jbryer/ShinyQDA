@@ -42,6 +42,12 @@ data_view_ui <- function(id) {
 					  visibility: visible;
 					}
 				")),
+		shiny::fluidRow(
+			shiny::column(
+				width = 6,
+				shiny::uiOutput(ns('column_selection')),
+			)
+		),
 		DT::dataTableOutput(ns('text_table'))
 	)
 }
@@ -79,12 +85,28 @@ data_view_server <- function(id, qda_data) {
 				return(tab)
 			})
 
+			# Select columns to view
+			output$column_selection <- shiny::renderUI({
+				ns <- session$ns
+				df <- get_text_data()
+				selected_cols <- c('qda_id', 'qda_text', 'coder', 'n_codes', 'n_highlights')
+				selected_cols <- selected_cols[selected_cols %in% names(df)]
+				shiny::selectizeInput(
+					inputId = ns('columns_to_view'),
+					label = 'Columns to include:',
+					multiple = TRUE,
+					choices = names(df),
+					selected = selected_cols,
+					width = '100%'
+				)
+			})
+
 			# Table view of the data
 			output$text_table <- DT::renderDataTable({
 				df <- get_text_data()
 				df$qda_text <- ShinyQDA::text_truncate(df$qda_text)
 				DT::datatable(
-					df,
+					df[,input$columns_to_view],
 					rownames = FALSE,
 					filter = 'top',
 					options = list(
