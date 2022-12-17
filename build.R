@@ -16,8 +16,13 @@ shiny::runApp('inst/daacs_writing/')
 ShinyQDA::shinyQDA()
 unlink('ShinyQDA.sqlite')
 
+# Add package imports
 usethis::use_package('shinyTree', type = 'Imports')
 
+
+qda_data <- ShinyQDA::qda('inst/daacs/daacs.sqlite')
+
+DBI::dbListTables(qda_data$db_conn)
 
 ##### Data Prep
 reviews <- read.csv('data-raw/archive/Musical_instruments_reviews.csv')

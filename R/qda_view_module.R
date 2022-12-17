@@ -7,13 +7,17 @@
 qda_view_ui <- function(id) {
 	ns <- NS(id)
 	tagList(
-		shiny::tabsetPanel(
+		shiny::navlistPanel(
+			widths = c(3, 9),
 			shiny::tabPanel('Codes', DT::dataTableOutput(ns('qda_codes_table'))),
 			shiny::tabPanel('Codings', DT::dataTableOutput(ns('qda_codings_table'))),
 			shiny::tabPanel('Code Questions', DT::dataTableOutput(ns('qda_code_questions_table'))),
 			shiny::tabPanel('Code Question Responses', DT::dataTableOutput(ns('qda_code_question_responses_table'))),
 			shiny::tabPanel('Text Questions', DT::dataTableOutput(ns('qda_text_questions_table'))),
 			shiny::tabPanel('Text Question Responses', DT::dataTableOutput(ns('qda_text_question_responses_table'))),
+			shiny::tabPanel('Rubrics', DT::dataTableOutput(ns('qda_rubrics_table'))),
+			shiny::tabPanel('Rubric Criteria', DT::dataTableOutput(ns('qda_rubric_criteria_table'))),
+			shiny::tabPanel('Rubric Responses', DT::dataTableOutput(ns('qda_rubric_responses_table'))),
 			shiny::tabPanel('Assignments', DT::dataTableOutput(ns('qda_assignments_table'))),
 			shiny::tabPanel('Log', DT::dataTableOutput(ns('qda_log_table')))
 		)
@@ -29,10 +33,8 @@ qda_view_server <- function(id, qda_data, page_length = 20) {
 	shiny::moduleServer(
 		id,
 		function(input, output, session) {
-			output$qda_codes_table <- DT::renderDataTable({
-				# refresh()
-				input$codebook_tree
-				qda_data()$get_codes() |>
+			qda_datatable <- function(df) {
+				df |>
 					DT::datatable(
 						rownames = FALSE,
 						filter = 'top',
@@ -40,104 +42,57 @@ qda_view_server <- function(id, qda_data, page_length = 20) {
 							pageLength = page_length
 						),
 						selection = 'single'
-					)
+				)
+			}
+
+			output$qda_codes_table <- DT::renderDataTable({
+				input$codebook_tree
+				qda_data()$get_codes() |> qda_datatable()
 			})
 
 			output$qda_code_questions_table <- DT::renderDataTable({
-				# refresh()
-				qda_data()$get_code_questions() |>
-					DT::datatable(
-						rownames = FALSE,
-						filter = 'top',
-						options = list(
-							pageLength = page_length
-						),
-						selection = 'single'
-					)
+				qda_data()$get_code_questions() |> qda_datatable()
 			})
 
 			output$qda_code_question_responses_table <- DT::renderDataTable({
-				# refresh()
-				qda_data()$get_code_question_responses() |>
-					DT::datatable(
-						rownames = FALSE,
-						filter = 'top',
-						options = list(
-							pageLength = page_length
-						),
-						selection = 'single'
-					)
+				qda_data()$get_code_question_responses() |> qda_datatable()
 			})
 
 			output$qda_text_questions_table <- DT::renderDataTable({
-				# refresh()
-				qda_data()$get_text_questions() |>
-					DT::datatable(
-						rownames = FALSE,
-						filter = 'top',
-						options = list(
-							pageLength = page_length
-						),
-						selection = 'single'
-					)
+				qda_data()$get_text_questions() |> qda_datatable()
 			})
 
 			output$qda_text_question_responses_table <- DT::renderDataTable({
-				# refresh()
 				questions <- qda_data()$get_text_questions()
 				for(i in seq_len(nrow(questions))) {
 					stem <- questions[i,]$stem
 					input[[paste0('text_', textutils::HTMLencode(stem))]]
 				}
+				qda_data()$get_text_question_responses() |> qda_datatable()
+			})
 
-				qda_data()$get_text_question_responses() |>
-					DT::datatable(
-						rownames = FALSE,
-						filter = 'top',
-						options = list(
-							pageLength = page_length
-						),
-						selection = 'single'
-					)
+			output$qda_rubrics_table <- DT::renderDataTable({
+				qda_data()$get_rubrics() |> qda_datatable()
+			})
+
+			output$qda_rubric_criteria_table <- DT::renderDataTable({
+				DBI::dbReadTable(qda_data()$db_conn, 'rubric_criteria') |> qda_datatable()
+			})
+
+			output$qda_rubric_responses_table <- DT::renderDataTable({
+				DBI::dbReadTable(qda_data()$db_conn, 'rubric_responses') |> qda_datatable()
 			})
 
 			output$qda_codings_table <- DT::renderDataTable({
-				# refresh()
-				qda_data()$get_codings() |>
-					DT::datatable(
-						rownames = FALSE,
-						filter = 'top',
-						options = list(
-							pageLength = page_length
-						),
-						selection = 'single'
-					)
+				qda_data()$get_codings() |> qda_datatable()
 			})
 
 			output$qda_assignments_table <- DT::renderDataTable({
-				# refresh()
-				qda_data()$get_assignments() |>
-					DT::datatable(
-						rownames = FALSE,
-						filter = 'top',
-						options = list(
-							pageLength = page_length
-						),
-						selection = 'single'
-					)
+				qda_data()$get_assignments() |> qda_datatable()
 			})
 
 			output$qda_log_table <- DT::renderDataTable({
-				qda_data()$get_log() |>
-					dplyr::arrange(desc(timestamp)) |>
-					DT::datatable(
-						rownames = FALSE,
-						filter = 'top',
-						options = list(
-							pageLength = page_length
-						),
-						selection = 'single'
-					)
+				qda_data()$get_log() |> qda_datatable()
 			})
 		}
 	)
