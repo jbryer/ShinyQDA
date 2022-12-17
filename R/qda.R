@@ -54,7 +54,7 @@ qda <- function(
 	}
 
 	methods_docs['log'] <- 'Adds an entry to the log file when data has been changed. For internal use only.'
-	qda_data$log <- function(coder = 'system', table, description, timestamp = as.character(Sys.time())) {
+	qda_data$log <- function(coder = Sys.info()['user'], table, description, timestamp = as.character(Sys.time())) {
 		new_row <- data.frame(
 			coder = coder,
 			table = table,
@@ -82,7 +82,7 @@ qda <- function(
 						   		qda_text = character(),
 						   		date_added = character()
 						   ))
-		qda_data$log('system', 'text_data', 'created table')
+		qda_data$log(Sys.info()['user'], 'text_data', 'created table')
 	}
 
 	# add_text
@@ -116,7 +116,7 @@ qda <- function(
 						  df,
 						  overwrite = overwrite,
 						  append = append)
-		qda_data$log('system', 'text_data', paste0('added ', nrow(df), ' rows to text_data'))
+		qda_data$log(Sys.info()['user'], 'text_data', paste0('added ', nrow(df), ' rows to text_data'))
 	}
 
 	# get_text
@@ -145,7 +145,7 @@ qda <- function(
 					   		codes = character(),
 					   		coder = character(),
 					   		date_added = character()) )
-		qda_data$log('system', 'codings', 'created table')
+		qda_data$log(Sys.info()['user'], 'codings', 'created table')
 	}
 
 	# add_codings
@@ -176,7 +176,7 @@ qda <- function(
 						  'codings',
 						  new_row,
 						  append = TRUE)
-		qda_data$log('system', 'codings', paste0(new_row[1,], collapse = ', '))
+		qda_data$log(Sys.info()['user'], 'codings', paste0(new_row[1,], collapse = ', '))
 		return(coding_id)
 	}
 
@@ -190,7 +190,7 @@ qda <- function(
 				   do.call(paste0, list(codes, collapse = ';')),
 				   '" WHERE coding_id = "', coding_id, '"')
 		)
-		qda_data$log('system', 'codings', paste0('updated coding_id = ', coding_id))
+		qda_data$log(Sys.info()['user'], 'codings', paste0('updated coding_id = ', coding_id))
 	}
 
 	# delete_coding
@@ -201,7 +201,7 @@ qda <- function(
 		}
 		query <- paste0('DELETE FROM codings WHERE coding_id = "', coding_id, '" ')
 		DBI::dbExecute(qda_db, query)
-		qda_data$log('system', 'codings', query)
+		qda_data$log(Sys.info()['user'], 'codings', query)
 	}
 
 	# get_codings
@@ -240,7 +240,7 @@ qda <- function(
 						   		description = character(),
 						   		parent = character(),
 						   		date_added = character()) )
-		qda_data$log('system', 'codes', 'created table')
+		qda_data$log(Sys.info()['user'], 'codes', 'created table')
 	}
 
 	# get_codes
@@ -271,7 +271,7 @@ qda <- function(
 			new_rows,
 			append = TRUE
 		)
-		qda_data$log('system', paste0('added ', nrow(new_rows), ' rows to codes'))
+		qda_data$log(Sys.info()['user'], paste0('added ', nrow(new_rows), ' rows to codes'))
 		invisible(new_rows)
 	}
 
@@ -292,7 +292,7 @@ qda <- function(
 						 paste0(new_vals, collapse = ','),
 						 ' WHERE code = "', code, '"')
 		DBI::dbExecute(qda_db, query)
-		qda_data$log('system', 'codes', query)
+		qda_data$log(Sys.info()['user'], 'codes', query)
 	}
 
 	###### code_questions ######################################################
@@ -306,7 +306,7 @@ qda <- function(
 						   		order = integer(),
 						   		options = character(),
 						   		date_added = character()) )
-		qda_data$log('system', 'code_questions', 'created table')
+		qda_data$log(Sys.info()['user'], 'code_questions', 'created table')
 	}
 
 	# add_code_question
@@ -330,14 +330,14 @@ qda <- function(
 			date_added = as.character(Sys.time())
 		)
 		DBI::dbWriteTable(qda_db, 'code_questions', new_row, append = TRUE)
-		qda_data$log('system', 'code_questions', paste0(new_row[1,], collapse = ', '))
+		qda_data$log(Sys.info()['user'], 'code_questions', paste0(new_row[1,], collapse = ', '))
 	}
 
 	qda_data$delete_code_question <- function(stem) {
 		query <- paste0('DELETE FROM code_questions WHERE ',
 						'stem = "', stem, '" ')
 		DBI::dbExecute(qda_db, query)
-		qda_data$log('system', 'code_questions', query)
+		qda_data$log(Sys.info()['user'], 'code_questions', query)
 	}
 
 	# get_code_questions
@@ -357,7 +357,7 @@ qda <- function(
 						   		answer = character(),
 						   		coder = character(),
 						   		date_added = character()) )
-		qda_data$log('system', 'code_questions_responses', 'created table')
+		qda_data$log(Sys.info()['user'], 'code_questions_responses', 'created table')
 	}
 
 	# get_code_question_responses
@@ -385,7 +385,7 @@ qda <- function(
 		query <- paste0('DELETE FROM code_question_responses WHERE ',
 						'coding_id = "', coding_id, '" ')
 		DBI::dbExecute(qda_db, query )
-		qda_data$log('system', 'code_questions_responses', query)
+		qda_data$log(Sys.info()['user'], 'code_questions_responses', query)
 	}
 
 	# add_code_question_response
@@ -421,7 +421,7 @@ qda <- function(
 						 paste0(new_vals, collapse = ', '),
 						 ' WHERE coding_id = "', coding_id, '"')
 		DBI::dbExecute(qda_db, query)
-		qda_data$log('system', 'code_questions_responses', query)
+		qda_data$log(Sys.info()['user'], 'code_questions_responses', query)
 	}
 
 	##### text_questions #######################################################
@@ -435,7 +435,7 @@ qda <- function(
 						   		order = integer(),
 						   		options = character(),
 						   		date_added = character()) )
-		qda_data$log('system', 'text_questions', 'created table')
+		qda_data$log(Sys.info()['user'], 'text_questions', 'created table')
 	}
 
 	# add_text_question
@@ -453,7 +453,7 @@ qda <- function(
 			date_added = as.character(Sys.time())
 		)
 		DBI::dbWriteTable(qda_db, 'text_questions', new_row, append = TRUE)
-		qda_data$log('system', 'text_questions', paste0(new_row[1,], collapse = ', '))
+		qda_data$log(Sys.info()['user'], 'text_questions', paste0(new_row[1,], collapse = ', '))
 	}
 
 	# get_text_questions
@@ -473,7 +473,7 @@ qda <- function(
 					   		answer = character(),
 					   		coder = character(),
 					   		date_added = character()) )
-		qda_data$log('system', 'text_questions_responses', 'created table')
+		qda_data$log(Sys.info()['user'], 'text_questions_responses', 'created table')
 	}
 
 	# get_text_question_responses
@@ -601,9 +601,9 @@ qda <- function(
 			as.integer() - 1
 
 		DBI::dbWriteTable(qda_db, 'rubrics', rubrics_new_row, append = TRUE)
-		qda_data$log('system', 'rubrics', paste0('Added new rubric ', rubric_name))
+		qda_data$log(Sys.info()['user'], 'rubrics', paste0('Added new rubric ', rubric_name))
 		DBI::dbWriteTable(qda_db, 'rubric_criteria', rubric_criteria_new_row, append = TRUE)
-		qda_data$log('system', 'rubric_criteria', paste0('Added new rubric ', rubric_name))
+		qda_data$log(Sys.info()['user'], 'rubric_criteria', paste0('Added new rubric ', rubric_name))
 	}
 
 	if(!'rubric_responses' %in% tables) {
@@ -637,7 +637,7 @@ qda <- function(
 						   		coder = character(),
 						   		date_added = character()
 						   ))
-		qda_data$log('system', 'assignments', 'created table')
+		qda_data$log(Sys.info()['user'], 'assignments', 'created table')
 	}
 
 	# get_assignments
