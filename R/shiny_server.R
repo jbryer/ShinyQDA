@@ -10,7 +10,7 @@
 #' @importFrom shinymanager secure_server check_credentials
 #' @importFrom shinyTree renderTree
 #' @importFrom shinyjs runjs
-#' @importFrom stringr str_squish
+#' @importFrom stringr str_squish str_remove_all
 #' @export
 shiny_server <- function(input, output, session) {
 	# TODO: add localization options
@@ -203,7 +203,8 @@ shiny_server <- function(input, output, session) {
 		thetext <- qda_data()$get_text(input$selected_text) |>
 			dplyr::select(qda_text)
 		thetext <- thetext[1,1,drop=TRUE]
-		thetext <- stringr::str_squish(thetext)
+		# thetext <- stringr::str_squish(thetext)
+		thetext <- stringr::str_remove_all(thetext, '  ')
 		pos <- gregexpr(text_selection, thetext, fixed = TRUE)[[1]]
 		code_ids <- integer()
 		# TODO: Make sure there is a match and report error to user

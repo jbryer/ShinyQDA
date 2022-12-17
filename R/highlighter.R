@@ -6,7 +6,8 @@
 #' @param link if TRUE codes will link to a modal dialog to edit them.
 #' @export
 highlighter <- function(text, codings, codes, link = TRUE) {
-	text <- stringr::str_squish(text)
+	# text <- stringr::str_squish(text)
+	text <- stringr::str_remove_all(text, '  ')
 	# The color will be determined by the first code
 	first_code <- sapply(strsplit(codings$codes, ';'), FUN = function(x) { ifelse(length(x) > 0, x[[1]], character()) })
 	# first_code <- first_code[!is.na(first_code) & nchar(first_code) > 0]
@@ -22,7 +23,7 @@ highlighter <- function(text, codings, codes, link = TRUE) {
 		names(starts) <- paste0(
 			"<span ",
 		   "onclick='Shiny.onInputChange(\"edit_coding\", \"", codings$coding_id, ';', as.integer(Sys.time()), "\");' ",
-			"style='background-color: ", colors, "' ",
+			"style='background-color: ", colors, "; word-wrap: break-word; display: inline; white-space: pre-wrap;' ",
 			"class='tooltip2' ",
 			">"
 			, "<span class='tooltiptext2'>", hover_text, "</span>"
@@ -30,7 +31,7 @@ highlighter <- function(text, codings, codes, link = TRUE) {
 	} else {
 		names(starts) <- paste0(
 			"<span ",
-			"style='background-color: ", colors, "' ",
+			"style='background-color: ", colors, "; word-wrap: break-word; display: inline; white-space: pre-wrap;' ",
 			"class='tooltip2' ",
 			">"
 			, "<span class='tooltiptext2'>", hover_text, "</span>"
