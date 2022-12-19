@@ -7,6 +7,7 @@ page_length <- 20 # TODO: make an package option
 #' app are consistent.
 #'
 #' @param df a data.frame.
+#' @export
 qda_datatable <- function(df) {
 	df |>
 		DT::datatable(

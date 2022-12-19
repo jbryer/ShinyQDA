@@ -4,7 +4,7 @@
 \alias{qda_view_server}
 \title{Server the raw data view.}
 \usage{
-qda_view_server(id, qda_data, page_length = 20)
+qda_view_server(id, qda_data)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}

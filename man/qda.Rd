@@ -44,8 +44,9 @@ you can manipulate the SQL database directly, we recommend using the methods
 \item \code{delete_code_question_responses(coding_id)}
 \item \code{add_code_question_response(coding_id, stem, answer, coder)}
 \item \code{update_code_question_response(coding_id, stem, answer, coder)}
-\item \code{add_text_question(stem, type, options)}
+\item \code{add_text_question(stem, type, order, options)}
 \item \code{get_text_questions()}
+\item \code{delete_text_question(stem)}
 \item \code{get_text_question_responses(id, coder)}
 \item \code{delete_text_question_responses(id, coder)}
 \item \code{update_text_question_response(id, stem, new_answer, coder)}

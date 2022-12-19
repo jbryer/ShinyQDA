@@ -4,7 +4,7 @@
 \alias{shiny_ui}
 \title{Shiny User Interface for QDA}
 \usage{
-shiny_ui()
+shiny_ui(request)
 }
 \arguments{
 \item{title}{title displayed in the top left of the Shiny app.}
