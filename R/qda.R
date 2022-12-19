@@ -704,7 +704,7 @@ qda <- function(
 		shinymanager::read_db_decrypt(
 			qda_data$db_conn,
 			name = 'credentials',
-			passphrase = users_passphrase) |> select(!password)
+			passphrase = users_passphrase) |> dplyr::select(!password)
 	}
 
 	qda_data$methods_docs <- methods_docs

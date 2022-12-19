@@ -505,7 +505,9 @@ shiny_server <- function(input, output, session) {
 
 				old_value <- ifelse(nrow(responses) == 0,
 									'',
-									responses |> filter(stem == stem) |> select(answer) )
+									responses |>
+										filter(stem == stem) |>
+										dplyr::select(answer) )
 				if(old_value != new_value) {
 					qda_data()$delete_text_question_response(
 						id = input$selected_text,
