@@ -440,12 +440,15 @@ qda <- function(
 	}
 
 	# add_text_question
-	qda_data$add_text_question <- function(stem, type, options) {
-		text_questions <- DBI::dbReadTable(qda_db, 'text_questions')
-		new_order <- ifelse(nrow(text_questions) > 0,
-							max(text_questions$order + 1),
-							1)
-
+	qda_data$add_text_question <- function(stem, type, order, options) {
+		if(missing(order)) {
+			text_questions <- DBI::dbReadTable(qda_db, 'text_questions')
+			new_order <- ifelse(nrow(text_questions) > 0,
+								max(text_questions$order + 1),
+								1)
+		} else {
+			new_order <- order
+		}
 		new_row <- data.frame(
 			stem = stem,
 			type = type[1],
@@ -461,6 +464,13 @@ qda <- function(
 	qda_data$get_text_questions <- function() {
 		df <- DBI::dbReadTable(qda_db, 'text_questions')
 		df[order(df$order),]
+	}
+
+	qda_data$delete_text_question <- function(stem) {
+		query <- paste0('DELETE FROM text_questions WHERE ',
+						'stem = "', stem, '" ')
+		DBI::dbExecute(qda_db, query)
+		qda_data$log(Sys.info()['user'], 'text_questions', query)
 	}
 
 	##### text_question_responses ##############################################

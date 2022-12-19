@@ -10,6 +10,8 @@ questions_ui <- function(id) {
 		shiny::tabsetPanel(
 			shiny::tabPanel(
 				title = 'Text Questions',
+				shiny::br(),
+				shiny::actionButton(ns('new_text_question'), 'New Text Question'),
 				shiny::hr(),
 				DT::dataTableOutput(ns('text_questions_table'))
 			),
@@ -34,22 +36,67 @@ questions_server <- function(id, qda_data, page_length = 20) {
 	shiny::moduleServer(
 		id,
 		function(input, output, session) {
+			selected_code_stem <- shiny::reactiveVal('')
+			selected_text_stem <- shiny::reactiveVal('')
+
+			##### Tables
+			output$text_questions_table <- DT::renderDataTable({
+				input$update_text_question
+				input$confirm_text_question_delete
+				qda_data()$get_text_questions() |> qda_datatable()
+			})
+
 			output$code_questions_table <- DT::renderDataTable({
 				input$update_code_question
 				input$confirm_code_question_delete
-				qda_data()$get_code_questions() |>
-					DT::datatable(
-						rownames = FALSE,
-						filter = 'top',
-						options = list(
-							pageLength = page_length
-						),
-						selection = 'single'
-					)
+				qda_data()$get_code_questions() |> qda_datatable()
 			})
 
-			selected_code_stem <- shiny::reactiveVal('')
+			##### UI output
+			# Text questions
+			output$text_question_ui <- renderUI({
+				# TODO: this can be refactored into a utlity function
+				ns <- session$ns
+				text_questions <- qda_data()$get_text_questions()
+				df <- data.frame(
+					stem = '',
+					type = 'text',
+					order = max(text_questions$order, na.rm = TRUE) + 1,
+					options = ''
+				)
+				if(!is.null(input$text_questions_table_rows_selected)) {
+					df <- text_questions[input$text_questions_table_rows_selected, , drop = FALSE]
+				}
+				shiny::tagList(
+					shiny::textInput(
+						inputId = ns('text_question_stem'),
+						label = 'Stem',
+						value = df[1,]$stem,
+						width = '100%'),
+					shiny::selectInput(
+						inputId = ns('text_question_type'),
+						label = 'Type',
+						choices = c('text', 'radio', 'checkbox'),
+						selected = df[1,]$type
+					),
+					shiny::numericInput(
+						inputId = ns('text_question_order'),
+						label = 'Order',
+						value = df[1,]$order
+					),
+					shiny::selectizeInput(
+						inputId = ns('text_question_options'),
+						label = 'Options',
+						choices = strsplit(df[1,]$options, ';')[[1]],
+						selected = strsplit(df[1,]$options, ';')[[1]],
+						multiple = TRUE,
+						options = list(create = TRUE),
+						width = '100%'
+					)
+				)
+			})
 
+			# Code questions
 			output$code_question_ui <- renderUI({
 				ns <- session$ns
 				code_questions <- qda_data()$get_code_questions()
@@ -91,6 +138,26 @@ questions_server <- function(id, qda_data, page_length = 20) {
 				)
 			})
 
+			##### Add new question (button observe)
+			# Text questions
+			shiny::observeEvent(input$new_text_question, {
+				ns <- session$ns
+				selected_text_stem('')
+				shiny::showModal(
+					shiny::modalDialog(
+						shiny::uiOutput(ns('text_question_ui')),
+						title = 'New Text Question',
+						size = 'l',
+						easyClose = FALSE,
+						footer = shiny::tagList(
+							shiny::actionButton(ns('cancel_modal'), 'Cancel'),
+							shiny::actionButton(ns('update_text_question'), 'Save')
+						)
+					)
+				)
+			})
+
+			# Code questions
 			shiny::observeEvent(input$new_code_question, {
 				ns <- session$ns
 				selected_code_stem('')
@@ -108,6 +175,26 @@ questions_server <- function(id, qda_data, page_length = 20) {
 				)
 			})
 
+			##### Delete question
+			# Text questions
+			shiny::observeEvent(input$delete_text_question, {
+				ns <- session$ns
+				shinyWidgets::ask_confirmation(
+					inputId = ns('confirm_text_question_delete'),
+					title = 'Confirm Deletion',
+					text = 'Are you sure you wish to delete this question?',
+					btn_labels = c('No', 'Yes'))
+			})
+
+			shiny::observeEvent(input$confirm_text_question_delete, {
+				if(input$confirm_text_question_delete) {
+					qda_data()$delete_text_question(selected_text_stem())
+				}
+				selected_text_stem('')
+				shiny::removeModal()
+			})
+
+			# Code questions
 			shiny::observeEvent(input$delete_code_question, {
 				ns <- session$ns
 				shinyWidgets::ask_confirmation(
@@ -125,6 +212,33 @@ questions_server <- function(id, qda_data, page_length = 20) {
 				shiny::removeModal()
 			})
 
+			##### Row selections
+			# Text Questions
+			shiny::observe({
+				ns <- session$ns
+				if(!is.null(input$text_questions_table_rows_selected)) {
+					df <- qda_data()$get_text_questions()
+					df <- df[input$text_questions_table_rows_selected, , drop = FALSE]
+					selected_text_stem(df[1,]$stem)
+					shiny::showModal(
+						shiny::modalDialog(
+							shiny::p("Note: Editing text questions will not change the stems
+							  or responses already entered. Changes will be reflected in any new completions."),
+							shiny::uiOutput(ns('text_question_ui')),
+							title = 'Edit Text Question',
+							size = 'l',
+							easyClose = FALSE,
+							footer = shiny::tagList(
+								shiny::actionButton(ns('cancel_modal'), 'Cancel'),
+								shiny::actionButton(ns('delete_text_question'), 'Delete'),
+								shiny::actionButton(ns('update_text_question'), 'Save')
+							)
+						)
+					)
+				}
+			})
+
+			# Code questions
 			shiny::observe({
 				ns <- session$ns
 				if(!is.null(input$code_questions_table_rows_selected)) {
@@ -149,6 +263,19 @@ questions_server <- function(id, qda_data, page_length = 20) {
 				}
 			})
 
+			##### Update question
+			# Text questions
+			observeEvent(input$update_text_question, {
+				qda_data()$delete_text_question(selected_text_stem())
+				qda_data()$add_text_question(stem = input$text_question_stem,
+											 type = input$text_question_type,
+											 order = input$text_question_order,
+											 options = input$text_question_options)
+				selected_text_stem('')
+				shiny::removeModal()
+			})
+
+			# Code questions
 			observeEvent(input$update_code_question, {
 				qda_data()$delete_code_question(selected_code_stem())
 				qda_data()$add_code_question(stem = input$code_question_stem,
@@ -158,65 +285,6 @@ questions_server <- function(id, qda_data, page_length = 20) {
 				selected_code_stem('')
 				shiny::removeModal()
 			})
-
-			output$text_questions_table <- DT::renderDataTable({
-				qda_data()$get_text_questions() |>
-					DT::datatable(
-						rownames = FALSE,
-						filter = 'top',
-						options = list(
-							pageLength = page_length
-						),
-						selection = 'single'
-					)
-			})
-
-			shiny::observe({
-				ns <- session$ns
-				if(!is.null(input$text_questions_table_rows_selected)) {
-					df <- qda_data()$get_text_questions()
-					df <- df[input$text_questions_table_rows_selected, , drop = FALSE]
-					shiny::showModal(
-						shiny::modalDialog(
-							shiny::p("Note: Editing code questions will not change the stems
-							  or responses already entered. Changes will be reflected in any new codings completed."),
-							shiny::textInput(
-								inputId = ns('text_question_stem'),
-								label = 'Stem',
-								value = df[1,]$stem,
-								width = '100%'),
-							shiny::selectInput(
-								inputId = ns('text_question_type'),
-								label = 'Type',
-								choices = c('text', 'radio', 'checkbox'),
-								selected = df[1,]$type
-							),
-							shiny::numericInput(
-								inputId = ns('text_question_order'),
-								label = 'Order',
-								value = df[1,]$order
-							),
-							title = 'Edit Text Question',
-							size = 'l',
-							easyClose = FALSE,
-							footer = shiny::tagList(
-								shiny::actionButton('cancel_modal', 'Cancel'),
-								shiny::actionButton(ns('update_text_question'), 'Save')
-							)
-						)
-					)
-				}
-			})
-
-			observeEvent(input$update_text_question, {
-				df <- qda_data()$get_text_questions()
-				df <- df[input$text_questions_table_rows_selected, , drop = FALSE]
-				old_stem <- df[1,]$stem
-
-				shiny::removeModal()
-			})
-
-
 		}
 	)
 }

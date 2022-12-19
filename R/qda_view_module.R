@@ -29,22 +29,10 @@ qda_view_ui <- function(id) {
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @param qda_data QDA data object, see [ShinyQDA::qda()].
 #' @export
-qda_view_server <- function(id, qda_data, page_length = 20) {
+qda_view_server <- function(id, qda_data) {
 	shiny::moduleServer(
 		id,
 		function(input, output, session) {
-			qda_datatable <- function(df) {
-				df |>
-					DT::datatable(
-						rownames = FALSE,
-						filter = 'top',
-						options = list(
-							pageLength = page_length
-						),
-						selection = 'single'
-				)
-			}
-
 			output$qda_codes_table <- DT::renderDataTable({
 				input$codebook_tree
 				qda_data()$get_codes() |> qda_datatable()
