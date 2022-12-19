@@ -533,16 +533,16 @@ shiny_server <- function(input, output, session) {
 			return(NULL)
 		}
 		codes <- codes |> dplyr::filter(qda_id == input$selected_text)
-		DT::datatable(
-			codes,
-			rownames = FALSE,
-			options = list(
-				# scrollX = TRUE,
-				# scrollY = "200px",
-				pageLength = 20
-			),
-			selection = 'single'
-		)
+
+		code_questions <- qda_data()$get_code_question_responses()
+		code_questions <- code_questions |>
+			dplyr::filter(coding_id %in% codes$coding_id)
+		code_questions <- code_questions[!duplicated(code_questions[,c('coding_id', 'stem', 'coder')], fromLast = TRUE),]
+
+		code_questions <- reshape2::dcast(code_questions, coding_id + coder ~ stem, value.var = 'answer')
+
+		codes2 <- merge(codes, code_questions, by = c('coding_id', 'coder'), all.x = TRUE)
+		codes2 |> qda_datatable()
 	})
 
 }
