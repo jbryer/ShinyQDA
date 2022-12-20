@@ -509,7 +509,7 @@ shiny_server <- function(input, output, session) {
 				old_value <- ifelse(nrow(responses) == 0,
 									'',
 									responses |>
-										filter(stem == stem) |>
+										dplyr::filter(stem == stem) |>
 										dplyr::select(answer) |>
 										as.character())
 				if(old_value != new_value) {
