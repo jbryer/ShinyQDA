@@ -489,11 +489,15 @@ shiny_server <- function(input, output, session) {
 							   questions[i,]$stem))
 			}
 		}
+		if(nrow(questions) > 0) {
+			ui[[length(ui) + 1]] <- actionButton(
+				inputId = 'save_text_questions',
+				label = 'Save Responses')
+		}
 		do.call(shiny::div, ui)
 	})
 
-	shiny::observe({
-		# TODO: need to wait a few seconds before running this
+	shiny::observeEvent(input$save_text_questions, {
 		shiny::req(input$selected_text)
 		questions <- qda_data()$get_text_questions()
 		responses <- qda_data()$get_text_question_responses(id = input$selected_text,
