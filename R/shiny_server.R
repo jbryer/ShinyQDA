@@ -436,8 +436,7 @@ shiny_server <- function(input, output, session) {
 	# UI for text questions
 	output$questions_ui <- shiny::renderUI({
 		questions <- qda_data()$get_text_questions()
-		responses <- qda_data()$get_text_question_responses(input$selected_text,
-														  get_username())
+		responses <- qda_data()$get_text_question_responses(input$selected_text, get_username())
 		ui <- list()
 		for(i in seq_len(nrow(questions))) {
 			if(questions[i,]$type == 'text') {
@@ -494,6 +493,7 @@ shiny_server <- function(input, output, session) {
 	})
 
 	shiny::observe({
+		# TODO: need to wait a few seconds before running this
 		shiny::req(input$selected_text)
 		questions <- qda_data()$get_text_questions()
 		responses <- qda_data()$get_text_question_responses(id = input$selected_text,
@@ -502,12 +502,12 @@ shiny_server <- function(input, output, session) {
 			stem <- questions[i,]$stem
 			new_value <- input[[paste0('text_', textutils::HTMLencode(stem))]]
 			if(!is.null(new_value)) {
-
 				old_value <- ifelse(nrow(responses) == 0,
 									'',
 									responses |>
 										filter(stem == stem) |>
-										dplyr::select(answer) )
+										dplyr::select(answer) |>
+										as.character())
 				if(old_value != new_value) {
 					qda_data()$delete_text_question_response(
 						id = input$selected_text,
