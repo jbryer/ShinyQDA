@@ -83,6 +83,14 @@ shiny_ui <- function(request) {
 				shiny::tabPanel(
 					'View All Codes',
 					DT::dataTableOutput('coding_table')
+				),
+				shiny::tabPanel(
+					'Sentiment',
+					shiny::selectInput('sentiment_lexicon',
+									   choices = c('Bing binary classification' = 'bing',
+									   			   'NRC Word-Emotion Association' = 'nrc'),
+									   label = 'Sentiment lexicon:'),
+					shiny::htmlOutput('sentiment_text')
 				)
 			)
 		),

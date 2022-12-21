@@ -6,11 +6,9 @@
 #' @param link if TRUE codes will link to a modal dialog to edit them.
 #' @export
 highlighter <- function(text, codings, codes, link = TRUE) {
-	# text <- stringr::str_squish(text)
 	text <- stringr::str_remove_all(text, '  ')
 	# The color will be determined by the first code
 	first_code <- sapply(strsplit(codings$codes, ';'), FUN = function(x) { ifelse(length(x) > 0, x[[1]], character()) })
-	# first_code <- first_code[!is.na(first_code) & nchar(first_code) > 0]
 	codes <- codes[!duplicated(codes$code),]
 	row.names(codes) <- codes$code
 	colors <- codes[first_code,]$color

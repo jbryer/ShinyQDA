@@ -32,6 +32,7 @@ Imports:
     shinyWidgets,
     stringr,
     textutils,
+    tidytext,
     tm,
     wordcloud,
     wordcloud2

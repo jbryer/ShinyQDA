@@ -177,6 +177,15 @@ shiny_server <- function(input, output, session) {
 		}
 	})
 
+	##### Sentiment view of the text
+	output$sentiment_text <- renderText({
+		shiny::req(input$selected_text)
+		thetext <- qda_data()$get_text(input$selected_text) |>
+			dplyr::select(qda_text)
+		thetext <- thetext[1,1,drop=TRUE]
+		return(sentiment_highlighter(thetext, lexicon = input$sentiment_lexicon))
+	})
+
 	############################################################################
 	##### Modal dialog to add/edit codes
 	# Show the modal dialog to add a tag
@@ -498,6 +507,7 @@ shiny_server <- function(input, output, session) {
 	})
 
 	shiny::observeEvent(input$save_text_questions, {
+		# TODO: Provide some indicationg that there are unsaved changes
 		shiny::req(input$selected_text)
 		questions <- qda_data()$get_text_questions()
 		responses <- qda_data()$get_text_question_responses(id = input$selected_text,
