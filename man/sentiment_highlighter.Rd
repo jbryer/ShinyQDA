@@ -4,7 +4,7 @@
 \alias{sentiment_highlighter}
 \title{Returns an HTML character highlighting the sentiments.}
 \usage{
-sentiment_highlighter(text, lexicon = c("nrc", "bing"))
+sentiment_highlighter(text, lexicon = c("nrc", "bing", "loughran", "afinn"))
 }
 \arguments{
 \item{thetext}{the text to highlight.}

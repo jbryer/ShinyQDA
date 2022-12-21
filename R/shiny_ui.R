@@ -87,8 +87,10 @@ shiny_ui <- function(request) {
 				shiny::tabPanel(
 					'Sentiment',
 					shiny::selectInput('sentiment_lexicon',
-									   choices = c('Bing binary classification' = 'bing',
-									   			   'NRC Word-Emotion Association' = 'nrc'),
+									   choices = c('Bing binary sentiment' = 'bing',
+									   			   'NRC Word-Emotion Association' = 'nrc',
+									   			   'Loughran-McDonald Sentiment' = 'loughran',
+									   			   'AFINN-111 dataset' = 'afinn'),
 									   label = 'Sentiment lexicon:'),
 					shiny::htmlOutput('sentiment_text')
 				)
