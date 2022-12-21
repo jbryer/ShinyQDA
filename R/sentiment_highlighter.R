@@ -39,20 +39,23 @@ lexicon_colors <- list(
 #' @importFrom tidytext unnest_tokens get_sentiments
 #' @importFrom dplyr left_join mutate
 #' @importFrom stringr str_remove_all
+#' @improtFrom textdata lexicon_nrc lexicon_afinn lexicon_loughran
 #' @export
 sentiment_highlighter <- function(text, lexicon = c('nrc', 'bing', 'loughran', 'afinn')) {
 	colors <- NULL
 	sentiments <- NULL
 	if(lexicon[1] == 'nrc') {
-		sentiments <- tidytext::get_sentiments("nrc")
+		# sentiments <- tidytext::get_sentiments("nrc")
+		sentiments <- textdata::lexicon_nrc()
 	} else if(lexicon[1] == 'bing') {
 		sentiments <- tidytext::get_sentiments("bing")
 	} else if(lexicon[1] == 'afinn') {
-		sentiments <- tidytext::get_sentiments("afinn")
+		# sentiments <- tidytext::get_sentiments("afinn")
+		sentiments <- textdata::lexicon_afinn()
 		sentiments$sentiment <- as.character(sentiments$value)
 	} else if(lexicon[1] == 'loughran') {
-		sentiments <- tidytext::get_sentiments("loughran")
-
+		# sentiments <- tidytext::get_sentiments("loughran")
+		sentiments <- textdata::lexicon_loughran()
 	} else {
 		stop(paste0('Unknown lexicon: ', lexicon[1]))
 	}

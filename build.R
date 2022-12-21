@@ -17,7 +17,7 @@ ShinyQDA::shinyQDA()
 unlink('ShinyQDA.sqlite')
 
 # Add package imports
-usethis::use_package('tidytext', type = 'Imports')
+usethis::use_package('textdata', type = 'Imports')
 
 
 qda_data <- ShinyQDA::qda('inst/daacs/daacs.sqlite')
