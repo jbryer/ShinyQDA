@@ -7,3 +7,7 @@ articles/
 private/
 inst/daacs_writing/
 inst/layout_test/
+inst/daacs/afinn/
+inst/daacs/bing/
+inst/daacs/loughran/
+inst/daacs/nrc/

@@ -25,6 +25,12 @@ qda_data <- ShinyQDA::qda('inst/daacs/daacs.sqlite')
 DBI::dbListTables(qda_data$db_conn)
 
 ##### Data Prep
+app_dir <- 'inst/daacs/'
+textdata::lexicon_afinn(dir = app_dir)
+textdata::lexicon_bing(dir = app_dir)
+textdata::lexicon_loughran(dir = app_dir)
+textdata::lexicon_nrc(dir = app_dir)
+
 reviews <- read.csv('data-raw/archive/Musical_instruments_reviews.csv')
 
 asep8 <- readxl::read_excel('data-raw/asap-aes/training_set_rel3.xlsx') |>

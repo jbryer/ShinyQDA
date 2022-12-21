@@ -46,16 +46,16 @@ sentiment_highlighter <- function(text, lexicon = c('nrc', 'bing', 'loughran', '
 	sentiments <- NULL
 	if(lexicon[1] == 'nrc') {
 		# sentiments <- tidytext::get_sentiments("nrc")
-		sentiments <- textdata::lexicon_nrc()
+		sentiments <- textdata::lexicon_nrc(dir = '.')
 	} else if(lexicon[1] == 'bing') {
 		sentiments <- tidytext::get_sentiments("bing")
 	} else if(lexicon[1] == 'afinn') {
 		# sentiments <- tidytext::get_sentiments("afinn")
-		sentiments <- textdata::lexicon_afinn()
+		sentiments <- textdata::lexicon_afinn(dir = '.')
 		sentiments$sentiment <- as.character(sentiments$value)
 	} else if(lexicon[1] == 'loughran') {
 		# sentiments <- tidytext::get_sentiments("loughran")
-		sentiments <- textdata::lexicon_loughran()
+		sentiments <- textdata::lexicon_loughran(dir = '.')
 	} else {
 		stop(paste0('Unknown lexicon: ', lexicon[1]))
 	}
