@@ -36,12 +36,17 @@ lexicon_colors <- list(
 #' Returns an HTML character highlighting the sentiments.
 #'
 #' @param thetext the text to highlight.
+#' @param lexicon the sentiment lexicon to use.
+#' @param token unit for tokenizing. Reasonable options are words, sentences,
+#'        lines, and paragraphs. See [tidytext::unnest_tokens()] for more details.
 #' @importFrom tidytext unnest_tokens get_sentiments
 #' @importFrom dplyr left_join mutate
 #' @importFrom stringr str_remove_all
 #' @improtFrom textdata lexicon_nrc lexicon_afinn lexicon_loughran
 #' @export
-sentiment_highlighter <- function(text, lexicon = c('nrc', 'bing', 'loughran', 'afinn')) {
+sentiment_highlighter <- function(text,
+								  lexicon = c('nrc', 'bing', 'loughran', 'afinn'),
+								  token = 'words') {
 	colors <- NULL
 	sentiments <- NULL
 	if(lexicon[1] == 'nrc') {
@@ -64,9 +69,15 @@ sentiment_highlighter <- function(text, lexicon = c('nrc', 'bing', 'loughran', '
 							color = colors,
 							row.names = NULL)
 
-	tokens <- data.frame(text = text) |>
+	paragraphs <- strsplit(text, '\n')[[1]]
+
+	tokens <- data.frame(paragraph = seq_len(length(paragraphs)),
+						 text = paragraphs) |>
 		dplyr::mutate(text = stringr::str_remove_all(text, '  ')) |>
-		tidytext::unnest_tokens(token, text, to_lower = FALSE, strip_punct = FALSE) |>
+		tidytext::unnest_tokens(token, text,
+								token = token,
+								to_lower = FALSE,
+								strip_punct = FALSE) |>
 		dplyr::mutate(token_lower = tolower(token)) |>
 		dplyr::left_join(sentiments, by = c('token_lower' = 'word')) |>
 		dplyr::left_join(colors_df, by = c('sentiment' = 'sentiment'))
@@ -81,6 +92,12 @@ sentiment_highlighter <- function(text, lexicon = c('nrc', 'bing', 'loughran', '
 										   "</span>",
 										   tokens[sentiment_rows,]$token,
 										   "</span>")
-	html <- paste0(tokens$html, collapse = ' ')
+	html <- ''
+	for(i in seq_len(length(paragraphs))) {
+		html <- paste0(html, '<p>',
+					   paste0(tokens[tokens$paragraph == i,]$html, collapse = ' '),
+					   '</p>')
+	}
+	# html <- paste0(tokens$html, collapse = ' ')
 	return(html)
 }
