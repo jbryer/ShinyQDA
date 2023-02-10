@@ -247,7 +247,6 @@ shiny_server <- function(input, output, session) {
 	},
 	priority = 1000)
 
-
 	# ID for the code to edit. Should be 0 when not in edit mode
 	#  (i.e. will trigger creating a new code when 0)
 	code_edit_id <- reactiveVal(0)
@@ -536,6 +535,11 @@ shiny_server <- function(input, output, session) {
 				}
 			}
 		}
+	})
+
+	############################################################################
+	##### Rubric
+	output$rubric <- shiny::renderText({
 	})
 
 	############################################################################

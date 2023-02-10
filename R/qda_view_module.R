@@ -4,11 +4,15 @@
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @export
-qda_view_ui <- function(id) {
-	ns <- NS(id)
-	tagList(
+qda_view_ui <- function(id, download_xlsx = TRUE, download_rda = TRUE) {
+	ns <- shiny::NS(id)
+	shiny::tagList(
 		shiny::navlistPanel(
 			widths = c(3, 9),
+			header = shiny::tagList(
+				shiny::downloadButton(ns('qda_download_xlsx'), label = 'Download Excel'),
+				shiny::downloadButton(ns('qda_download_rda'), label = 'Download R Data')
+			),
 			shiny::tabPanel('Codes', DT::dataTableOutput(ns('qda_codes_table'))),
 			shiny::tabPanel('Codings', DT::dataTableOutput(ns('qda_codings_table'))),
 			shiny::tabPanel('Code Questions', DT::dataTableOutput(ns('qda_code_questions_table'))),
@@ -82,6 +86,34 @@ qda_view_server <- function(id, qda_data) {
 			output$qda_log_table <- DT::renderDataTable({
 				qda_data()$get_log() |> qda_datatable()
 			})
+
+			output$qda_download_xlsx <- shiny::downloadHandler(
+				filename = function() {
+					paste0('ShinyQDA-', Sys.Date(), '.xlsx')
+				},
+				content = function(file) {
+					tables <- dbListTables(qda_data()$db_conn)
+					tabs <- list()
+					for(i in tables) {
+						tabs[[i]] <- dbReadTable(qda_data()$db_conn, i)
+					}
+					writexl::write_xlsx(tabs, path = file)
+				}
+			)
+
+			output$qda_download_rda <- shiny::downloadHandler(
+				filename = function() {
+					paste0('ShinyQDA-', Sys.Date(), '.rda')
+				},
+				content = function(file) {
+					tables <- dbListTables(qda_data()$db_conn)
+					tabs <- list()
+					for(i in tables) {
+						tabs[[i]] <- dbReadTable(qda_data()$db_conn, i)
+					}
+					save(list = names(tabs), file = file, envir = as.environment(tabs))
+				}
+			)
 		}
 	)
 }
