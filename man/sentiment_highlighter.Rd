@@ -4,9 +4,18 @@
 \alias{sentiment_highlighter}
 \title{Returns an HTML character highlighting the sentiments.}
 \usage{
-sentiment_highlighter(text, lexicon = c("nrc", "bing", "loughran", "afinn"))
+sentiment_highlighter(
+  text,
+  lexicon = c("nrc", "bing", "loughran", "afinn"),
+  token = "words"
+)
 }
 \arguments{
+\item{lexicon}{the sentiment lexicon to use.}
+
+\item{token}{unit for tokenizing. Reasonable options are words, sentences,
+lines, and paragraphs. See \code{\link[tidytext:unnest_tokens]{tidytext::unnest_tokens()}} for more details.}
+
 \item{thetext}{the text to highlight.}
 }
 \description{

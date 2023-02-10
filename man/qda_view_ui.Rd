@@ -4,7 +4,7 @@
 \alias{qda_view_ui}
 \title{UI for the raw data view.}
 \usage{
-qda_view_ui(id)
+qda_view_ui(id, download_xlsx = TRUE, download_rda = TRUE)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}

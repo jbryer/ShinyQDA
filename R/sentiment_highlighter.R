@@ -42,7 +42,7 @@ lexicon_colors <- list(
 #' @importFrom tidytext unnest_tokens get_sentiments
 #' @importFrom dplyr left_join mutate
 #' @importFrom stringr str_remove_all
-#' @improtFrom textdata lexicon_nrc lexicon_afinn lexicon_loughran
+#' @importFrom textdata lexicon_nrc lexicon_afinn lexicon_loughran
 #' @export
 sentiment_highlighter <- function(text,
 								  lexicon = c('nrc', 'bing', 'loughran', 'afinn'),
