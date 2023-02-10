@@ -150,14 +150,14 @@ shiny_server <- function(input, output, session) {
 			dplyr::select(qda_text)
 		thetext <- thetext[1,1,drop=TRUE]
 		div(
+			shiny::strong('Number of paragraphs: '),
+				prettyNum(stringr::str_count(thetext, '[^\r\n]+'), big.mark = ','), br(),
+			shiny::strong('Number of sentences: '),
+				prettyNum(length(gregexpr('[[:alnum:] ][.!?]', thetext)[[1]]), big.mark = ','), br(),
 			shiny::strong('Number of words: '),
 				prettyNum(stringr::str_count(thetext, '\\w+'), big.mark = ','), shiny::br(),
 			shiny::strong('Number of characters: '),
-				prettyNum(nchar(thetext), big.mark = ','), shiny::br(),
-			shiny::strong('Number of sentencnes: '),
-				prettyNum(length(gregexpr('[[:alnum:] ][.!?]', thetext)[[1]]), big.mark = ','), br(),
-			shiny::strong('Number of paragraphs: '),
-				prettyNum(stringr::str_count(thetext, '[^\r\n]+'), big.mark = ',')
+				prettyNum(nchar(thetext), big.mark = ',')
 		)
 	})
 
