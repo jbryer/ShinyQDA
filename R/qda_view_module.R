@@ -89,7 +89,7 @@ qda_view_server <- function(id, qda_data) {
 
 			output$qda_download_xlsx <- shiny::downloadHandler(
 				filename = function() {
-					paste0('ShinyQDA-', Sys.Date(), '.xlsx')
+					paste0(id, '-', Sys.Date(), '.xlsx')
 				},
 				content = function(file) {
 					tables <- dbListTables(qda_data()$db_conn)
@@ -103,7 +103,7 @@ qda_view_server <- function(id, qda_data) {
 
 			output$qda_download_rda <- shiny::downloadHandler(
 				filename = function() {
-					paste0('ShinyQDA-', Sys.Date(), '.rda')
+					paste0(id, '-', Sys.Date(), '.rda')
 				},
 				content = function(file) {
 					tables <- dbListTables(qda_data()$db_conn)
