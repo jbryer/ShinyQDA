@@ -143,6 +143,24 @@ shiny_server <- function(input, output, session) {
 
 	text_selection <- shiny::reactiveVal('')
 
+	output$text_info <- shiny::renderUI({
+		code_edit_id()
+		shiny::req(input$selected_text)
+		thetext <- qda_data()$get_text(input$selected_text) |>
+			dplyr::select(qda_text)
+		thetext <- thetext[1,1,drop=TRUE]
+		div(
+			shiny::strong('Number of words: '),
+				prettyNum(stringr::str_count(thetext, '\\w+'), big.mark = ','), shiny::br(),
+			shiny::strong('Number of characters: '),
+				prettyNum(nchar(thetext), big.mark = ','), shiny::br(),
+			shiny::strong('Number of sentencnes: '),
+				prettyNum(length(gregexpr('[[:alnum:] ][.!?]', thetext)[[1]]), big.mark = ','), br(),
+			shiny::strong('Number of paragraphs: '),
+				prettyNum(stringr::str_count(thetext, '[^\r\n]+'), big.mark = ',')
+		)
+	})
+
 	# Text output. Note that this will replace new lines (i.e. \n) with <p/>
 	output$text_output <- shiny::renderText({
 		code_edit_id()
