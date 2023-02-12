@@ -1,11 +1,12 @@
 #' Shiny User Interface for QDA
 #'
 #' @param title title displayed in the top left of the Shiny app.
+#' @param debug parater passed to [shinyjs::useShinyjs()]
 #' @importFrom shiny icon tags navbarPage tabPanel fluidRow column uiOutput plotOutput tabsetPanel sidebarLayout sidebarPanel mainPanel actionButton htmlOutput verbatimTextOutput
 #' @importFrom DT dataTableOutput
 #' @importFrom shinyjs useShinyjs
 #' @export
-shiny_ui <- function(request) {
+shiny_ui <- function(request, debug = TRUE) {
 	shiny::navbarPage(
 		# TODO: Would be nice if these were parameters. Not allowed on shiny_ui
 		# function definition, would need to be passed through the environment
@@ -24,7 +25,7 @@ shiny_ui <- function(request) {
 		shiny::tabPanel(
 			title = 'Coding',
 			icon = shiny::icon('pen-to-square'),
-			shinyjs::useShinyjs(),
+			shinyjs::useShinyjs(debug = debug),
 			shiny::tags$style(
 				type = 'text/css',
 				'.modal-dialog { width: 90% !important; }'

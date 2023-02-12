@@ -4,9 +4,11 @@
 \alias{shiny_ui}
 \title{Shiny User Interface for QDA}
 \usage{
-shiny_ui(request)
+shiny_ui(request, debug = TRUE)
 }
 \arguments{
+\item{debug}{parater passed to \code{\link[shinyjs:useShinyjs]{shinyjs::useShinyjs()}}}
+
 \item{title}{title displayed in the top left of the Shiny app.}
 }
 \description{
