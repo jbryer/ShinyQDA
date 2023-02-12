@@ -3,7 +3,7 @@
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @export
 #' @importFrom shiny NS
-#' @importFrom shinyTree shinyTree renderTree
+#' @importFrom shinyTree shinyTree renderTree get_selected
 codebook_ui <- function(id) {
 	ns <- shiny::NS(id)
 	tagList(
@@ -39,7 +39,7 @@ codebook_ui <- function(id) {
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @param qda_data QDA data object, see [ShinyQDA::qda()].
-#' @import shinyjs
+#' @importFrom shinyjs runjs enable disable useShinyjs removeCssClass addCssClass
 #' @export
 codebook_server <- function(id, qda_data) {
 	shiny::moduleServer(
