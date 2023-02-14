@@ -147,7 +147,8 @@ codebook_server <- function(id, qda_data) {
 				traverse_tree <- function(node, parent = '') {
 					for(i in seq_len(length(node))) {
 						code <- names(node)[i]
-						if(codes[code,]$parent != parent) {
+						if(is.na(codes[code,]$parent) |
+						   codes[code,]$parent != parent) {
 							qda_data()$update_code(code = code,
 												   parent = parent)
 						}
@@ -156,7 +157,14 @@ codebook_server <- function(id, qda_data) {
 						}
 					}
 				}
-				traverse_tree(tree)
+				tryCatch(
+					traverse_tree(tree),
+					error = function(e) {
+						# TODO: alert the user something went wrong
+						# https://daattali.com/shiny/shinyalert-demo/
+						print(e)
+					}
+				)
 			})
 
 			observeEvent(input$code_description, {
