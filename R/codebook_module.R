@@ -147,10 +147,12 @@ codebook_server <- function(id, qda_data) {
 				traverse_tree <- function(node, parent = '') {
 					for(i in seq_len(length(node))) {
 						code <- names(node)[i]
-						if(is.na(codes[code,]$parent) |
-						   codes[code,]$parent != parent) {
-							qda_data()$update_code(code = code,
-												   parent = parent)
+						if(#!is.na(codes[code,]$parent) |
+							codes[code,]$parent != parent) {
+							shiny::isolate({
+								qda_data()$update_code(code = code,
+													   parent = parent)
+							})
 						}
 						if(!is.null(node[[i]]) & !is.null(names(node[[i]]))) {
 							traverse_tree(node[[i]], parent = names(node)[i])
