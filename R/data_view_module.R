@@ -44,13 +44,32 @@ data_view_ui <- function(id) {
 				")),
 		shiny::fluidRow(
 			shiny::column(
-				width = 6,
-				shiny::uiOutput(ns('column_selection')),
+				width = 8,
+				shiny::uiOutput(ns('column_selection'))
+			),
+			shiny::column(
+				width = 2,
+				shiny::br(),
+				shiny::downloadButton(ns('download_merged_excel'),
+									  'Download Excel')
+			),
+			shiny::column(
+				width = 2,
+				shiny::br(),
+				shiny::downloadButton(ns('download_merged_csv'),
+									  'Download CSV')
 			)
 		),
 		DT::dataTableOutput(ns('text_table'))
 	)
 }
+
+# Columns that should be added/removed all together. The value is the prefix from qda_merge
+grouped_colunns <- c('Codings' = 'code_',
+					 'NRC Sentiment' = 'nrc_',
+					 'Bing Sentiment' = 'bing_',
+					 'Loughran Sentiment' = 'loughran_',
+					 'AFINN Sentiment' = 'afinn_')
 
 #' Server for the data view.
 #'
@@ -62,27 +81,20 @@ data_view_server <- function(id, qda_data) {
 		id,
 		function(input, output, session) {
 			get_text_data <- reactive({
-				df <- qda_data()$get_text()
-				if(nrow(df) == 0) {
-					return(data.frame)
-				}
-				tab <- df
-				codes_table <- get_coding_table(qda_data())
-				if(nrow(codes_table) > 0) {
-					codes_table <- cbind(codes_table[,1:2], n_codes = apply(codes_table[,3:ncol(codes_table)], 1, sum))
-					tab <- merge(tab, codes_table, by = c('qda_id'), all.x = TRUE)
-				}
+				return(qda_merge(qda_data(),
+								 include_sentiments = TRUE))
+			})
 
-				codings <- qda_data()$get_codings()
-				if(nrow(codings) > 0) {
-					highlights_table <- table(codings$qda_id) |>
-						as.data.frame() |>
-						dplyr::rename(n_highlights = Freq,
-									  qda_id = Var1)
-					tab <- merge(tab, highlights_table, by = 'qda_id', all.x = TRUE)
+			get_text_data_view <- reactive({
+				df <- get_text_data()
+				cols_to_view <- input$columns_to_view
+				for(i in seq_len(length(grouped_colunns))) {
+					if(names(grouped_colunns)[i] %in% cols_to_view) {
+						cols_to_view <- cols_to_view[-grep(names(grouped_colunns)[i], cols_to_view)]
+						cols_to_view <- c(cols_to_view, names(df)[grep(grouped_colunns[i], names(df))])
+					}
 				}
-
-				return(tab)
+				return(df[,cols_to_view])
 			})
 
 			# Select columns to view
@@ -91,11 +103,22 @@ data_view_server <- function(id, qda_data) {
 				df <- get_text_data()
 				selected_cols <- c('qda_id', 'qda_text', 'coder', 'n_codes', 'n_highlights')
 				selected_cols <- selected_cols[selected_cols %in% names(df)]
+
+				all_cols <- names(df)
+				for(i in seq_len(length(grouped_colunns))) {
+					cols <- grep(grouped_colunns[i], all_cols)
+					if(length(i) > 0) {
+						all_cols <- all_cols[-cols]
+					}
+				}
+
+				all_cols <- c(all_cols, names(grouped_colunns))
+
 				shiny::selectizeInput(
 					inputId = ns('columns_to_view'),
 					label = 'Columns to include:',
 					multiple = TRUE,
-					choices = names(df),
+					choices = all_cols,
 					selected = selected_cols,
 					width = '100%'
 				)
@@ -103,10 +126,13 @@ data_view_server <- function(id, qda_data) {
 
 			# Table view of the data
 			output$text_table <- DT::renderDataTable({
-				df <- get_text_data()
-				df$qda_text <- ShinyQDA::text_truncate(df$qda_text)
+				df <- get_text_data_view()
+				if('qda_text' %in% names(df)) {
+					df$qda_text <- ShinyQDA::text_truncate(df$qda_text, width = 100)
+				}
+
 				DT::datatable(
-					df[,input$columns_to_view],
+					df,
 					rownames = FALSE,
 					filter = 'top',
 					options = list(
@@ -198,6 +224,25 @@ data_view_server <- function(id, qda_data) {
 					)
 				}
 			})
+
+			output$download_merged_excel <- shiny::downloadHandler(
+				filename = function() {
+					paste0(id, '-', Sys.Date(), '.xlsx')
+				},
+				content = function(file) {
+					writexl::write_xlsx(get_text_data_view(), path = file)
+				}
+			)
+
+			output$download_merged_csv <- shiny::downloadHandler(
+				filename = function() {
+					paste0(id, '-', Sys.Date(), '.csv')
+				},
+				content = function(file) {
+					write.csv(get_text_data_view(), path = file)
+				}
+			)
+
 		}
 	)
 }
