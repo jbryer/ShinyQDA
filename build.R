@@ -17,13 +17,20 @@ ShinyQDA::shinyQDA()
 unlink('ShinyQDA.sqlite')
 
 # Add package imports
-usethis::use_package('textdata', type = 'Imports')
+usethis::use_package('tidyr', type = 'Imports')
 usethis::use_package('writexl', type = 'Suggests')
 
-
 qda_data <- ShinyQDA::qda('inst/daacs/daacs.sqlite')
+qda_data <- ShinyQDA::qda('inst/daacs_writing/daacs_writing.sqlite')
 
 DBI::dbListTables(qda_data$db_conn)
+
+# Get merged data
+qdadf <- ShinyQDA::qda_merge(qda_data, include_sentiments = TRUE)
+names(qdadf)
+
+# Co-occurance plot
+ShinyQDA::cooccurance_plot(qda_data) + ggplot2::theme(legend.position = 'none')
 
 ##### Data Prep
 app_dir <- 'inst/daacs/'

@@ -33,6 +33,7 @@ Imports:
     stringr,
     textdata,
     textutils,
+    tidyr,
     tidytext,
     tm,
     wordcloud,
