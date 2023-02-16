@@ -4,10 +4,24 @@
 \alias{qda_merge}
 \title{Merges codings with the text data.}
 \usage{
-qda_merge(qda_data, ...)
+qda_merge(
+  qda_data,
+  include_code_counts = TRUE,
+  include_codes = TRUE,
+  sentiment_dir,
+  include_sentiments = FALSE,
+  include_bing_sentiment = include_sentiments,
+  include_nrc_sentiment = include_sentiments,
+  include_loughran_sentiment = include_sentiments,
+  include_afinn_sentiment = include_sentiments,
+  ...
+)
 }
 \arguments{
 \item{qda_data}{a \code{\link[=qda]{qda()}} object.}
+
+\item{sentiment_dir}{if specified, the sentiment lexicon will be loaded
+from the given directory.}
 
 \item{aggregate_fun}{function used to aggregate multiple tags per text per
 per coder. See \code{\link[reshape2:cast]{reshape2::dcast()}} for more information.}
