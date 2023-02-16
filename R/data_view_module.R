@@ -82,7 +82,8 @@ data_view_server <- function(id, qda_data) {
 		function(input, output, session) {
 			get_text_data <- reactive({
 				return(qda_merge(qda_data(),
-								 include_sentiments = TRUE))
+								 include_sentiments = TRUE,
+								 sentiment_dir = '.'))
 			})
 
 			get_text_data_view <- reactive({
