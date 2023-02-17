@@ -86,12 +86,12 @@ qda_merge <- function(qda_data,
 
 	# Include character, word, sentence, and paragraph counts
 	if(include_text_counts) {
-		tab$n_paragraphs <- stringr::str_count(df$qda_text, '[^\r\n]+')
-		tab$n_sentences <- sapply(df$qda_text, function(x) {
+		tab$n_paragraphs <- stringr::str_count(tab$qda_text, '[^\r\n]+')
+		tab$n_sentences <- sapply(tab$qda_text, function(x) {
 			length(gregexpr('[[:alnum:] ][.!?]', x)[[1]])
 		})
-		tab$n_words <- stringr::str_count(df$qda_text, '\\w+')
-		tab$n_characters <- nchar(df$qda_text)
+		tab$n_words <- stringr::str_count(tab$qda_text, '\\w+')
+		tab$n_characters <- nchar(tab$qda_text)
 	}
 
 	##### Sentiment Analysis ###################################################
