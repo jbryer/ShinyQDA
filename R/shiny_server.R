@@ -587,4 +587,11 @@ shiny_server <- function(input, output, session) {
 		codes2 |> qda_datatable()
 	})
 
+	############################################################################
+	output$cooccurrence_plot <- renderPlot({
+		qda_merge(qda_data()) |>
+			dplyr::select(dplyr::starts_with('code_')) |>
+			dplyr::select(!code_test) |>
+			ShinyQDA::cooccurance_plot(qda_data) + ggplot2::theme(legend.position = 'none')
+	})
 }

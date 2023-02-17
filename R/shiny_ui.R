@@ -137,6 +137,11 @@ shiny_ui <- function(request, debug = TRUE) {
 				icon = shiny::icon('face-smile')
 			),
 			shiny::tabPanel(
+				'Co-Occurrence Plot',
+				icon = shiny::icon('table-cells'),
+				shiny::plotOutput('cooccurrence_plot', width = '100%', height = '700px')
+			),
+			shiny::tabPanel(
 				'Topic Modeling',
 				icon = shiny::icon('comments')
 			)

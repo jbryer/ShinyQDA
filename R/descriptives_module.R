@@ -93,10 +93,11 @@ descriptives_server <- function(id, qda_data) {
 		id,
 		function(input, output, session) {
 			output$code_barplot <- shiny::renderPlot({
-				df <- ShinyQDA::qda_merge(qda_data())
+				df <- ShinyQDA::qda_merge(qda_data(), include_codes = TRUE) |>
+					dplyr::select(dplyr::starts_with('code_'))
 				text_df <- qda_data()$get_text()
-				code_cols <- names(df)[seq(ncol(text_df) + 2, ncol(df))]
-				df_sum <- apply(df[,code_cols], 2, FUN = function(x) { sum(x, na.rm = TRUE )}) |>
+				# code_cols <- names(df)[seq(ncol(text_df) + 2, ncol(df))]
+				df_sum <- apply(df, 2, FUN = function(x) { sum(x, na.rm = TRUE )}) |>
 					as.data.frame()
 				names(df_sum)[1] <- 'Count'
 				df_sum$Code <- row.names(df_sum)
