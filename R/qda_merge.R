@@ -41,6 +41,7 @@ get_coding_table <- function(qda_data, aggregate_fun = sum) {
 qda_merge <- function(qda_data,
 					  include_code_counts = TRUE,
 					  include_codes = TRUE,
+					  include_text_counts = TRUE,
 					  sentiment_dir,
 					  include_sentiments = FALSE,
 					  include_bing_sentiment = include_sentiments,
@@ -81,6 +82,16 @@ qda_merge <- function(qda_data,
 			dplyr::rename(n_highlights = Freq,
 						  qda_id = Var1)
 		tab <- merge(tab, highlights_table, by = 'qda_id', all.x = TRUE)
+	}
+
+	# Include character, word, sentence, and paragraph counts
+	if(include_text_counts) {
+		tab$n_paragraphs <- stringr::str_count(df$qda_text, '[^\r\n]+')
+		tab$n_sentences <- sapply(df$qda_text, function(x) {
+			length(gregexpr('[[:alnum:] ][.!?]', x)[[1]])
+		})
+		tab$n_words <- stringr::str_count(df$qda_text, '\\w+')
+		tab$n_characters <- nchar(df$qda_text)
 	}
 
 	##### Sentiment Analysis ###################################################
