@@ -4,10 +4,10 @@
 \alias{cooccurance_plot}
 \title{Co-Occurance Plot}
 \usage{
-cooccurance_plot(qda_data, ...)
+cooccurance_plot(df, ...)
 }
 \arguments{
-\item{qda_data}{a \code{\link[=qda]{qda()}} object.}
+\item{df}{a data.frame.}
 
 \item{...}{parameters pass to other functions.}
 }

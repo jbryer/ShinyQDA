@@ -8,6 +8,7 @@ qda_merge(
   qda_data,
   include_code_counts = TRUE,
   include_codes = TRUE,
+  include_text_counts = TRUE,
   sentiment_dir,
   include_sentiments = FALSE,
   include_bing_sentiment = include_sentiments,

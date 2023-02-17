@@ -5,7 +5,7 @@
 #'        Susan & Sahdra, Baljinder & Saron, Clifford. (2016). Network Analysis
 #'        for the Visualization and Analysis of Qualitative Data. Psychological
 #'        Methods. 23. 10.1037/met0000129.
-#' @param qda_data a [ShinyQDA::qda()] object.
+#' @param df a data.frame.
 #' @param ... parameters pass to other functions.
 #' @import ggplot2
 #' @importFrom dplyr rename_with everything mutate
@@ -14,9 +14,8 @@
 #' @importFrom reshape2 melt
 #' @importFrom tidyr replace_na
 #' @export
-cooccurance_plot <- function(qda_data, ...) {
-	tab2 <- qda_merge(qda_data) |>
-		dplyr::select(dplyr::starts_with('code_')) |>
+cooccurance_plot <- function(df, ...) {
+	tab2 <- df |>
 		dplyr::mutate_all(~ tidyr::replace_na(., 0))
 
 	if(sum(tab2) == 0) {
@@ -48,9 +47,17 @@ cooccurance_plot <- function(qda_data, ...) {
 
 	ggplot2::ggplot(mat, ggplot2::aes(x = x, y = y, fill = value)) +
 		ggplot2::geom_tile(na.rm = TRUE) +
-		ggplot2::geom_text(ggplot2::aes(label = value), na.rm = TRUE) +
+		ggplot2::geom_text(ggplot2::aes(label = value, color = value), na.rm = TRUE) +
 		ggplot2::scale_fill_gradient2(na.value = 'white') +
+		# ggplot2::scale_color_gradient2(low = 'black',
+		# 							   mid = "grey40",
+		# 							   high = 'white',
+		# 							   midpoint = min(mat$value, na.rm = TRUE) + diff(range(mat$value, na.rm = TRUE)) * 0.6) +
+		ggplot2::scale_color_stepsn(
+			breaks = c(-Inf, min(mat$value, na.rm = TRUE) + diff(range(mat$value, na.rm = TRUE)) * 0.6, Inf),
+			colors = c('black', 'white')) +
 		ggplot2::xlab('') + ggplot2::ylab('') +
 		ggplot2::coord_flip() +
-		ggplot2::theme(aspect = 1, axis.text.x = ggplot2::element_text(angle = 45, hjust = 1))
+		ggplot2::theme(aspect = 1, axis.text.x = ggplot2::element_text(angle = 45, hjust = 1),
+					   legend.position = 'none')
 }

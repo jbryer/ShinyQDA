@@ -30,7 +30,10 @@ qdadf <- ShinyQDA::qda_merge(qda_data, include_sentiments = TRUE)
 names(qdadf)
 
 # Co-occurance plot
-ShinyQDA::cooccurance_plot(qda_data) + ggplot2::theme(legend.position = 'none')
+qda_merge(qda_data) |>
+	dplyr::select(dplyr::starts_with('code_')) |>
+	dplyr::select(!code_test) |>
+	ShinyQDA::cooccurance_plot(qda_data) + ggplot2::theme(legend.position = 'none')
 
 ##### Data Prep
 app_dir <- 'inst/daacs/'
