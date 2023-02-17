@@ -454,6 +454,12 @@ shiny_server <- function(input, output, session) {
 			# 	choices = coders,
 			# 	selected = get_username(),
 			# 	multiple = TRUE)
+		} else {
+			ui <- shiny::checkboxGroupInput(
+				inputId = 'text_coder',
+				label = 'Coders who coded this text:',
+				choices = get_username(),
+				selected = get_username())
 		}
 		return(ui)
 	})
@@ -571,15 +577,19 @@ shiny_server <- function(input, output, session) {
 			return(NULL)
 		}
 		codes <- codes |> dplyr::filter(qda_id == input$selected_text)
+		# codes <- codes |> dplyr::filter(qda_id == 'UMGC565')
 
 		code_questions <- qda_data()$get_code_question_responses()
 		code_questions <- code_questions |>
 			dplyr::filter(coding_id %in% codes$coding_id)
 		code_questions <- code_questions[!duplicated(code_questions[,c('coding_id', 'stem', 'coder')], fromLast = TRUE),]
 
-		code_questions <- reshape2::dcast(code_questions, coding_id + coder ~ stem, value.var = 'answer')
-
-		codes2 <- merge(codes, code_questions, by = c('coding_id', 'coder'), all.x = TRUE)
+		if(nrow(code_questions) > 0) {
+			code_questions <- reshape2::dcast(code_questions, coding_id + coder ~ stem, value.var = 'answer')
+			codes2 <- merge(codes, code_questions, by = c('coding_id', 'coder'), all.x = TRUE)
+		} else {
+			codes2 <- codes
+		}
 		codes2 |> qda_datatable()
 	})
 
