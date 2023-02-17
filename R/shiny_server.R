@@ -448,12 +448,6 @@ shiny_server <- function(input, output, session) {
 				label = 'Coders who coded this text:',
 				choices = coders,
 				selected = get_username())
-			# ui <- shiny::selectizeInput(
-			# 	inputId = 'text_coder',
-			# 	label = 'Coders who coded this text:',
-			# 	choices = coders,
-			# 	selected = get_username(),
-			# 	multiple = TRUE)
 		} else {
 			ui <- shiny::checkboxGroupInput(
 				inputId = 'text_coder',

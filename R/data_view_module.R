@@ -102,7 +102,7 @@ data_view_server <- function(id, qda_data) {
 			output$column_selection <- shiny::renderUI({
 				ns <- session$ns
 				df <- get_text_data()
-				selected_cols <- c('qda_id', 'qda_text', 'coder', 'n_codes', 'n_highlights')
+				selected_cols <- c('qda_id', 'qda_text', 'coder', 'n_words', 'n_characters', 'n_codes', 'n_highlights')
 				selected_cols <- selected_cols[selected_cols %in% names(df)]
 
 				all_cols <- names(df)
