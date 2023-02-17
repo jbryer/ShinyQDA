@@ -19,4 +19,13 @@ Pokorny, Jen & Norman, Alex & Zanesco, Anthony & Bauer-Wu,
 Susan & Sahdra, Baljinder & Saron, Clifford. (2016). Network Analysis
 for the Visualization and Analysis of Qualitative Data. Psychological
 Methods. 23. 10.1037/met0000129.
+Namey, E., Guest, G., Thairu, L., & Johnson, L. (2007). Data reduction
+techniques for large qualitative data sets. In G. Guest & K. MacQueen
+(Eds.), Handbook for team-based qualitative research (pp. 137–163).
+Lanham, MD: Altamira Press.
+Ryan, G. W. (1999). Measuring the typicality of text: Using multiple coders
+for more than just reliability and validity checks. Human Organization,
+58, 313–322.
+Saldaña, J. (2013). The coding manual for qualitative researchers (2nd ed.).
+Thousand Oaks, CA: Sage.
 }
