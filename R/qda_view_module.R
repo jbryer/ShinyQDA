@@ -51,8 +51,10 @@ qda_view_server <- function(id, qda_data) {
 					shiny::downloadButton(ns('qda_download_rda'), label = 'Download R Data')
 				)
 				for(i in seq_len(length(tables))) {
-					tabs[[length(tabs) + 1]] <- shiny::tabPanel(names(tables)[i],
-																DT::dataTableOutput(ns(paste0('raw_data_', names(tables)[i]))))
+					if(!names(tables)[i] %in% c('credentials', 'logs', 'pwd_mngt')) {
+						tabs[[length(tabs) + 1]] <- shiny::tabPanel(names(tables)[i],
+								DT::dataTableOutput(ns(paste0('raw_data_', names(tables)[i]))))
+					}
 				}
 				do.call(shiny::navlistPanel, tabs)
 			})
