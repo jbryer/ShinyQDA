@@ -80,7 +80,7 @@ tokens <- df |>
 # Word frequency plot
 tokens |>
 	dplyr::count(token, sort = TRUE) |>
-	dplyr::top_n(n = 20) |>
+	dplyr::top_n(n = 20, n) |>
 	dplyr::mutate(token = reorder(token, n)) |>
 	ggplot2::ggplot(aes(x = token, y = n)) +
 		ggplot2::geom_bar(stat = 'identity') +

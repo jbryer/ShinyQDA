@@ -8,30 +8,32 @@
 descriptives_ui <- function(id) {
 	ns <- shiny::NS(id)
 	shiny::tagList(
-		# shiny::navlistPanel(
-		# 	tabPanel(
-		# 		title = 'Barplot',
-		# 		shiny::plotOutput(ns('code_barplot'), height = '600px')
-		# 	),
-		# 	tabPanel(
-		# 		title = 'Wordcloud',
-		# 		shiny::plotOutput(ns('wordcloud_plot'), height = '600px')
-		# 	),
-		# 	tabPanel(
-		# 		title = 'Wordcloud 2',
-		#
-		# 		wordcloud2::wordcloud2Output(ns('wordcloud2_plot'), height = '600px')
-		# 	)
-		# )
 		shiny::sidebarLayout(
 			shiny::sidebarPanel(
 				style = "height: 90vh; overflow-y: auto;",
 				shiny::selectInput(
 					inputId = 'plot_type',
 					label = 'Analysis Type',
-					choices = c('Barplot', 'Wordcloud', 'Wordcloud 2'),
+					choices = c('Word Frequencies', 'Code Frequencies', 'Wordcloud', 'Wordcloud 2'),
 					selected = 'barplot',
 					multiple = FALSE
+				),
+				shiny::conditionalPanel(
+					"input.plot_type == 'Word Frequencies'",
+					shiny::sliderInput(inputId = ns('freq_ngrams'),
+									   label = 'nGrams n',
+									   min = 1, max = 3, value = 1),
+					shiny::numericInput(inputId = ns('freq_n_ngrams'),
+										label = 'Number of words/phrases',
+										value = 20,
+										min = 2,
+										max = 100),
+					shiny::checkboxInput(inputId = ns('freq_remove_stopwords'),
+										 label = 'Remove stopwords',
+										 value = TRUE),
+					shiny::checkboxInput(inputId = ns('freq_to_lower'),
+										 label = 'To lowercase',
+										 value = TRUE)
 				),
 				shiny::conditionalPanel(
 					"input.plot_type == 'Wordcloud'",
@@ -61,8 +63,12 @@ descriptives_ui <- function(id) {
 			),
 			shiny::mainPanel(
 				shiny::conditionalPanel(
-					"input.plot_type == 'Barplot'",
+					"input.plot_type == 'Code Frequencies'",
 					shiny::plotOutput(ns('code_barplot'), height = '600px'),
+				),
+				shiny::conditionalPanel(
+					"input.plot_type == 'Word Frequencies'",
+					shiny::plotOutput(ns('word_frequency_plot'), height = '600px')
 				),
 				shiny::conditionalPanel(
 					"input.plot_type == 'Wordcloud'",
@@ -92,11 +98,44 @@ descriptives_server <- function(id, qda_data) {
 	shiny::moduleServer(
 		id,
 		function(input, output, session) {
+			output$word_frequency_plot <- shiny::renderPlot({
+				df <- qda_data()$get_text() |>
+					dplyr::select(qda_id, qda_text)
+
+				# Tokenize words
+				tokens <- df |>
+					tidytext::unnest_tokens(
+						output = 'token',
+						input = 'qda_text',
+						token = 'ngrams',
+						n = input$freq_ngrams,
+						to_lower = input$freq_to_lower)
+
+				# Remove stopwords
+				if(input$freq_remove_stopwords) {
+					tokens <- tokens |>
+						dplyr::filter(!(token %in% stopwords::stopwords(source = 'snowball')))
+				}
+
+				tokens <- tokens |>
+					dplyr::count(token, sort = TRUE) |>
+					dplyr::top_n(n = input$freq_n_ngrams, n) |>
+					dplyr::mutate(token = reorder(token, n))
+
+				ggplot2::ggplot(tokens, aes(x = token, y = n)) +
+						ggplot2::geom_bar(stat = 'identity', fill = 'grey50') +
+						ggplot2::geom_text(ggplot2::aes(label = n), hjust = -0.1) +
+						ggplot2::coord_flip() +
+						ggplot2::expand_limits(y = max(tokens$n) + max(tokens$n) * .05) +
+						xlab('') +
+						ggtitle('Word Frequency Plot')
+			})
+
 			output$code_barplot <- shiny::renderPlot({
-				df <- ShinyQDA::qda_merge(qda_data(), include_codes = TRUE) |>
+				df <- qda_merge(qda_data(), include_codes = TRUE) |>
 					dplyr::select(dplyr::starts_with('code_'))
+				names(df) <- gsub('code_', '', names(df))
 				text_df <- qda_data()$get_text()
-				# code_cols <- names(df)[seq(ncol(text_df) + 2, ncol(df))]
 				df_sum <- apply(df, 2, FUN = function(x) { sum(x, na.rm = TRUE )}) |>
 					as.data.frame()
 				names(df_sum)[1] <- 'Count'
@@ -110,6 +149,7 @@ descriptives_server <- function(id, qda_data) {
 					ggplot2::geom_bar(stat = 'identity', fill = 'grey50') +
 					ggplot2::geom_text(ggplot2::aes(label = Count), hjust = -0.1) +
 					ggplot2::coord_flip() +
+					ggplot2::expand_limits(y = max(df_sum$Count) + max(df_sum$Count) * .05) +
 					ggplot2::ggtitle('Number of codes across all text')
 
 			})
