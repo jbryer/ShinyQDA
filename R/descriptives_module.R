@@ -101,10 +101,14 @@ descriptives_server <- function(id, qda_data) {
 					as.data.frame()
 				names(df_sum)[1] <- 'Count'
 				df_sum$Code <- row.names(df_sum)
+				df_sum <- df_sum[order(df_sum$Count, decreasing = FALSE),]
+				df_sum$Code <- factor(df_sum$Code,
+									  levels = df_sum$Code,
+									  ordered = TRUE)
 
 				ggplot2::ggplot(df_sum, ggplot2::aes(x = Code, y = Count)) +
 					ggplot2::geom_bar(stat = 'identity', fill = 'grey50') +
-					ggplot2::geom_text(ggplot2::aes(label = Count), hjust = -1) +
+					ggplot2::geom_text(ggplot2::aes(label = Count), hjust = -0.1) +
 					ggplot2::coord_flip() +
 					ggplot2::ggtitle('Number of codes across all text')
 

@@ -9,6 +9,7 @@ devtools::install(upgrade = 'never')
 devtools::build()
 devtools::check()
 
+# Run shiny app examples
 shiny::runApp('inst/daacs/')
 shiny::runApp('inst/shiny_template')
 shiny::runApp('inst/daacs_writing/')
@@ -17,7 +18,7 @@ ShinyQDA::shinyQDA()
 unlink('ShinyQDA.sqlite')
 
 # Add package imports
-usethis::use_package('tidyr', type = 'Imports')
+usethis::use_package('stopwords', type = 'Imports')
 usethis::use_package('writexl', type = 'Suggests')
 
 qda_data <- ShinyQDA::qda('inst/daacs/daacs.sqlite')
@@ -34,6 +35,64 @@ qda_merge(qda_data) |>
 	dplyr::select(dplyr::starts_with('code_')) |>
 	dplyr::select(!code_test) |>
 	ShinyQDA::cooccurance_plot(qda_data) + ggplot2::theme(legend.position = 'none')
+
+# Sentiment analysis
+ggplot2::ggplot(qdadf[!duplicated(qdadf$qda_id),], aes(x = bing_total)) +
+	geom_density()
+
+qdadf$srlTotal <- apply(qdadf, 1, FUN = function(x) {
+	mean(as.numeric(x[c('motivation', 'strategies', 'metacognition')]))
+})
+qdadf$writeTotal <- apply(qdadf, 1, FUN = function(x) {
+	mean(as.numeric(x[c('content', 'organization', 'paragraphs', 'sentences', 'conventions')]))
+})
+ggplot2::ggplot(qdadf[!duplicated(qdadf$qda_id),],
+				aes(x = bing_total, y = srlTotal)) +
+	geom_point() +
+	geom_smooth(method = 'loess', se = FALSE, formula = y ~ x)
+
+
+##### Word frequency / tokenization
+df <- qda_data$get_text() |>
+	dplyr::select(qda_id, qda_text)
+
+# Tokenize words
+tokens <- df |>
+	tidytext::unnest_tokens(
+		output = 'token',
+		input = 'qda_text',
+		token = 'words',
+		to_lower = TRUE)
+
+# Remove stopwords
+tokens <- tokens |>
+	dplyr::filter(!(token %in% stopwords::stopwords(source = 'snowball')))
+
+# ngrams
+tokens <- df |>
+	tidytext::unnest_tokens(
+		output = 'token',
+		input = 'qda_text',
+		token = 'ngrams',
+		n = 2
+	)
+
+# Word frequency plot
+tokens |>
+	dplyr::count(token, sort = TRUE) |>
+	dplyr::top_n(n = 20) |>
+	dplyr::mutate(token = reorder(token, n)) |>
+	ggplot2::ggplot(aes(x = token, y = n)) +
+		ggplot2::geom_bar(stat = 'identity') +
+		ggplot2::coord_flip() +
+		xlab('')
+
+
+# Convert to a wide data.frame
+tokens_wide <- tokens |>
+	reshape2::dcast(qda_id ~ token, fun.aggregate = length, value.var = 'token')
+
+
 
 ##### Data Prep
 app_dir <- 'inst/daacs/'
