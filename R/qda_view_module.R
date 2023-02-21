@@ -48,7 +48,8 @@ qda_view_server <- function(id, qda_data) {
 				tabs$widths <- c(3, 9)
 				tabs$header = shiny::tagList(
 					shiny::downloadButton(ns('qda_download_xlsx'), label = 'Download Excel'),
-					shiny::downloadButton(ns('qda_download_rda'), label = 'Download R Data')
+					shiny::downloadButton(ns('qda_download_rda'), label = 'Download R Data'),
+					shiny::downloadButton(ns('qda_download_sqlite'), label = 'Download SQLite Database')
 				)
 				for(i in seq_len(length(tables))) {
 					if(!names(tables)[i] %in% c('credentials', 'logs', 'pwd_mngt')) {
@@ -84,6 +85,15 @@ qda_view_server <- function(id, qda_data) {
 						tabs[[i]] <- dbReadTable(qda_data()$db_conn, i)
 					}
 					save(list = names(tabs), file = file, envir = as.environment(tabs))
+				}
+			)
+
+			output$qda_download_sqlite <- shiny::downloadHandler(
+				filename = function() {
+					paste0(id, '-', Sys.Date(), '.sqlite')
+				},
+				content = function(file) {
+					file.copy(qda_data()$db_file, file)
 				}
 			)
 		}
