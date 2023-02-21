@@ -7,7 +7,8 @@
 sentiment_highlighter(
   text,
   lexicon = c("nrc", "bing", "loughran", "afinn"),
-  token = "words"
+  token = "words",
+  lexicon_dir = "."
 )
 }
 \arguments{
