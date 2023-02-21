@@ -58,14 +58,18 @@ sentiment_server <- function(id, qda_data) {
 		id,
 		function(input, output, session) {
 			output$sentiment_bing_plot <- shiny::renderPlot({
-				qdadf <- ShinyQDA::qda_merge(qda_data(), include_sentiments = TRUE)
+				qdadf <- ShinyQDA::qda_merge(qda_data(),
+											 include_sentiments = TRUE,
+											 sentiment_dir = '.')
 				ggplot2::ggplot(qdadf[!duplicated(qdadf$qda_id),],
 								aes(x = bing_total, color = !! sym(group_var))) +
 					geom_density()
 			})
 
 			output$sentiment_nrc_plot <- shiny::renderPlot({
-				qdadf <- ShinyQDA::qda_merge(qda_data(), include_sentiments = TRUE)
+				qdadf <- ShinyQDA::qda_merge(qda_data(),
+											 include_sentiments = TRUE,
+											 sentiment_dir = '.')
 				qdadf_nrc <- qdadf |>
 					dplyr::distinct(qda_id, .keep_all = TRUE) |>
 					dplyr::select(starts_with('nrc_'))
@@ -95,7 +99,9 @@ sentiment_server <- function(id, qda_data) {
 			})
 
 			output$sentiment_loughran_plot <- shiny::renderPlot({
-				qdadf <- ShinyQDA::qda_merge(qda_data(), include_sentiments = TRUE)
+				qdadf <- ShinyQDA::qda_merge(qda_data(),
+											 include_sentiments = TRUE,
+											 sentiment_dir = '.')
 				qdadf_loughran <- qdadf |>
 					dplyr::distinct(qda_id, .keep_all = TRUE) |>
 					dplyr::select(starts_with('loughran_'))
@@ -125,7 +131,9 @@ sentiment_server <- function(id, qda_data) {
 			})
 
 			output$sentiment_afinn_plot <- shiny::renderPlot({
-				qdadf <- ShinyQDA::qda_merge(qda_data(), include_sentiments = TRUE)
+				qdadf <- ShinyQDA::qda_merge(qda_data(),
+											 include_sentiments = TRUE,
+											 sentiment_dir = '.')
 				ggplot2::ggplot(qdadf[!duplicated(qdadf$qda_id),],
 								ggplot2::aes(x = afinn_sentiment)) +
 					ggplot2::geom_density()
