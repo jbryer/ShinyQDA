@@ -1,0 +1,5 @@
+data_export			Example of how to export all the tables in the SQLite database to an Excel file (with separate tabs).
+cooccurance_plot	Example of creating a co-occurance plot.
+sentiment_analysis	Examples of creating the sentiment analysis plots in the ShinyQDA application.
+word_frequencies	Example of tokenizing text and creating a word frequency plot.
+word_cloud			Example of creating word clouds from the text.

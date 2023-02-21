@@ -30,80 +30,7 @@ DBI::dbListTables(qda_data$db_conn)
 qdadf <- ShinyQDA::qda_merge(qda_data, include_sentiments = TRUE)
 names(qdadf)
 
-##### Co-occurance plot
-qda_merge(qda_data) |>
-	dplyr::select(dplyr::starts_with('code_')) |>
-	dplyr::select(!code_test) |>
-	ShinyQDA::cooccurance_plot(qda_data) + ggplot2::theme(legend.position = 'none')
-
 ##### Sentiment analysis
-group_var <- 'institution'
-# Bing
-ggplot2::ggplot(qdadf[!duplicated(qdadf$qda_id),],
-				aes(x = bing_total, color = !! sym(group_var))) +
-	geom_density()
-
-# Afinn
-ggplot2::ggplot(qdadf[!duplicated(qdadf$qda_id),],
-				aes(x = afinn_sentiment, color = !! sym(group_var))) +
-	geom_density()
-
-# Loughran
-qdadf_loughran <- qdadf |>
-	dplyr::distinct(qda_id, .keep_all = TRUE) |>
-	dplyr::select(starts_with('loughran_'))
-names(qdadf_loughran) <- gsub('loughran_', '', names(qdadf_loughran))
-loughran_total <- apply(qdadf_loughran, 1, sum)
-qdadf_loughran <- apply(qdadf_loughran, 2, function(x) { x / loughran_total }) |>
-	as.data.frame()
-
-qdadf_loughran <- qdadf_loughran |>
-	reshape2::melt()
-loughran_tab <- psych::describeBy(qdadf_loughran$value,
-								  group = qdadf_loughran$variable,
-								  mat = TRUE)
-
-ggplot2::ggplot(qdadf_loughran, ggplot2::aes(x = variable, y = value)) +
-	ggplot2::geom_boxplot() +
-	ggplot2::geom_errorbar(
-		data = loughran_tab,
-		ggplot2::aes(x = group1, y = mean, ymin = mean - se, ymax = mean + se),
-		color = 'green3', size = 1, width = 0.4) +
-	ggplot2::geom_point(
-		data = loughran_tab, ggplot2::aes(x = group1, y = mean),
-		color = 'blue', size = 3) +
-	ggplot2::ylab('Proportion of Encoded Words') + ggplot2::xlab('') +
-	ggplot2::coord_flip() +
-	ggplot2::theme_minimal()
-
-# NRC
-qdadf_nrc <- qdadf |>
-	dplyr::distinct(qda_id, .keep_all = TRUE) |>
-	dplyr::select(starts_with('nrc_'))
-names(qdadf_nrc) <- gsub('nrc_', '', names(qdadf_nrc))
-nrc_total <- apply(qdadf_nrc, 1, sum)
-qdadf_nrc <- apply(qdadf_nrc, 2, function(x) { x / nrc_total }) |>
-	as.data.frame()
-
-qdadf_nrc <- qdadf_nrc |>
-	reshape2::melt()
-nrc_tab <- psych::describeBy(qdadf_nrc$value,
-							 group = qdadf_nrc$variable,
-							 mat = TRUE)
-
-ggplot2::ggplot(qdadf_nrc, ggplot2::aes(x = variable, y = value)) +
-	ggplot2::geom_boxplot() +
-	ggplot2::geom_errorbar(
-		data = nrc_tab,
-		ggplot2::aes(x = group1, y = mean, ymin = mean - se, ymax = mean + se),
-		color = 'green3', size = 1, width = 0.4) +
-	ggplot2::geom_point(
-		data = nrc_tab, ggplot2::aes(x = group1, y = mean),
-		color = 'blue', size = 3) +
-	ggplot2::ylab('Proportion of Encoded Words') + ggplot2::xlab('') +
-	ggplot2::coord_flip() +
-	ggplot2::theme_minimal()
-
 
 qdadf$srlTotal <- apply(qdadf, 1, FUN = function(x) {
 	mean(as.numeric(x[c('motivation', 'strategies', 'metacognition')]))
@@ -112,51 +39,10 @@ qdadf$writeTotal <- apply(qdadf, 1, FUN = function(x) {
 	mean(as.numeric(x[c('content', 'organization', 'paragraphs', 'sentences', 'conventions')]))
 })
 ggplot2::ggplot(qdadf[!duplicated(qdadf$qda_id),],
-				aes(x = bing_total, y = srlTotal)) +
-	geom_point() +
-	geom_smooth(method = 'loess', se = FALSE, formula = y ~ x)
-
-
-##### Word frequency / tokenization
-df <- qda_data$get_text() |>
-	dplyr::select(qda_id, qda_text)
-
-# Tokenize words
-tokens <- df |>
-	tidytext::unnest_tokens(
-		output = 'token',
-		input = 'qda_text',
-		token = 'words',
-		to_lower = TRUE)
-
-# Remove stopwords
-tokens <- tokens |>
-	dplyr::filter(!(token %in% stopwords::stopwords(source = 'snowball')))
-
-# ngrams
-tokens <- df |>
-	tidytext::unnest_tokens(
-		output = 'token',
-		input = 'qda_text',
-		token = 'ngrams',
-		n = 2
-	)
-
-# Word frequency plot
-tokens |>
-	dplyr::count(token, sort = TRUE) |>
-	dplyr::top_n(n = 20, n) |>
-	dplyr::mutate(token = reorder(token, n)) |>
-	ggplot2::ggplot(aes(x = token, y = n)) +
-		ggplot2::geom_bar(stat = 'identity') +
-		ggplot2::coord_flip() +
-		xlab('')
-
-
-# Convert to a wide data.frame
-tokens_wide <- tokens |>
-	reshape2::dcast(qda_id ~ token, fun.aggregate = length, value.var = 'token')
-
+				ggplot2::aes(x = bing_total, y = srlTotal)) +
+	ggplot2::geom_point() +
+	ggplot2::geom_smooth(method = 'loess', se = FALSE, formula = y ~ x) +
+	ggplot2::theme_minimal()
 
 
 ##### Data Prep
@@ -184,8 +70,6 @@ usethis::use_data(asep7_rubric, overwrite = TRUE)
 
 
 ################################################################################
-qda_data <- ShinyQDA::qda(file = 'inst/shiny/daacs.sqlite')
-
 qda_data$get_last_update()
 
 qda_data$get_code_questions()
@@ -219,38 +103,6 @@ ggplot(df_sum, aes(x = Code, y = Count)) +
 	geom_text(aes(label = Count), hjust = -1) +
 	coord_flip() +
 	ggtitle('Number of codes across all text')
-
-# Word cloud
-library(wordcloud)
-library(tm)
-text_data <- qda_data$get_text()
-text <- text_data$qda_text
-docs <- tm::Corpus(VectorSource(text))
-docs <- docs %>%
-	tm::tm_map(tm::removeNumbers) %>%
-	tm::tm_map(tm::removePunctuation) %>%
-	tm::tm_map(tm::stripWhitespace)
-docs <- tm::tm_map(docs, content_transformer(tolower))
-docs <- tm::tm_map(docs, removeWords, stopwords("english"))
-dtm <- TermDocumentMatrix(docs)
-matrix <- as.matrix(dtm)
-words <- sort(rowSums(matrix),decreasing=TRUE)
-df <- data.frame(word = names(words), freq = words)
-
-wordcloud(words = df$word,
-		  freq = df$freq,
-		  min.freq = 2,
-		  max.words = 200,
-		  random.order = FALSE,
-		  rot.per = 0.35,
-		  colors = brewer.pal(8, "Dark2"))
-
-
-
-
-
-
-
 
 
 # Test dataset
