@@ -52,6 +52,6 @@ sentiment_plot <- function(text,
 		ggplot2::coord_flip() +
 		ggplot2::xlab('') +
 		ggplot2::ylab('Frequency') +
-		ggplot2::theme(legend.position = 'none') +
-		ggplot2::theme_minimal()
+		ggplot2::theme_minimal() +
+		ggplot2::theme(legend.position = 'none')
 }

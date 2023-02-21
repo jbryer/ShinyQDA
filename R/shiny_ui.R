@@ -103,7 +103,7 @@ shiny_ui <- function(request, debug = TRUE) {
 						),
 						shiny::column(
 							4,
-							shiny::plotOutput('sentiment_text_plot', height = '600px')
+							shiny::plotOutput('sentiment_text_plot', height = '400px')
 						)
 					)
 				)
