@@ -62,7 +62,7 @@ sentiment_server <- function(id, qda_data) {
 											 include_sentiments = TRUE,
 											 sentiment_dir = '.')
 				ggplot2::ggplot(qdadf[!duplicated(qdadf$qda_id),],
-								aes(x = bing_total, color = !! sym(group_var))) +
+								aes(x = bing_total)) +
 					geom_density()
 			})
 
