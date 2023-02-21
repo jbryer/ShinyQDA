@@ -134,7 +134,8 @@ shiny_ui <- function(request, debug = TRUE) {
 			),
 			shiny::tabPanel(
 				'Sentiment',
-				icon = shiny::icon('face-smile')
+				icon = shiny::icon('face-smile'),
+				sentiment_ui('ShinyQDA')
 			),
 			shiny::tabPanel(
 				'Co-Occurrence Plot',

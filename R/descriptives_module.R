@@ -128,7 +128,7 @@ descriptives_server <- function(id, qda_data) {
 						ggplot2::coord_flip() +
 						ggplot2::expand_limits(y = max(tokens$n) + max(tokens$n) * .05) +
 						xlab('') +
-						ggtitle('Word Frequency Plot')
+						ggtitle('Word Frequencies')
 			})
 
 			output$code_barplot <- shiny::renderPlot({

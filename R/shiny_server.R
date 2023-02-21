@@ -89,6 +89,9 @@ shiny_server <- function(input, output, session) {
 	##### Descriptive Statistics ###############################################
 	descriptives_server('ShinyQDA', qda_data)
 
+	##### Sentiment Analysis ###################################################
+	sentiment_server('ShinyQDA', qda_data)
+
 	############################################################################
 	##### Text display and coding
 
