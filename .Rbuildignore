@@ -8,3 +8,5 @@ Icon
 articles/
 data-raw/
 private/
+afinn/
+nrc/

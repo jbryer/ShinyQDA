@@ -199,12 +199,25 @@ shiny_server <- function(input, output, session) {
 	})
 
 	##### Sentiment view of the text
-	output$sentiment_text <- renderText({
+	output$sentiment_text <- shiny::renderText({
 		shiny::req(input$selected_text)
 		thetext <- qda_data()$get_text(input$selected_text) |>
 			dplyr::select(qda_text)
 		thetext <- thetext[1,1,drop=TRUE]
-		return(sentiment_highlighter(thetext, lexicon = input$sentiment_lexicon))
+		return(sentiment_highlighter(thetext,
+									 lexicon = input$sentiment_lexicon,
+									 lexicon_dir = '.'))
+	})
+
+	output$sentiment_text_plot <- shiny::renderPlot({
+		shiny::req(input$selected_text)
+		thetext <- qda_data()$get_text(input$selected_text) |>
+			dplyr::select(qda_text)
+		thetext <- thetext[1,1,drop=TRUE]
+
+		sentiment_plot(thetext,
+					   lexicon = input$sentiment_lexicon,
+					   lexicon_dir = '.')
 	})
 
 	############################################################################
@@ -591,7 +604,7 @@ shiny_server <- function(input, output, session) {
 	})
 
 	############################################################################
-	output$cooccurrence_plot <- renderPlot({
+	output$cooccurrence_plot <- shiny::renderPlot({
 		qda_merge(qda_data()) |>
 			dplyr::select(dplyr::starts_with('code_')) |>
 			dplyr::select(!code_test) |>

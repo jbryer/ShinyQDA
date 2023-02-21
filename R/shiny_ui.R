@@ -94,8 +94,18 @@ shiny_ui <- function(request, debug = TRUE) {
 									   			   'NRC Word-Emotion Association' = 'nrc',
 									   			   'Loughran-McDonald Sentiment' = 'loughran',
 									   			   'AFINN-111 dataset' = 'afinn'),
+									   selected = 'bing',
 									   label = 'Sentiment lexicon:'),
-					shiny::htmlOutput('sentiment_text')
+					shiny::fluidRow(
+						shiny::column(
+							8,
+							shiny::htmlOutput('sentiment_text')
+						),
+						shiny::column(
+							4,
+							shiny::plotOutput('sentiment_text_plot', height = '600px')
+						)
+					)
 				)
 			)
 		),

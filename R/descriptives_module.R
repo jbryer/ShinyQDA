@@ -128,7 +128,8 @@ descriptives_server <- function(id, qda_data) {
 						ggplot2::coord_flip() +
 						ggplot2::expand_limits(y = max(tokens$n) + max(tokens$n) * .05) +
 						xlab('') +
-						ggtitle('Word Frequencies')
+						ggtitle('Word Frequencies') +
+						ggplot2::theme_minimal()
 			})
 
 			output$code_barplot <- shiny::renderPlot({
@@ -150,7 +151,8 @@ descriptives_server <- function(id, qda_data) {
 					ggplot2::geom_text(ggplot2::aes(label = Count), hjust = -0.1) +
 					ggplot2::coord_flip() +
 					ggplot2::expand_limits(y = max(df_sum$Count) + max(df_sum$Count) * .05) +
-					ggplot2::ggtitle('Number of codes across all text')
+					ggplot2::ggtitle('Number of codes across all text') +
+					ggplot2::theme_minimal()
 
 			})
 

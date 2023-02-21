@@ -9,7 +9,7 @@ lexicon_colors <- list(
 			 disgust = '#d9d9d9',
 			 fear = '#b3de69',
 			 joy = '#ffffb3',
-			 negative = '#ef8a6',
+			 negative = '#0ef8a6',
 			 positive = '#80b1d3',
 			 sadness = '#fccde5',
 			 surprise = '#8dd3c7',
@@ -46,21 +46,22 @@ lexicon_colors <- list(
 #' @export
 sentiment_highlighter <- function(text,
 								  lexicon = c('nrc', 'bing', 'loughran', 'afinn'),
-								  token = 'words') {
+								  token = 'words',
+								  lexicon_dir = '.') {
 	colors <- NULL
 	sentiments <- NULL
 	if(lexicon[1] == 'nrc') {
 		# sentiments <- tidytext::get_sentiments("nrc")
-		sentiments <- textdata::lexicon_nrc(dir = '.')
+		sentiments <- textdata::lexicon_nrc(dir = lexicon_dir)
 	} else if(lexicon[1] == 'bing') {
 		sentiments <- tidytext::get_sentiments("bing")
 	} else if(lexicon[1] == 'afinn') {
 		# sentiments <- tidytext::get_sentiments("afinn")
-		sentiments <- textdata::lexicon_afinn(dir = '.')
+		sentiments <- textdata::lexicon_afinn(dir = lexicon_dir)
 		sentiments$sentiment <- as.character(sentiments$value)
 	} else if(lexicon[1] == 'loughran') {
 		# sentiments <- tidytext::get_sentiments("loughran")
-		sentiments <- textdata::lexicon_loughran(dir = '.')
+		sentiments <- textdata::lexicon_loughran(dir = lexicon_dir)
 	} else {
 		stop(paste0('Unknown lexicon: ', lexicon[1]))
 	}
