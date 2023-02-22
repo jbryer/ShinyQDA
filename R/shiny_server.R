@@ -166,6 +166,11 @@ shiny_server <- function(input, output, session) {
 
 	# Text output. Note that this will replace new lines (i.e. \n) with <p/>
 	output$text_output <- shiny::renderText({
+		# Force refresh if a code/tag has been added, deleted, or edited
+		input$edit_tag
+		input$add_tag
+		input$confirm_delete_tag
+
 		code_edit_id()
 		shiny::isolate({
 			qda_data <- qda_data()
