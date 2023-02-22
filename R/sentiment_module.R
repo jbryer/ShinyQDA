@@ -63,7 +63,8 @@ sentiment_server <- function(id, qda_data) {
 											 sentiment_dir = '.')
 				ggplot2::ggplot(qdadf[!duplicated(qdadf$qda_id),],
 								aes(x = bing_total)) +
-					geom_density()
+					geom_density() +
+					ggplot2::theme_minimal()
 			})
 
 			output$sentiment_nrc_plot <- shiny::renderPlot({
@@ -136,7 +137,8 @@ sentiment_server <- function(id, qda_data) {
 											 sentiment_dir = '.')
 				ggplot2::ggplot(qdadf[!duplicated(qdadf$qda_id),],
 								ggplot2::aes(x = afinn_sentiment)) +
-					ggplot2::geom_density()
+					ggplot2::geom_density() +
+					ggplot2::theme_minimal()
 			})
 
 		}
