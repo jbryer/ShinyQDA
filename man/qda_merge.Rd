@@ -9,6 +9,8 @@ qda_merge(
   include_code_counts = TRUE,
   include_codes = TRUE,
   include_text_counts = TRUE,
+  include_text_questions = TRUE,
+  include_code_questions = TRUE,
   sentiment_dir,
   include_sentiments = FALSE,
   include_bing_sentiment = include_sentiments,
@@ -21,8 +23,34 @@ qda_merge(
 \arguments{
 \item{qda_data}{a \code{\link[=qda]{qda()}} object.}
 
+\item{include_code_counts}{include code counts in returned data.frame.}
+
+\item{include_codes}{include columns for each code. Each column will start with \code{code_}.}
+
+\item{include_text_counts}{include number of characters, words, sentences, and paragraphs.}
+
+\item{include_text_questions}{include responses to text questions in returned data.frame.}
+
+\item{include_code_questions}{include code question responses in returned data.frame.}
+
 \item{sentiment_dir}{if specified, the sentiment lexicon will be loaded
 from the given directory.}
+
+\item{include_sentiments}{include sentiment analysis in returend data.frame.}
+
+\item{include_bing_sentiment}{include Bing sentiment analysis in returned
+data.frame. Columns will begin with \code{bing_}.}
+
+\item{include_nrc_sentiment}{include NRC sentiment analysis in returned
+data.frame. Columns will begin with \code{nrc_}.}
+
+\item{include_loughran_sentiment}{include Loughran sentiment analysis in
+returned data.frame. Columns will begin with \code{loughran_}.}
+
+\item{include_afinn_sentiment}{include AFINN sentiment analysis in returned
+data.frame. Columns will begin with \code{afinn_}.}
+
+\item{...}{parameters passed to other functions.}
 
 \item{aggregate_fun}{function used to aggregate multiple tags per text per
 per coder. See \code{\link[reshape2:cast]{reshape2::dcast()}} for more information.}

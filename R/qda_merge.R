@@ -37,11 +37,28 @@ get_coding_table <- function(qda_data, aggregate_fun = sum) {
 #'        per coder. See [reshape2::dcast()] for more information.
 #' @param sentiment_dir if specified, the sentiment lexicon will be loaded
 #'        from the given directory.
+#' @param include_code_counts include code counts in returned data.frame.
+#' @param include_codes include columns for each code. Each column will start with `code_`.
+#' @param include_text_counts include number of characters, words, sentences, and paragraphs.
+#' @param include_text_questions include responses to text questions in returned data.frame.
+#' @param include_code_questions include code question responses in returned data.frame.
+#' @param include_sentiments include sentiment analysis in returend data.frame.
+#' @param include_bing_sentiment include Bing sentiment analysis in returned
+#'        data.frame. Columns will begin with `bing_`.
+#' @param include_nrc_sentiment include NRC sentiment analysis in returned
+#'        data.frame. Columns will begin with `nrc_`.
+#' @param include_loughran_sentiment include Loughran sentiment analysis in
+#'        returned data.frame. Columns will begin with `loughran_`.
+#' @param include_afinn_sentiment include AFINN sentiment analysis in returned
+#'        data.frame. Columns will begin with `afinn_`.
+#' @param ... parameters passed to other functions.
 #' @export
 qda_merge <- function(qda_data,
 					  include_code_counts = TRUE,
 					  include_codes = TRUE,
 					  include_text_counts = TRUE,
+					  include_text_questions = TRUE,
+					  include_code_questions = TRUE,
 					  sentiment_dir,
 					  include_sentiments = FALSE,
 					  include_bing_sentiment = include_sentiments,
@@ -186,11 +203,71 @@ qda_merge <- function(qda_data,
 	}
 	##### End Sentiment analysis ###############################################
 
-	# TODO: Add code questions
-	# text_questions <- qda_data$get_code_question_responses()
+	# Add text questions
+	if(include_text_questions) {
+		df_text <- question_responses_to_data_frame(
+			questions = qda_data$get_text_questions(),
+			responses = qda_data$get_text_question_responses(),
+			id_col = 'qda_id'
+		)
+		if(nrow(df_text) > 0) {
+			names(df_text) <- make.names(names(df_text))
+			tab <- merge(tab, df_text, by = c('qda_id', 'coder'), all.x = TRUE)
+		}
+	}
 
-	# TODO: Add text questions
-	# code_questions <- qda_data$get_text_question_responses()
+	# TODO: Add code questions
+	if(include_code_questions) {
+		df_code <- question_responses_to_data_frame(
+			questions = qda_data$get_code_questions(),
+			responses = qda_data$get_code_question_responses(),
+			id_col = 'coding_id'
+		)
+		codings <- qda_data$get_codings()
+		df_code <- merge(codings[,c('qda_id', 'coding_id')],
+						 df_code,
+						 by = 'coding_id')
+		aggr_cols <- sapply(df_code, class) == 'logical'
+		aggr_cols <- names(aggr_cols)[aggr_cols]
+		df_code2 <- df_code[,c('qda_id', 'coder', aggr_cols)]
+		tmp <- df_code2 |>
+			dplyr::group_by(qda_id, coder) |>
+			dplyr::summarise(dplyr::across(dplyr::everything(), function(x) { sum(x, na.rm = TRUE) }), .groups = 'keep')
+		names(tmp) <- make.names(names(tmp))
+		tab <- merge(tab, tmp, by = c('qda_id', 'coder'), all.x = TRUE)
+	}
 
 	return(tab)
+}
+
+#' Utility function to convert code and text questions to a wide data.frame.
+#'
+question_responses_to_data_frame <- function(questions, responses, id_col) {
+	unique_responses <- responses[!duplicated(responses[,c(id_col,'coder')]),c(id_col,'coder')]
+	df_code <- data.frame(id = unique_responses[,id_col],
+						  coder = unique_responses$coder)
+	row.names(df_code) <- paste0(df_code$id, '_', df_code$coder)
+	for(i in seq_len(nrow(questions))) {
+		stem <- questions[i,]$stem
+		type <- questions[i,]$type
+		if(type == 'checkbox' | type == 'radio') {
+			options <- strsplit(questions[i,]$options, ';', fixed = TRUE)[[1]]
+			for(j in seq_len(length(options))) {
+				tmp <- responses |> dplyr::filter(stem == !!stem)
+				col <- paste0(stem, '_', options[j])
+				# df_code[paste0(tmp[,id_col], '_', tmp$coder), col] <- as.logical(NA)
+				df_code[,col] <- as.logical(NA)
+				ans <- grep(options[j], tmp$answer)
+				if(length(ans) > 0) {
+					df_code[ans,col] <- TRUE
+				}
+			}
+		} else {
+			tmp <- responses |> dplyr::filter(stem == !!stem)
+			df_code[paste0(tmp[,id_col], '_', tmp$coder),stem] <- tmp$answer
+		}
+	}
+	row.names(df_code) <- NULL
+	names(df_code)[1] <- id_col
+	return(df_code)
 }
