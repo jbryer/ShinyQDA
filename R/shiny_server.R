@@ -573,8 +573,85 @@ shiny_server <- function(input, output, session) {
 
 	############################################################################
 	##### Rubric
+	css_cell <- 'style="text-align:left;vertical-align:top;background-color:#FFFFFF;height:inherit;border:1px solid #000000;"'
+
+	current_rubric <- shiny::reactiveValues()
+
 	output$rubric <- shiny::renderText({
+		rubrics <- qda_data()$get_rubrics()
+		if(nrow(rubrics) == 0) {
+			return('No rubric defined.')
+		}
+		rubric_name <- rubrics[1,]$rubric_name
+		rubric <- qda_data()$get_rubric(rubric_name)
+		if(nrow(rubric) == 0) {
+			return('No rubric criteria defined.')
+		}
+		rubric <- reshape2::dcast(rubric, criteria ~ scoring_level, value.var = 'description')
+
+		current_rubric$rubric_name <- rubric_name
+		current_rubric$rubric <- rubric
+
+		scores <- qda_data()$get_rubric_responses(rubric_name = rubric_name,
+												  qda_id = input$selected_text,
+												  coder = get_username())
+
+		txt <- '<center><table style="height:100px;border:1px solid #000000; width:100%;"><tr>'
+		for(i in seq_len(ncol(rubric))) {
+			txt <- paste0(txt, '<th style="text-align:center; border:1px solid #000000">', names(rubric)[i], '</th>')
+		}
+		txt <- paste0(txt, '</tr>')
+		for(i in seq_len(nrow(rubric))) {
+			txt <- paste0(txt, '<tr>')
+			for(j in seq_len(ncol(rubric))) {
+				if(j == 1) {
+					txt <- paste0(txt, '<td ', css_cell, '><strong>', rubric[i, j, drop = TRUE], '</strong></td>')
+				} else {
+					score <- scores |> dplyr::filter(
+						qda_id == input$selected_text,
+						rubric_name == rubric_name,
+						coder == get_username(),
+						criteria == rubric[i,1,drop=TRUE])
+					cssclass <- ifelse(nrow(score) > 0 & as.character(score[1,]$score) == names(rubric)[j],
+						   'class="highlight" ', '')
+					txt <- paste0(txt, '<td ', css_cell, ' ',
+								  'onclick="Shiny.onInputChange(\'cell_selection\', \'row', i, 'column', j, '\'); ">',
+								  '<div id="row', i, 'column', j, '" ',
+								  cssclass,
+								  'style="width:100%;height:100%"> ',
+								  rubric[i, j, drop = TRUE], '</div></td>')
+				}
+			}
+			txt <- paste0(txt, '</tr>')
+		}
+		txt <- paste0(txt, "</table></center>")
+
+		return(txt)
 	})
+
+	observeEvent(input$cell_selection, {
+		cell <- input$cell_selection
+		cell_pos <- strsplit(cell, 'column')[[1]] %>% gsub('row', '', .) |> as.integer()
+		rubric <- isolate(current_rubric$rubric)
+		rubric_name <- isolate(current_rubric$rubric_name)
+		for(i in seq_len(ncol(rubric))) {
+			shinyjs::removeCssClass(id = paste0('row', cell_pos[1], 'column', i), class = 'highlight')
+		}
+		# Save score to database
+		qda_data()$delete_rubric_response(rubric_name = rubric_name,
+										  qda_id = input$selected_text,
+										  coder = get_username(),
+										  criteria = rubric[cell_pos[1],1])
+		qda_data()$add_rubric_response(
+			rubric_name = rubric_name,
+			qda_id = input$selected_text,
+			coder = get_username(),
+			criteria = rubric[cell_pos[1],1],
+			score = names(rubric)[cell_pos[2]]
+		)
+		shinyjs::addCssClass(id = input$cell_selection, class = "highlight")
+	})
+
 
 	############################################################################
 	##### Table outputs ########################################################
