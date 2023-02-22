@@ -167,20 +167,23 @@ shiny_server <- function(input, output, session) {
 	# Text output. Note that this will replace new lines (i.e. \n) with <p/>
 	output$text_output <- shiny::renderText({
 		code_edit_id()
+		shiny::isolate({
+			qda_data <- qda_data()
+		})
 
 		shiny::req(input$selected_text)
 		shinyjs::disable('add_tag_button')
-		thetext <- qda_data()$get_text(input$selected_text) |>
+		thetext <- qda_data$get_text(input$selected_text) |>
 			dplyr::select(qda_text)
 
 		thetext <- thetext[1,1,drop=TRUE]
 		# Highlight codes
-		codings <- qda_data()$get_codings(input$selected_text)
+		codings <- qda_data$get_codings(input$selected_text)
 		# if(!is.null(input$text_coder)) {
 			codings <- codings |> dplyr::filter(coder %in% input$text_coder)
 		# }
 		if(nrow(codings) > 0) {
-			thetext <- highlighter(thetext, codings, qda_data()$get_codes())
+			thetext <- highlighter(thetext, codings, qda_data$get_codes())
 		}
 		# Convert line breaks to HTML line breaks
 		thetext <- gsub('\\n', '<p/>', thetext)
@@ -366,14 +369,17 @@ shiny_server <- function(input, output, session) {
 
 	# UI for the add tag modal
 	output$coding_ui <- shiny::renderUI({
+		shiny::isolate({
+			qda_data <- qda_data()
+		})
 		txt <- text_selection()
 
 		edit_id <- code_edit_id()
 		question_responses <- NULL
 		coding <- NULL
 		if(edit_id > 0) {
-			coding <- qda_data()$get_codings(coding_id = edit_id)
-			question_responses <- qda_data()$get_code_question_responses(coding_id = edit_id)
+			coding <- qda_data$get_codings(coding_id = edit_id)
+			question_responses <- qda_data$get_code_question_responses(coding_id = edit_id)
 		}
 
 		selected_codes <- NULL
@@ -387,13 +393,13 @@ shiny_server <- function(input, output, session) {
 			shiny::p(shiny::strong('Selected text: '), txt),
 			shiny::selectizeInput(inputId = 'new_code',
 								  label = codes_label,
-								  choices = qda_data()$get_codes()$code,
+								  choices = qda_data$get_codes()$code,
 								  multiple = TRUE,
 								  selected = selected_codes,
 								  options = list(create = TRUE))
 		)
 
-		code_questions <- qda_data()$get_code_questions()
+		code_questions <- qda_data$get_code_questions()
 
 		for(i in seq_len(nrow(code_questions))) {
 			if(code_questions[i,]$type == 'text') {
