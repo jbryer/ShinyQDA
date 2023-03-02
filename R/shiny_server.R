@@ -77,8 +77,11 @@ shiny_server <- function(input, output, session) {
 	codebook_server('ShinyQDA', qda_data)
 
 	############################################################################
-	# Questions (text and code)
+	##### Questions (text and code)
 	questions_server('ShinyQDA', qda_data)
+
+	#### Rubric ################################################################
+	rubric_edit_server('ShinyQDA', qda_data)
 
 	##### Overall view across all texts ########################################
 	data_view_server('ShinyQDA', qda_data)

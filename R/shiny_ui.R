@@ -123,6 +123,11 @@ shiny_ui <- function(request, debug = TRUE) {
 				questions_ui('ShinyQDA')
 			),
 			shiny::tabPanel(
+				title = 'Rubric',
+				icon = shiny::icon('table-list'),
+				rubric_edit_ui('ShinyQDA')
+			),
+			shiny::tabPanel(
 				title = 'Raw Data',
 				icon = shiny::icon('database'),
 				# uiOutput('codes_ui')

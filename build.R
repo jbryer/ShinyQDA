@@ -6,8 +6,13 @@ usethis::use_tidy_description()
 # unlink("NAMESPACE")
 devtools::document()
 devtools::install(upgrade = 'never')
+devtools::build_readme()
 devtools::build()
 devtools::check()
+
+# Setup Github actions (only need to run once per project)
+# usethis::use_pkgdown_github_pages()
+# usethis::use_github_action("README.Rmd")
 
 # Run shiny app examples
 shiny::runApp('inst/daacs/')
@@ -18,7 +23,7 @@ ShinyQDA::shinyQDA()
 unlink('ShinyQDA.sqlite')
 
 # Add package imports
-usethis::use_package('stopwords', type = 'Imports')
+usethis::use_package('rstudioapi', type = 'Imports')
 usethis::use_package('writexl', type = 'Suggests')
 
 qda_data <- ShinyQDA::qda('inst/daacs/daacs.sqlite')

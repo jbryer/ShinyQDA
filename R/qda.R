@@ -617,11 +617,23 @@ qda <- function(
 		qda_data$log(Sys.info()['user'], 'rubric_criteria', paste0('Added new rubric ', rubric_name))
 	}
 
+	qda_data$update_rubric_criteria <- function(rubric_name,
+												criteria,
+												score_level,
+												description) {
+		query <- paste0('UPDATE rubric_criteria SET ',
+						'description = "', description, '" WHERE ',
+						'rubric_name = "', rubric_name, '" AND ',
+						'criteria = "', criteria, '" AND ',
+						'scoring_level = "', as.character(score_level), '"')
+		DBI::dbExecute(qda_db, query)
+		qda_data$log(Sys.info()['user'], 'update_rubric_criteria', query)
+	}
+
 	if(!'rubric_responses' %in% tables) {
 		DBI::dbCreateTable(qda_db,
 						   'rubric_responses',
 						   data.frame(
-						   		qda_id = character(),
 						   		rubric_name = character(),
 						   		coder = character(),
 						   		criteria = character(),
@@ -630,12 +642,10 @@ qda <- function(
 						   ))
 	}
 
-	qda_data$delete_rubric_response <- function(qda_id,
-												rubric_name,
+	qda_data$delete_rubric_response <- function(rubric_name,
 												coder,
 												criteria) {
 		query <- paste0('DELETE FROM rubric_responses WHERE ',
-						'qda_id = "', qda_id, '" AND ',
 						'coder = "', coder, '" AND ',
 						'rubric_name = "', rubric_name, '" AND ',
 						'criteria = "', criteria, '"')
@@ -643,13 +653,11 @@ qda <- function(
 		qda_data$log(coder, 'delete_rubric_response', query)
 	}
 
-	qda_data$add_rubric_response <- function(qda_id,
-											 rubric_name,
+	qda_data$add_rubric_response <- function(rubric_name,
 											 coder,
 											 criteria,
 											 score) {
 		rubric_response_new_row <- data.frame(
-			qda_id = qda_id,
 			rubric_name = rubric_name,
 			coder = coder,
 			criteria = criteria,
@@ -657,15 +665,15 @@ qda <- function(
 			date_added = as.character(Sys.time())
 		)
 		DBI::dbWriteTable(qda_db, 'rubric_responses', rubric_response_new_row, append = TRUE)
-		qda_data$log(coder, 'rubric_responses', paste0('Added new rubric response ', qda_id, '; ', criteria, ' = ', score))
+		qda_data$log(coder, 'rubric_responses', paste0('Added new rubric response ', rubric_name, '; ', criteria, ' = ', score))
 	}
 
 	qda_data$get_rubric_responses <- function(rubric_name, qda_id, coder) {
 		DBI::dbGetQuery(
 			qda_db,
 			paste0('SELECT * FROM rubric_responses WHERE ',
-				   'qda_id = "', qda_id, '" AND ',
 				   'rubric_name = "', rubric_name, '" AND ',
+				   'qda_id = "', qda_id, '" AND ',
 				   'coder = "', coder, '"')
 		)
 	}

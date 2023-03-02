@@ -10,3 +10,7 @@ data-raw/
 private/
 afinn/
 nrc/
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
