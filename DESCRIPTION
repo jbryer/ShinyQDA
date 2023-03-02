@@ -1,6 +1,7 @@
 Type: Package
 Package: ShinyQDA
-Title: Shiny Application for Qualitative Data Analysis
+Title: R Package and Shiny Application for the Analysis of Qualitative Data
+Date: 2022-03-02
 Version: 0.5.0
 Authors@R: 
     person("Jason", "Bryer", , "jason@bryer.org", role = c("aut", "cre"),
@@ -36,6 +37,7 @@ Imports:
     stringr,
     textdata,
     textutils,
+    tibble,
     tidyr,
     tidytext,
     tm,

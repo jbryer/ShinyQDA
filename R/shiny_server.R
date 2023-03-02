@@ -261,7 +261,13 @@ shiny_server <- function(input, output, session) {
 		code_ids <- integer()
 		# TODO: Make sure there is a match and report error to user
 		if(length(pos[pos != -1]) == 0) {
-			warning('Could not match string.')
+			shinyWidgets::alert(
+				title = 'Problem finding match',
+				text = paste0('Could not match the selected text within the document using a regular expression: \n',
+							  text_selection),
+				status = 'warning',
+				dismissible = TRUE)
+			# warning('Could not match string.')
 		}
 		for(i in pos[pos != -1]) {
 			code_ids <- c(

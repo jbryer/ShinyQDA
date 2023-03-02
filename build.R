@@ -23,7 +23,7 @@ ShinyQDA::shinyQDA()
 unlink('ShinyQDA.sqlite')
 
 # Add package imports
-usethis::use_package('rstudioapi', type = 'Imports')
+usethis::use_package('tibble', type = 'Imports')
 usethis::use_package('writexl', type = 'Suggests')
 
 qda_data <- ShinyQDA::qda('inst/daacs/daacs.sqlite')
