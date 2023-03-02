@@ -241,7 +241,7 @@ shiny_server <- function(input, output, session) {
 	# Enable/disable the add tag button when text is selected/deselected
 	shiny::observeEvent(input$text_selection, {
 		# Check to see if the selected text can be found in the document
-		input$text_selection
+		text_selection <- input$text_selection
 		thetext <- qda_data()$get_text(input$selected_text) |>
 			dplyr::select(qda_text)
 		thetext <- thetext[1,1,drop=TRUE]
@@ -249,7 +249,7 @@ shiny_server <- function(input, output, session) {
 		thetext <- stringr::str_remove_all(thetext, '  ')
 		pos <- gregexpr(text_selection, thetext, fixed = TRUE)[[1]]
 
-		if(nchar(input$text_selection) > 0 & length(pos[pos != -1]) != 0) {
+		if(nchar(input$text_selection) > 0) {# & length(pos[pos != -1]) != 0) {
 			shinyjs::enable('add_tag_button')
 			code_edit_id(0)
 		} else {
