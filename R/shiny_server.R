@@ -198,17 +198,6 @@ shiny_server <- function(input, output, session) {
 		return(thetext)
 	})
 
-	# Enable/disable the add tag button when text is selected/deselected
-	shiny::observeEvent(input$text_selection, {
-		if(nchar(input$text_selection) > 0) {
-			shinyjs::enable('add_tag_button')
-			code_edit_id(0)
-		} else {
-			shinyjs::disable('add_tag_button')
-			code_edit_id(0)
-		}
-	})
-
 	##### Sentiment view of the text
 	output$sentiment_text <- shiny::renderText({
 		shiny::req(input$selected_text)
@@ -249,6 +238,26 @@ shiny_server <- function(input, output, session) {
 		)
 	})
 
+	# Enable/disable the add tag button when text is selected/deselected
+	shiny::observeEvent(input$text_selection, {
+		# Check to see if the selected text can be found in the document
+		input$text_selection
+		thetext <- qda_data()$get_text(input$selected_text) |>
+			dplyr::select(qda_text)
+		thetext <- thetext[1,1,drop=TRUE]
+		# thetext <- stringr::str_squish(thetext)
+		thetext <- stringr::str_remove_all(thetext, '  ')
+		pos <- gregexpr(text_selection, thetext, fixed = TRUE)[[1]]
+
+		if(nchar(input$text_selection) > 0 & length(pos[pos != -1]) != 0) {
+			shinyjs::enable('add_tag_button')
+			code_edit_id(0)
+		} else {
+			shinyjs::disable('add_tag_button')
+			code_edit_id(0)
+		}
+	})
+
 	# Save the tag and close the modal
 	shiny::observeEvent(input$add_tag, {
 		text_selection <- text_selection()
@@ -261,13 +270,14 @@ shiny_server <- function(input, output, session) {
 		code_ids <- integer()
 		# TODO: Make sure there is a match and report error to user
 		if(length(pos[pos != -1]) == 0) {
+			msg <- paste0('Could not match the selected text within the document using a regular expression: \n',
+						  text_selection)
 			shinyWidgets::alert(
 				title = 'Problem finding match',
-				text = paste0('Could not match the selected text within the document using a regular expression: \n',
-							  text_selection),
+				text = msg,
 				status = 'warning',
 				dismissible = TRUE)
-			# warning('Could not match string.')
+			warning(msg)
 		}
 		for(i in pos[pos != -1]) {
 			code_ids <- c(
