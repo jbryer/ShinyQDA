@@ -24,8 +24,8 @@ shiny_server <- function(input, output, session) {
 	############################################################################
 	##### Setup the connection to SQLite database
 	if(!exists('qda_data_file')) {
-		message('Creating ShinyQDA.sqlite file...')
-		qda_data_file <- 'ShinyQDA.sqlite'
+		message('Creating qda.sqlite file...')
+		qda_data_file <- 'qda.sqlite'
 	}
 	qda_data_db <- qda(qda_data_file)
 

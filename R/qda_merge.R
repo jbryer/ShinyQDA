@@ -207,36 +207,44 @@ qda_merge <- function(qda_data,
 
 	# Add text questions
 	if(include_text_questions) {
-		df_text <- question_responses_to_data_frame(
-			questions = qda_data$get_text_questions(),
-			responses = qda_data$get_text_question_responses(),
-			id_col = 'qda_id'
-		)
-		if(nrow(df_text) > 0) {
-			names(df_text) <- make.names(names(df_text))
-			tab <- merge(tab, df_text, by = c('qda_id', 'coder'), all.x = TRUE)
+		text_questions <- qda_data$get_text_questions()
+		text_responses <- qda_data$get_text_question_responses()
+		if(nrow(text_questions) > 0 & nrow(text_responses) > 0) {
+			df_text <- question_responses_to_data_frame(
+				questions = text_questions,
+				responses = text_responses,
+				id_col = 'qda_id'
+			)
+			if(nrow(df_text) > 0) {
+				names(df_text) <- make.names(names(df_text))
+				tab <- merge(tab, df_text, by = c('qda_id', 'coder'), all.x = TRUE)
+			}
 		}
 	}
 
 	# TODO: Add code questions
 	if(include_code_questions) {
-		df_code <- question_responses_to_data_frame(
-			questions = qda_data$get_code_questions(),
-			responses = qda_data$get_code_question_responses(),
-			id_col = 'coding_id'
-		)
-		codings <- qda_data$get_codings()
-		df_code <- merge(codings[,c('qda_id', 'coding_id')],
-						 df_code,
-						 by = 'coding_id')
-		aggr_cols <- sapply(df_code, class) == 'logical'
-		aggr_cols <- names(aggr_cols)[aggr_cols]
-		df_code2 <- df_code[,c('qda_id', 'coder', aggr_cols)]
-		tmp <- df_code2 |>
-			dplyr::group_by(qda_id, coder) |>
-			dplyr::summarise(dplyr::across(dplyr::everything(), function(x) { sum(x, na.rm = TRUE) }), .groups = 'keep')
-		names(tmp) <- make.names(names(tmp))
-		tab <- merge(tab, tmp, by = c('qda_id', 'coder'), all.x = TRUE)
+		code_questions <- qda_data$get_code_questions()
+		code_responses <- qda_data$get_code_question_responses()
+		if(nrow(code_questions) > 0 & nrow(code_responses) > 0) {
+			df_code <- question_responses_to_data_frame(
+				questions = code_questions,
+				responses = code_responses,
+				id_col = 'coding_id'
+			)
+			codings <- qda_data$get_codings()
+			df_code <- merge(codings[,c('qda_id', 'coding_id')],
+							 df_code,
+							 by = 'coding_id')
+			aggr_cols <- sapply(df_code, class) == 'logical'
+			aggr_cols <- names(aggr_cols)[aggr_cols]
+			df_code2 <- df_code[,c('qda_id', 'coder', aggr_cols)]
+			tmp <- df_code2 |>
+				dplyr::group_by(qda_id, coder) |>
+				dplyr::summarise(dplyr::across(dplyr::everything(), function(x) { sum(x, na.rm = TRUE) }), .groups = 'keep')
+			names(tmp) <- make.names(names(tmp))
+			tab <- merge(tab, tmp, by = c('qda_id', 'coder'), all.x = TRUE)
+		}
 	}
 
 	return(tab)

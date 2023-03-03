@@ -30,7 +30,7 @@ shinyQDA <- function(qda_data_file = 'ShinyQDA.sqlite',
 		app <- shiny::shinyApp(
 			ui = shinymanager::secure_app(ui = shiny_ui,
 										  enable_admin = enable_admin,
-										  # keep_token = keep_token,
+										  keep_token = keep_token,
 										  db = qda_data_file),
 			server = shiny_server,
 			...)

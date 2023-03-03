@@ -81,9 +81,10 @@ data_view_server <- function(id, qda_data) {
 		id,
 		function(input, output, session) {
 			get_text_data <- reactive({
-				return(qda_merge(qda_data(),
-								 include_sentiments = TRUE,
-								 sentiment_dir = '.'))
+				qda_merged <- qda_merge(qda_data(),
+										include_sentiments = TRUE,
+										sentiment_dir = '.')
+				return(qda_merged)
 			})
 
 			get_text_data_view <- reactive({
@@ -104,11 +105,10 @@ data_view_server <- function(id, qda_data) {
 				df <- get_text_data()
 				selected_cols <- c('qda_id', 'qda_text', 'coder', 'n_words', 'n_characters', 'n_codes', 'n_highlights')
 				selected_cols <- selected_cols[selected_cols %in% names(df)]
-
 				all_cols <- names(df)
 				for(i in seq_len(length(grouped_colunns))) {
 					cols <- grep(grouped_colunns[i], all_cols)
-					if(length(i) > 0) {
+					if(length(cols) > 0) {
 						all_cols <- all_cols[-cols]
 					}
 				}

@@ -1,18 +1,15 @@
 
-<img src="man/figures/ShinyQDA.png" align="right" width="120" align="right" />
-
-# ShinyQDA: R Package and Shiny Application for the Analysis of Qualitative Data
+# <img src="man/figures/ShinyQDA.png" align="right" width="120" align="right" /> ShinyQDA: R Package and Shiny Application for the Analysis of Qualitative Data
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/jbryer/ShinyQDA/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jbryer/ShinyQDA/actions/workflows/R-CMD-check.yaml)
 [![](https://img.shields.io/badge/devel%20version-0.5.0-blue.svg)](https://github.com/jbryer/ShinyQDA)
 [![](https://www.r-pkg.org/badges/version/ShinyQDA)](https://cran.r-project.org/package=ShinyQDA)
-[![Project Status: Active - The project has reached a stable, usable
-state and is being actively
-developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![](https://img.shields.io/github/last-commit/jbryer/ShinyQDA.svg)](https://github.com/jbryer/ShinyQDA/commits/main)
-[![R-CMD-check](https://github.com/jbryer/ShinyQDA/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jbryer/ShinyQDA/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
+
+Package documentation: <https://jbryer.github.io/ShinyQDA/>
 
 The `ShinyQDA` package is designed to assist researchers with the
 analysis of qualitative data. As the name suggests, the premise is that
@@ -30,29 +27,21 @@ application to code and/or score documents.
 analyze as documents. Natural language processing researchers tend to
 refer to the data as text data. We try to prefer to use the phrase most
 appropriate for how a feature may be used, but they can often be used
-interchangeably. *
+interchangeably.*
 
 ![Screencast of ShinyQDA](man/figures/ShinyQDA_screencast.gif)
 
 To install, use the `remotes` package:
 
-    remotes::install_github('jbryer/ShinyQDA')
+``` r
+remotes::install_github('jbryer/ShinyQDA')
+```
 
 Run the Shiny app with:
 
-    ShinyQDA::shinyQDA()
-
-## Setup
-
-    qda_data <- qda(file = 'ShinyQDA.sqlite')
-
-## Sentiment Analysis
-
-    app_dir <- './'
-    textdata::lexicon_afinn(dir = app_dir)
-    textdata::lexicon_bing(dir = app_dir)
-    textdata::lexicon_loughran(dir = app_dir)
-    textdata::lexicon_nrc(dir = app_dir)
+``` r
+ShinyQDA::shinyQDA()
+```
 
 ## Authentication
 
@@ -68,9 +57,9 @@ has a username associated with it. When in authentication mode the
 username will be retrieved from `shinymanager`, otherwise ShinyQDA will
 use the value of `Sys.info()['user']`.
 
-## Current Features
+## ShinyQDA Features
 
-Data entry features
+Data entry, coding, and scoring features
 
 - User management via the
   [`shinymanager`](https://datastorm-open.github.io/shinymanager/)
@@ -112,9 +101,10 @@ Data export features:
 
 ## Roadmap
 
+- Ability to see other coders responses (for the text questions).
 - Merge coding results into data export tab. Allow user to choose
   aggregation method.
-- Inter-rater reliability analysis
+- Inter-rater reliability analysis. For coding have a split view.
 - Topic modeling
 - Tokenization - allow the user to define and export/download various
   tokenization schemes.

@@ -14,6 +14,16 @@ devtools::check()
 # usethis::use_pkgdown_github_pages()
 # usethis::use_github_action("README.Rmd")
 
+# Test creating a new app
+data("daacs_data", package = 'ShinyQDA')
+ShinyQDA::new_app(name = 'daacs_test',
+				  dir = getwd(),
+				  qda_data = daacs_data)
+shiny::runApp('daacs_test')
+daacs_qda <- qda('daacs_test/qda.sqlite')
+daacs_merged <- qda_merge(daacs_qda, include_sentiments = TRUE)
+unlink('daacs_test', recursive = TRUE)
+
 # Run shiny app examples
 shiny::runApp('inst/daacs/')
 shiny::runApp('inst/shiny_template')

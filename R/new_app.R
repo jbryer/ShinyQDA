@@ -1,41 +1,69 @@
-#' Creates a new ShinyQDA application
+#' Create a new ShinyQDA application
 #'
 #' @param name name of the application directory.
 #' @param dir directory where the application will be created.
 #' @param qda_data a data.frame with the text data.
 #' @param id_column the name of the column in `qda_data` for the primary key.
-#' @param document_column the name of the column in `qda_data` containing the text data.
+#' @param text_column the name of the column in `qda_data` containing the text data.
 #' @param initialize_sentiment_dictionaries whether to copy the sentiment
 #'        dictionaries into the app directory.
 #' @importFrom rstudioapi selectDirectory
+#' @importFrom utils file.edit
+#' @returns Returns a [ShinyQDA::qda()] object.
 #' @export
-new_ShinyQDA_app <- function(
+new_app <- function(
 		name = 'My_ShinyQDA',
 		dir = ifelse(interactive(),
 					 rstudioapi::selectDirectory(caption = 'Select location for ShinyQDA application'),
 					 getwd()),
 		qda_data,
 		id_column = find_primary_key_column(qda_data),
-		document_column = find_document_column(qda_data),
+		text_column = find_document_column(qda_data),
 		initialize_sentiment_dictionaries = TRUE
 ) {
-	if(missing(qda_data) | is.null(id_column) | is.null(document_column)) {
+	if(missing(qda_data) | is.null(id_column) | is.null(text_column)) {
 		stop('Must provide a data.frame with a primary key and document column.')
 	}
 
 	app_dir <- paste0(dir, '/', name)
-	dir.create(app_dir, recursive = TRUE)
+	dir.create(app_dir, recursive = TRUE, showWarnings = FALSE)
 
 	if(file.exists(paste0(app_dir, '/app.R'))) {
 		stop(paste0('Shiny application already exists in ', app_dir))
 	}
 
-	if(initialize_sentiment_dictionaries) {
-		textdata::lexicon_afinn(dir = app_dir)
-		textdata::lexicon_bing(dir = app_dir)
-		textdata::lexicon_loughran(dir = app_dir)
-		textdata::lexicon_nrc(dir = app_dir)
+	pkg_path <- find.package('ShinyQDA')
+	app_template <- paste0(pkg_path, '/shiny_template/app.R')
+	if(!file.exists(app_template)) {
+		stop('Could not find the ShinyQDA template.')
 	}
+
+	if(!file.copy(app_template, paste0(app_dir, '/app.R'))) {
+		stop("Could not copy the ShinyQDA template.")
+	}
+
+	if(initialize_sentiment_dictionaries) {
+		tmp <- textdata::lexicon_afinn(dir = app_dir)
+		tmp <- textdata::lexicon_bing(dir = app_dir)
+		tmp <- textdata::lexicon_loughran(dir = app_dir)
+		tmp <- textdata::lexicon_nrc(dir = app_dir)
+	}
+
+	qda <- qda(paste0(app_dir, '/qda.sqlite'))
+	qda$add_text(df = qda_data,
+				 id_col = id_column,
+				 text_col = text_column,
+				 overwrite = TRUE
+	)
+
+	# utils::file.edit(paste0(app_dir, '/app.R'))
+	# invisible(qda)
+
+	message(paste0('You can run your application with the following command:\n',
+				   'shiny::runApp("', app_dir, '"\n',
+				   'Note the default login is admin/pass. You should change that after logging in.'))
+
+	shiny::runApp(app_dir)
 }
 
 #' Finds the first column that can be used as the primary key.

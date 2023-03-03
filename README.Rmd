@@ -19,7 +19,7 @@ Package documentation: https://jbryer.github.io/ShinyQDA/
 
 The `ShinyQDA` package is designed to assist researchers with the analysis of qualitative data. As the name suggests, the premise is that much of the interaction with the package will be done through a [Shiny](https://shiny.rstudio.com) application. However, all the functionality in the Shiny application is available through through the R command line as well. `ShinyQDA` attempts to set in between traditional qualitative data analysis that involves researchers coding and/or scoring (using rubrics) documents/text and natural language processing such as sentiment analysis, topic modeling, and text encoding (i.e. tokenization). By using Shiny, multiple researchers can access the application to code and/or score documents. 
 
-*Note: Qualitative data researchers tend to refer to the text they analyze as documents. Natural language processing researchers tend to refer to the data as text data. We try to prefer to use the phrase most appropriate for how a feature may be used, but they can often be used interchangeably. *
+*Note: Qualitative data researchers tend to refer to the text they analyze as documents. Natural language processing researchers tend to refer to the data as text data. We try to prefer to use the phrase most appropriate for how a feature may be used, but they can often be used interchangeably.*
 
 
 ![Screencast of ShinyQDA](man/figures/ShinyQDA_screencast.gif)
