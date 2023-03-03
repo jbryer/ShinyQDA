@@ -50,12 +50,8 @@ ggplot2::ggplot(qdadf[!duplicated(qdadf$qda_id),],
 	ggplot2::theme_minimal()
 
 
-##### Data Prep
+##### Data Prep ################################################################
 app_dir <- 'inst/daacs/'
-textdata::lexicon_afinn(dir = app_dir)
-textdata::lexicon_bing(dir = app_dir)
-textdata::lexicon_loughran(dir = app_dir)
-textdata::lexicon_nrc(dir = app_dir)
 
 reviews <- read.csv('data-raw/archive/Musical_instruments_reviews.csv')
 
@@ -73,6 +69,8 @@ usethis::use_data(asep7, overwrite = TRUE)
 asep7_rubric <- readxl::read_excel('data-raw/asap7_rubric.xlsx')
 usethis::use_data(asep7_rubric, overwrite = TRUE)
 
+tools::resaveRdaFiles('data/asep7.rda')
+tools::resaveRdaFiles('data/asep8.rda')
 
 ################################################################################
 qda_data$get_last_update()

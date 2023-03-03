@@ -1,3 +1,5 @@
+utils::globalVariables(c('qda_id', 'qda_text', 'token', 'Code', 'Count'))
+
 #' UI for the descriptive statistics.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
@@ -5,6 +7,7 @@
 #' @importFrom shiny NS
 #' @importFrom shinyTree shinyTree renderTree
 #' @importFrom RColorBrewer brewer.pal.info
+#' @importFrom stats reorder
 descriptives_ui <- function(id) {
 	ns <- shiny::NS(id)
 	shiny::tagList(
@@ -120,7 +123,7 @@ descriptives_server <- function(id, qda_data) {
 				tokens <- tokens |>
 					dplyr::count(token, sort = TRUE) |>
 					dplyr::top_n(n = input$freq_n_ngrams, n) |>
-					dplyr::mutate(token = reorder(token, n))
+					dplyr::mutate(token = stats::reorder(token, n))
 
 				ggplot2::ggplot(tokens, aes(x = token, y = n)) +
 						ggplot2::geom_bar(stat = 'identity', fill = 'grey50') +

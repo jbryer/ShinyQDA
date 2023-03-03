@@ -1,7 +1,7 @@
 #' Shiny User Interface for QDA
 #'
-#' @param title title displayed in the top left of the Shiny app.
 #' @param debug parater passed to [shinyjs::useShinyjs()]
+#' @param request a Shiny request object.
 #' @importFrom shiny icon tags navbarPage tabPanel fluidRow column uiOutput plotOutput tabsetPanel sidebarLayout sidebarPanel mainPanel actionButton htmlOutput verbatimTextOutput
 #' @importFrom DT dataTableOutput
 #' @importFrom shinyjs useShinyjs

@@ -1,3 +1,5 @@
+utils::globalVariables(c('token', 'Var1', 'Freq'))
+
 #' Plot sentiment for an individual text.
 #'
 #' @param text the text to calculate sentiment bar plot for.

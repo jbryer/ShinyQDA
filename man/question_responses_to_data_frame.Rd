@@ -6,6 +6,13 @@
 \usage{
 question_responses_to_data_frame(questions, responses, id_col)
 }
+\arguments{
+\item{questions}{data.frame with the questions}
+
+\item{responses}{data.frame with the question responses.}
+
+\item{id_col}{name of the id column.}
+}
 \description{
 Utility function to convert code and text questions to a wide data.frame.
 }

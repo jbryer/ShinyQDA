@@ -6,6 +6,7 @@
 #' @param keep_token Logical, keep the token used to authenticate in the URL,
 #'        it allow to refresh the application in the browser, but careful the
 #'        token can be shared between users.
+#' @param users_passphrase passphrase to pass to `shinymanager`.
 #' @param ... other parameters passed to [shiny::runApp()] and [shiny::shinyApp()].
 #' @export
 #' @importFrom shiny runApp shinyApp

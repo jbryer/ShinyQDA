@@ -4,9 +4,18 @@
 \name{daacs}
 \alias{daacs}
 \alias{daacs_data}
+\alias{daacs_codings}
+\alias{daacs_text_responses}
+\alias{daacs_rubric}
 \title{Sample data from the Diagnostic Assessment and Achievement of College Skills (DAACS)}
 \format{
 Data frames.
+
+An object of class \code{data.frame} with 313 rows and 8 columns.
+
+An object of class \code{data.frame} with 22 rows and 4 columns.
+
+An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 10 rows and 4 columns.
 }
 \source{
 \url{https://daacs.net}
@@ -15,6 +24,12 @@ Data frames.
 }
 \usage{
 daacs_data
+
+daacs_codings
+
+daacs_text_responses
+
+daacs_rubric
 }
 \description{
 Sample data from the Diagnostic Assessment and Achievement of College Skills (DAACS)

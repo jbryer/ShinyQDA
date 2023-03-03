@@ -1,3 +1,5 @@
+utils::globalVariables(c('enabled', 'scoring_level', 'description'))
+
 #' UI for the rubric.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
@@ -11,6 +13,7 @@ rubric_edit_ui <- function(id) {
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @param qda_data QDA data object, see [ShinyQDA::qda()].
+#' @param page_length the default number of rows to show in the table.
 #' @export
 rubric_edit_server <- function(id, qda_data, page_length = 20) {
 	shiny::moduleServer(

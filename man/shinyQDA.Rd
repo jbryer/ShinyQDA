@@ -24,6 +24,8 @@ shinyQDA(
 it allow to refresh the application in the browser, but careful the
 token can be shared between users.}
 
+\item{users_passphrase}{passphrase to pass to \code{shinymanager}.}
+
 \item{...}{other parameters passed to \code{\link[shiny:runApp]{shiny::runApp()}} and \code{\link[shiny:shinyApp]{shiny::shinyApp()}}.}
 }
 \description{

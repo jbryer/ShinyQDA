@@ -2,15 +2,28 @@
 % Please edit documentation in R/modalDialog2.R
 \name{modalDialog2}
 \alias{modalDialog2}
-\title{Adapted from https://stackoverflow.com/questions/63882483/how-to-adjust-shiny-modaldialog-width-to-a-dt-object-to-fully-show-the-table-i}
+\title{Alternative modal dialog.}
 \usage{
 modalDialog2(
   ...,
   title = NULL,
-  footer = modalButton("Dismiss"),
+  footer = shiny::modalButton("Dismiss"),
   easyClose = FALSE,
   fade = TRUE
 )
+}
+\arguments{
+\item{...}{currently unused.}
+
+\item{title}{modal dialog title.}
+
+\item{footer}{footer of the modal dialog.}
+
+\item{easyClose}{If TRUE, the modal dialog can be dismissed by clicking
+outside the dialog box, or be pressing the Escape key.}
+
+\item{fade}{If FALSE, the modal dialog will have no fade-in animation
+(it will simply appear rather than fade in to view).}
 }
 \description{
 Adapted from https://stackoverflow.com/questions/63882483/how-to-adjust-shiny-modaldialog-width-to-a-dt-object-to-fully-show-the-table-i

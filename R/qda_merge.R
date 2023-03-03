@@ -1,3 +1,7 @@
+utils::globalVariables(c('Var1', 'Var2', 'Var3', 'Freq', 'Var1', 'qda_id', 'qda_text',
+						 'token', 'sentiment', 'NA', 'bing_negative', 'bing_positive',
+						 'value', 'coder'))
+
 #' Returns a table where each row represents a text coded by a coder and each
 #' column represents the number of codes present by that coder.
 #'
@@ -33,8 +37,6 @@ get_coding_table <- function(qda_data, aggregate_fun = sum) {
 #' Merges codings with the text data.
 #'
 #' @param qda_data a [ShinyQDA::qda()] object.
-#' @param aggregate_fun function used to aggregate multiple tags per text per
-#'        per coder. See [reshape2::dcast()] for more information.
 #' @param sentiment_dir if specified, the sentiment lexicon will be loaded
 #'        from the given directory.
 #' @param include_code_counts include code counts in returned data.frame.
@@ -242,6 +244,9 @@ qda_merge <- function(qda_data,
 
 #' Utility function to convert code and text questions to a wide data.frame.
 #'
+#' @param questions data.frame with the questions
+#' @param responses data.frame with the question responses.
+#' @param id_col name of the id column.
 question_responses_to_data_frame <- function(questions, responses, id_col) {
 	unique_responses <- responses[!duplicated(responses[,c(id_col,'coder')]),c(id_col,'coder')]
 	df_code <- data.frame(id = unique_responses[,id_col],

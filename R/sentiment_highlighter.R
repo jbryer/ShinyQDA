@@ -1,6 +1,12 @@
 #' Color palettes for the various sentiment lexicons
 #'
-#' @export
+#' This defines the colors used for various sentiment analyses. Each element of
+#' the list corresponds to a sentiment dictionary with each element a character
+#' vector where the names correspond to the sentiment words and the values
+#' are hex colors.
+#'
+#' @docType data
+#' @format a list containing character vectors.
 lexicon_colors <- list(
 	bing = c(positive = '#67a9cf',
 			  negative = '#ef8a62'),
@@ -35,10 +41,11 @@ lexicon_colors <- list(
 
 #' Returns an HTML character highlighting the sentiments.
 #'
-#' @param thetext the text to highlight.
+#' @param text the text to highlight.
 #' @param lexicon the sentiment lexicon to use.
 #' @param token unit for tokenizing. Reasonable options are words, sentences,
 #'        lines, and paragraphs. See [tidytext::unnest_tokens()] for more details.
+#' @param lexicon_dir directory where the sentiment directories are located.
 #' @importFrom tidytext unnest_tokens get_sentiments
 #' @importFrom dplyr left_join mutate
 #' @importFrom stringr str_remove_all

@@ -51,9 +51,6 @@ returned data.frame. Columns will begin with \code{loughran_}.}
 data.frame. Columns will begin with \code{afinn_}.}
 
 \item{...}{parameters passed to other functions.}
-
-\item{aggregate_fun}{function used to aggregate multiple tags per text per
-per coder. See \code{\link[reshape2:cast]{reshape2::dcast()}} for more information.}
 }
 \description{
 Merges codings with the text data.

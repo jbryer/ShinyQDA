@@ -240,7 +240,7 @@ data_view_server <- function(id, qda_data) {
 					paste0(id, '-', Sys.Date(), '.csv')
 				},
 				content = function(file) {
-					write.csv(get_text_data_view(), path = file)
+					utils::write.csv(get_text_data_view(), path = file)
 				}
 			)
 

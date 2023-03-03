@@ -1,3 +1,6 @@
+utils::globalVariables(c('qda_id', 'qda_text', 'token', 'bing_total', 'variable',
+						 'value', 'group1', 'se', 'afinn_sentiment'))
+
 #' UI for the sentiment analysis
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
@@ -52,6 +55,7 @@ sentiment_ui <- function(id) {
 #' @importFrom wordcloud wordcloud
 #' @importFrom RColorBrewer brewer.pal brewer.pal.info
 #' @importFrom wordcloud2 wordcloud2 renderWordcloud2 wordcloud2Output
+#' @importFrom psych describeBy
 #' @import tm
 sentiment_server <- function(id, qda_data) {
 	shiny::moduleServer(

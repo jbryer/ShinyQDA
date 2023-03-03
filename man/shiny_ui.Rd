@@ -7,9 +7,9 @@
 shiny_ui(request, debug = TRUE)
 }
 \arguments{
-\item{debug}{parater passed to \code{\link[shinyjs:useShinyjs]{shinyjs::useShinyjs()}}}
+\item{request}{a Shiny request object.}
 
-\item{title}{title displayed in the top left of the Shiny app.}
+\item{debug}{parater passed to \code{\link[shinyjs:useShinyjs]{shinyjs::useShinyjs()}}}
 }
 \description{
 Shiny User Interface for QDA

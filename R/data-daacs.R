@@ -34,6 +34,12 @@
 #' @source <https://daacs.net>
 #' @source <https://docs.daacs.net/overview/assessments/writing/>
 "daacs_data"
+
+#' @rdname daacs
 "daacs_codings"
+
+#' @rdname daacs
 "daacs_text_responses"
+
+#' @rdname daacs
 "daacs_rubric"

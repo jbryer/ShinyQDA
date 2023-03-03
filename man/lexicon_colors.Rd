@@ -5,12 +5,15 @@
 \alias{lexicon_colors}
 \title{Color palettes for the various sentiment lexicons}
 \format{
-An object of class \code{list} of length 4.
+a list containing character vectors.
 }
 \usage{
 lexicon_colors
 }
 \description{
-Color palettes for the various sentiment lexicons
+This defines the colors used for various sentiment analyses. Each element of
+the list corresponds to a sentiment dictionary with each element a character
+vector where the names correspond to the sentiment words and the values
+are hex colors.
 }
 \keyword{datasets}

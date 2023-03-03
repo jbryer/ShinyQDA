@@ -1,8 +1,9 @@
 Type: Package
 Package: ShinyQDA
-Title: R Package and Shiny Application for the Analysis of Qualitative Data
-Date: 2022-03-02
+Title: R Package and Shiny Application for the Analysis of Qualitative
+    Data
 Version: 0.5.0
+Date: 2022-03-02
 Authors@R: 
     person("Jason", "Bryer", , "jason@bryer.org", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0002-2454-0402"))
@@ -24,6 +25,7 @@ Imports:
     dplyr,
     DT,
     ggplot2,
+    psych,
     RColorBrewer,
     reshape2,
     RSQLite,
@@ -33,7 +35,6 @@ Imports:
     shinymanager,
     shinyTree,
     shinyWidgets,
-    stopwords,
     stringr,
     textdata,
     textutils,
@@ -41,15 +42,16 @@ Imports:
     tidyr,
     tidytext,
     tm,
-    tokenizers,
     wordcloud,
     wordcloud2
 Suggests: 
     knitr,
     rmarkdown,
+    stopwords,
     writexl
+VignetteBuilder: 
+    knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
-VignetteBuilder: knitr

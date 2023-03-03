@@ -12,12 +12,14 @@ sentiment_highlighter(
 )
 }
 \arguments{
+\item{text}{the text to highlight.}
+
 \item{lexicon}{the sentiment lexicon to use.}
 
 \item{token}{unit for tokenizing. Reasonable options are words, sentences,
 lines, and paragraphs. See \code{\link[tidytext:unnest_tokens]{tidytext::unnest_tokens()}} for more details.}
 
-\item{thetext}{the text to highlight.}
+\item{lexicon_dir}{directory where the sentiment directories are located.}
 }
 \description{
 Returns an HTML character highlighting the sentiments.

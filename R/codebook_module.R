@@ -1,3 +1,5 @@
+utils::globalVariables(c('children', 'x', 'y', 'value'))
+
 #' UI for the codebook.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
@@ -92,7 +94,7 @@ codebook_server <- function(id, qda_data) {
 				shinyjs::runjs(shiny::HTML(paste0('$("#', ns('codebook_tree'), '").jstree("open_all");')))
 			}
 
-			execute_at_next_input <- function(expr, session = getDefaultReactiveDomain()) {
+			execute_at_next_input <- function(expr, session = shiny::getDefaultReactiveDomain()) {
 				observeEvent(once = TRUE, reactiveValuesToList(session$input), {
 					force(expr)
 				}, ignoreInit = TRUE)

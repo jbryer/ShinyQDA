@@ -1,3 +1,6 @@
+utils::globalVariables(c("password", "qda_id", "coder", "qda_text", "answer",
+						 "criteria", "."))
+
 #' Shiny Server for QDA
 #'
 #' @param input Shiny input object.
@@ -157,9 +160,9 @@ shiny_server <- function(input, output, session) {
 		thetext <- thetext[1,1,drop=TRUE]
 		div(
 			shiny::strong('Number of paragraphs: '),
-				prettyNum(stringr::str_count(thetext, '[^\r\n]+'), big.mark = ','), br(),
+				prettyNum(stringr::str_count(thetext, '[^\r\n]+'), big.mark = ','), shiny::br(),
 			shiny::strong('Number of sentences: '),
-				prettyNum(length(gregexpr('[[:alnum:] ][.!?]', thetext)[[1]]), big.mark = ','), br(),
+				prettyNum(length(gregexpr('[[:alnum:] ][.!?]', thetext)[[1]]), big.mark = ','), shiny::br(),
 			shiny::strong('Number of words: '),
 				prettyNum(stringr::str_count(thetext, '\\w+'), big.mark = ','), shiny::br(),
 			shiny::strong('Number of characters: '),
@@ -662,8 +665,8 @@ shiny_server <- function(input, output, session) {
 	observeEvent(input$cell_selection, {
 		cell <- input$cell_selection
 		cell_pos <- strsplit(cell, 'column')[[1]] %>% gsub('row', '', .) |> as.integer()
-		rubric <- isolate(current_rubric$rubric)
-		rubric_name <- isolate(current_rubric$rubric_name)
+		rubric <- shiny::isolate(current_rubric$rubric)
+		rubric_name <- shiny::isolate(current_rubric$rubric_name)
 		for(i in seq_len(ncol(rubric))) {
 			shinyjs::removeCssClass(id = paste0('row', cell_pos[1], 'column', i), class = 'highlight')
 		}

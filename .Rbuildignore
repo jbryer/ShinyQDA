@@ -14,3 +14,11 @@ nrc/
 ^docs$
 ^pkgdown$
 ^\.github$
+inst/bs4dash
+inst/daacs
+inst/daacs_writing
+inst/layout_test
+inst/rubric
+inst/slides
+Abstract.docx
+README.Rmd

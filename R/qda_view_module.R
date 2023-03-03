@@ -3,6 +3,8 @@
 #' This will display at tab group for each table in the [qda()] data object.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
+#' @param download_xlsx include a download Excel button.
+#' @param download_rda include a download R data button.
 #' @export
 qda_view_ui <- function(id, download_xlsx = TRUE, download_rda = TRUE) {
 	ns <- shiny::NS(id)

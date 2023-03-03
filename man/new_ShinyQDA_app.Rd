@@ -14,6 +14,20 @@ new_ShinyQDA_app(
   initialize_sentiment_dictionaries = TRUE
 )
 }
+\arguments{
+\item{name}{name of the application directory.}
+
+\item{dir}{directory where the application will be created.}
+
+\item{qda_data}{a data.frame with the text data.}
+
+\item{id_column}{the name of the column in \code{qda_data} for the primary key.}
+
+\item{document_column}{the name of the column in \code{qda_data} containing the text data.}
+
+\item{initialize_sentiment_dictionaries}{whether to copy the sentiment
+dictionaries into the app directory.}
+}
 \description{
 Creates a new ShinyQDA application
 }

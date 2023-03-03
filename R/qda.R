@@ -1,3 +1,5 @@
+utils::globalVariables(c('qda_id', 'qda_text', 'password'))
+
 #' Data object for qualitative data analysis.
 #'
 #' This function creates an object to manipulate data for qualitative analysis.
@@ -525,7 +527,7 @@ qda <- function(
 
 	# update_text_question_response
 	qda_data$update_text_question_response <- function(id, stem, new_answer, coder = Sys.info()['user']) {
-		query <- paste0('UPDATE text_question_responses SET answer = "', new_anser,
+		query <- paste0('UPDATE text_question_responses SET answer = "', new_answer,
 						'" WHERE qda_id ="', id, '" AND stem = "', stem, '"')
 		DBI::dbExecute(qda_db, query)
 		qda_data$log(coder, 'text_question_responses', query)

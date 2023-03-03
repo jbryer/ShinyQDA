@@ -8,6 +8,10 @@ qda_view_ui(id, download_xlsx = TRUE, download_rda = TRUE)
 }
 \arguments{
 \item{id}{An ID string that corresponds with the ID used to call the module's UI function.}
+
+\item{download_xlsx}{include a download Excel button.}
+
+\item{download_rda}{include a download R data button.}
 }
 \description{
 This will display at tab group for each table in the \code{\link[=qda]{qda()}} data object.
