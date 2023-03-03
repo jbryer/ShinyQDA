@@ -7,6 +7,7 @@
 #' @param text_column the name of the column in `qda_data` containing the text data.
 #' @param initialize_sentiment_dictionaries whether to copy the sentiment
 #'        dictionaries into the app directory.
+#' @param run_app if TRUE the Shiny application will be started once it has been created.
 #' @importFrom rstudioapi selectDirectory
 #' @importFrom utils file.edit
 #' @returns Returns a [ShinyQDA::qda()] object.
@@ -19,7 +20,8 @@ new_app <- function(
 		qda_data,
 		id_column = find_primary_key_column(qda_data),
 		text_column = find_document_column(qda_data),
-		initialize_sentiment_dictionaries = TRUE
+		initialize_sentiment_dictionaries = TRUE,
+		run_app = interactive()
 ) {
 	if(missing(qda_data) | is.null(id_column) | is.null(text_column)) {
 		stop('Must provide a data.frame with a primary key and document column.')
@@ -63,7 +65,9 @@ new_app <- function(
 				   'shiny::runApp("', app_dir, '"\n',
 				   'Note the default login is admin/pass. You should change that after logging in.'))
 
-	shiny::runApp(app_dir)
+	if(run_app) {
+		shiny::runApp(app_dir)
+	}
 }
 
 #' Finds the first column that can be used as the primary key.

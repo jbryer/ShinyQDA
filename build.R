@@ -18,7 +18,8 @@ devtools::check()
 data("daacs_data", package = 'ShinyQDA')
 ShinyQDA::new_app(name = 'daacs_test',
 				  dir = getwd(),
-				  qda_data = daacs_data)
+				  qda_data = daacs_data,
+				  run_app = FALSE)
 shiny::runApp('daacs_test')
 daacs_qda <- qda('daacs_test/qda.sqlite')
 daacs_merged <- qda_merge(daacs_qda, include_sentiments = TRUE)
