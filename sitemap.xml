@@ -16,18 +16,6 @@
     <loc>https://jbryer.github.io/ShinyQDA/reference/ShinyQDA-package.html</loc>
   </url>
   <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/asep7.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/asep7_rubric.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/asep8.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/asep8_rubric.html</loc>
-  </url>
-  <url>
     <loc>https://jbryer.github.io/ShinyQDA/reference/codebook_server.html</loc>
   </url>
   <url>
@@ -46,6 +34,9 @@
     <loc>https://jbryer.github.io/ShinyQDA/reference/cooccurance_plot.html</loc>
   </url>
   <url>
+    <loc>https://jbryer.github.io/ShinyQDA/reference/daacs.html</loc>
+  </url>
+  <url>
     <loc>https://jbryer.github.io/ShinyQDA/reference/data_view_server.html</loc>
   </url>
   <url>
@@ -56,6 +47,12 @@
   </url>
   <url>
     <loc>https://jbryer.github.io/ShinyQDA/reference/descriptives_ui.html</loc>
+  </url>
+  <url>
+    <loc>https://jbryer.github.io/ShinyQDA/reference/find_document_column.html</loc>
+  </url>
+  <url>
+    <loc>https://jbryer.github.io/ShinyQDA/reference/find_primary_key_column.html</loc>
   </url>
   <url>
     <loc>https://jbryer.github.io/ShinyQDA/reference/get_coding_table.html</loc>
@@ -74,6 +71,9 @@
   </url>
   <url>
     <loc>https://jbryer.github.io/ShinyQDA/reference/modalDialog2.html</loc>
+  </url>
+  <url>
+    <loc>https://jbryer.github.io/ShinyQDA/reference/new_ShinyQDA_app.html</loc>
   </url>
   <url>
     <loc>https://jbryer.github.io/ShinyQDA/reference/qda.html</loc>
@@ -98,6 +98,12 @@
   </url>
   <url>
     <loc>https://jbryer.github.io/ShinyQDA/reference/questions_ui.html</loc>
+  </url>
+  <url>
+    <loc>https://jbryer.github.io/ShinyQDA/reference/rubric_edit_server.html</loc>
+  </url>
+  <url>
+    <loc>https://jbryer.github.io/ShinyQDA/reference/rubric_edit_ui.html</loc>
   </url>
   <url>
     <loc>https://jbryer.github.io/ShinyQDA/reference/sentiment_highlighter.html</loc>
