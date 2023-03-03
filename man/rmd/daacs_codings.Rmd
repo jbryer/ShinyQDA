@@ -1,0 +1,7 @@
+```{r, echo=FALSE, results='asis', warning=FALSE, error=FALSE, message=FALSE}
+library(ShinyQDA)
+data(daacs_codings, package = 'ShinyQDA')
+for(i in seq_len(ncol(daacs_codings))) {
+	cat(paste0('* `', names(daacs_codings)[i], '` ', class(daacs_codings[,i]), '\n'))
+}
+```

@@ -4,17 +4,15 @@ editor_options:
   chunk_output_type: console
 ---
 
-<img src="man/figures/ShinyQDA.png" align="right" width="120" align="right" />
 
-# ShinyQDA: R Package and Shiny Application for the Analysis of Qualitative Data
+# <img src="man/figures/ShinyQDA.png" align="right" width="120" align="right" /> ShinyQDA: R Package and Shiny Application for the Analysis of Qualitative Data
 
 <!-- badges: start -->
 
+[![R-CMD-check](https://github.com/jbryer/ShinyQDA/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jbryer/ShinyQDA/actions/workflows/R-CMD-check.yaml)
 `r badger::badge_devel("jbryer/ShinyQDA", "blue")`
 `r badger::badge_cran_release("ShinyQDA")`
-`r badger::badge_repostatus('active')`
 `r badger::badge_last_commit("jbryer/ShinyQDA")`
-[![R-CMD-check](https://github.com/jbryer/ShinyQDA/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jbryer/ShinyQDA/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 Package documentation: https://jbryer.github.io/ShinyQDA/
@@ -44,23 +42,13 @@ ShinyQDA::shinyQDA()
 qda_data <- qda(file = 'ShinyQDA.sqlite')
 ```
 
-## Sentiment Analysis
-
-```
-app_dir <- './'
-textdata::lexicon_afinn(dir = app_dir)
-textdata::lexicon_bing(dir = app_dir)
-textdata::lexicon_loughran(dir = app_dir)
-textdata::lexicon_nrc(dir = app_dir)
-```
-
 ## Authentication
 
 Authentication is handled by the [`shinymanager`](https://datastorm-open.github.io/shinymanager/) R package. By default, if authentication is enabled, ShinyQDA will create an administrator user with `admin` and `pass` as the username and password. We recommend changing the password after your first sign-in. User management (including password changing) is handled by clicking the plus (`+`) icon in the lower right hand corner. This will take you into `shinymanager`'s user management mode. All data entered into ShinyQDA has a username associated with it. When in authentication mode the username will be retrieved from `shinymanager`, otherwise ShinyQDA will use the value of `Sys.info()['user']`.
 
-## Current Features
+## ShinyQDA Features
 
-Data entry features
+Data entry, coding, and scoring features
 
 * User management via the [`shinymanager`](https://datastorm-open.github.io/shinymanager/) package to allow multiple coders to work on the same dataset over the internet.
 * Define an arbitrary set of questions/codes to assign to each document. Current question types include checkbox (for multiple selections), radio (for choose one from a list), and open text.
@@ -85,8 +73,9 @@ Data export features:
 
 ## Roadmap
 
+* Ability to see other coders responses (for the text questions).
 * Merge coding results into data export tab. Allow user to choose aggregation method.
-* Inter-rater reliability analysis
+* Inter-rater reliability analysis. For coding have a split view.
 * Topic modeling
 * Tokenization - allow the user to define and export/download various tokenization schemes.
 * Predictive modeling - use any data (including sentiment, topics, tokenizations, etc.) to predict an outcome.

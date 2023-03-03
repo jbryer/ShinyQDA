@@ -54,8 +54,9 @@ you can manipulate the SQL database directly, we recommend using the methods
 \item \code{get_rubrics()}
 \item \code{get_rubric(rubric_name)}
 \item \code{add_rubric(rubric_name, description, rubric, scoring_levels, enabled)}
-\item \code{delete_rubric_response(qda_id, rubric_name, coder, criteria)}
-\item \code{add_rubric_response(qda_id, rubric_name, coder, criteria, score)}
+\item \code{update_rubric_criteria(rubric_name, criteria, score_level, description)}
+\item \code{delete_rubric_response(rubric_name, coder, criteria)}
+\item \code{add_rubric_response(rubric_name, coder, criteria, score)}
 \item \code{get_rubric_responses(rubric_name, qda_id, coder)}
 \item \code{get_assignments(coder, id)}
 \item \code{get_coders()}
