@@ -3,7 +3,6 @@ library(usethis)
 
 usethis::use_tidy_description()
 
-# unlink("NAMESPACE")
 devtools::document()
 devtools::install(upgrade = 'never')
 devtools::build_readme()
@@ -14,16 +13,26 @@ devtools::check()
 # usethis::use_pkgdown_github_pages()
 # usethis::use_github_action("README.Rmd")
 
+################################################################################
 # Test creating a new app
 data("daacs_data", package = 'ShinyQDA')
-ShinyQDA::new_app(name = 'daacs_test',
+ShinyQDA::new_app(name = 'daacs_demo',
 				  dir = getwd(),
 				  qda_data = daacs_data,
 				  run_app = FALSE)
-shiny::runApp('daacs_test')
-daacs_qda <- qda('daacs_test/qda.sqlite')
+shiny::runApp('daacs_demo')
+
+daacs_qda <- qda('daacs_demo/qda.sqlite')
+
+data("daacs_codings", package = 'ShinyQDA')
+data("daacs_text_responses", package = 'ShinyQDA')
+
+
 daacs_merged <- qda_merge(daacs_qda, include_sentiments = TRUE)
-unlink('daacs_test', recursive = TRUE)
+unlink('daacs_demo', recursive = TRUE)
+
+
+################################################################################
 
 # Run shiny app examples
 shiny::runApp('inst/daacs/')
