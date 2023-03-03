@@ -26,13 +26,13 @@ The `ShinyQDA` package is designed to assist researchers with the analysis of qu
 
 To install, use the `remotes` package:
 
-```
+```{r, eval = FALSE}
 remotes::install_github('jbryer/ShinyQDA')
 ```
 
 Run the Shiny app with:
 
-```
+```{r, eval = FALSE}
 ShinyQDA::shinyQDA()
 ```
 
