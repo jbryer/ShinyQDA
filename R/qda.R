@@ -259,7 +259,7 @@ qda <- function(
 			colors <- new_colors[seq_len(length(codes)) + nrow(codes_table) %% length(new_colors)]
 		}
 		if(missing(descriptions)) {
-			descriptions <- character(length(codes))
+			descriptions <- rep(NA_character_, length(codes))
 		}
 		new_rows <- data.frame(
 			code = codes,
