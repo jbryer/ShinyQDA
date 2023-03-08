@@ -157,3 +157,7 @@ Data export features:
   - Submit to CRAN when development is stable.
   - Ability to use databases other than SQLite. This will require
     writing a connector for shinymanager.
+  - Reduce the number of packages dependencies. Some of the packages
+    could be moved to “Suggests” that are only required for specific
+    modules. For example, add an option to not incude sentiment analyses
+    which would eliminate the need for those to be required.
