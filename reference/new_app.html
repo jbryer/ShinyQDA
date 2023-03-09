@@ -56,7 +56,8 @@
 <span>  id_column <span class="op">=</span> <span class="fu"><a href="find_primary_key_column.html">find_primary_key_column</a></span><span class="op">(</span><span class="va">qda_data</span><span class="op">)</span>,</span>
 <span>  text_column <span class="op">=</span> <span class="fu"><a href="find_document_column.html">find_document_column</a></span><span class="op">(</span><span class="va">qda_data</span><span class="op">)</span>,</span>
 <span>  initialize_sentiment_dictionaries <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  run_app <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span></span>
+<span>  run_app <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/interactive.html" class="external-link">interactive</a></span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -89,6 +90,10 @@ dictionaries into the app directory.</p></dd>
 
 <dt>run_app</dt>
 <dd><p>if TRUE the Shiny application will be started once it has been created.</p></dd>
+
+
+<dt>...</dt>
+<dd><p>other parameters passed to <code><a href="qda.html">qda()</a></code>.</p></dd>
 
 </dl></div>
     <div class="section level2">

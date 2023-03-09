@@ -60,7 +60,14 @@ you can manipulate the SQL database directly, we recommend using the methods
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">qda</span><span class="op">(</span><span class="va">file</span>, users_passphrase <span class="op">=</span> <span class="st">"ShinyQDA"</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">qda</span><span class="op">(</span></span>
+<span>  <span class="va">file</span>,</span>
+<span>  users_passphrase <span class="op">=</span> <span class="st">"ShinyQDA"</span>,</span>
+<span>  users <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"admin"</span><span class="op">)</span>,</span>
+<span>  users_names <span class="op">=</span> <span class="va">users</span>,</span>
+<span>  users_passwords <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"password"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">users</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  users_is_admin <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="cn">TRUE</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">users</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -72,6 +79,22 @@ you can manipulate the SQL database directly, we recommend using the methods
 <dt>users_passphrase</dt>
 <dd><p>passpharse used to encrypt the user authentication table.
 See <code><a href="https://rdrr.io/pkg/shinymanager/man/create_db.html" class="external-link">shinymanager::create_db()</a></code> for more info.</p></dd>
+
+
+<dt>users</dt>
+<dd><p>a vector of usernames who can login to the ShinyQDA app.</p></dd>
+
+
+<dt>users_names</dt>
+<dd><p>a vector of names for the users.</p></dd>
+
+
+<dt>users_passwords</dt>
+<dd><p>a vector of passwords for the users.</p></dd>
+
+
+<dt>users_is_admin</dt>
+<dd><p>a logicial vector indicating if the user has administrator privileges.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -114,8 +137,8 @@ See <code><a href="https://rdrr.io/pkg/shinymanager/man/create_db.html" class="e
 <li><p><code>get_rubric(rubric_name)</code></p></li>
 <li><p><code>add_rubric(rubric_name, description, rubric, scoring_levels, enabled)</code></p></li>
 <li><p><code>update_rubric_criteria(rubric_name, criteria, score_level, description)</code></p></li>
-<li><p><code>delete_rubric_response(rubric_name, coder, criteria)</code></p></li>
-<li><p><code>add_rubric_response(rubric_name, coder, criteria, score)</code></p></li>
+<li><p><code>delete_rubric_response(rubric_name, qda_id, coder, criteria)</code></p></li>
+<li><p><code>add_rubric_response(rubric_name, qda_id, coder, criteria, score)</code></p></li>
 <li><p><code>get_rubric_responses(rubric_name, qda_id, coder)</code></p></li>
 <li><p><code>get_assignments(coder, id)</code></p></li>
 <li><p><code>get_coders()</code></p></li>
