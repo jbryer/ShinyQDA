@@ -39,16 +39,6 @@ To install, use the `remotes` package:
 remotes::install_github('jbryer/ShinyQDA')
 ```
 
-You can demo the ShinyQDA application using sample data from the
-[Diagnostic Assessment and Achievement of College
-Skills](https://daacs.net) using the following command:
-
-``` r
-demo('ShinyQDA', package = 'ShinyQDA')
-```
-
-## Creating a new ShinyQDA application
-
 The `ShinyQDA::new_app()` function will help initialize an new
 application. At a minimum you need a data frame with two columns: 1. a
 primary key column and 2. a column containing text data. However, you
@@ -106,67 +96,68 @@ retrieved from `shinymanager`, otherwise ShinyQDA will use the value of
 
 Data entry, coding, and scoring features
 
-- User management via the
-  [`shinymanager`](https://datastorm-open.github.io/shinymanager/)
-  package to allow multiple coders to work on the same dataset over the
-  internet.
-- Define an arbitrary set of questions/codes to assign to each document.
-  Current question types include checkbox (for multiple selections),
-  radio (for choose one from a list), and open text.
-- Highlight text (e.g. word, sentence, paragraph, etc.) of text to code.
-  This will open a modal dialog to add codes.
-- Define an arbitrary set of questions/codes to assign to each coding
-  (i.e. highlighted text). Current question types include checkbox (for
-  multiple selections), radio (for choose one from a list), and open
-  text.
-- Score documents using a rubric.
+  - User management via the
+    [`shinymanager`](https://datastorm-open.github.io/shinymanager/)
+    package to allow multiple coders to work on the same dataset over
+    the internet.
+  - Define an arbitrary set of questions/codes to assign to each
+    document. Current question types include checkbox (for multiple
+    selections), radio (for choose one from a list), and open text.
+  - Highlight text (e.g. word, sentence, paragraph, etc.) of text to
+    code. This will open a modal dialog to add codes.
+  - Define an arbitrary set of questions/codes to assign to each coding
+    (i.e. highlighted text). Current question types include checkbox
+    (for multiple selections), radio (for choose one from a list), and
+    open text.
+  - Score documents using a rubric.
 
 Analysis features:
 
-- Basic descriptive information for individual documents including
-  character, word, sentence, and paragraph counts.
-- Sentiment analysis at the individual document level. Words within the
-  document that appear in the specified sentiment dictionary are
-  highlighted and color coded to correspond to a histogram of the
-  sentiments within a single document.
-- Sentiment analysis across the entire database. Varying plots are
-  provided approproate to the sentiment dictionary specified.
-- Co-occurrence plot to examine how codes co-occur across documents.
-- Word frequency analysis across the entire database.
-- Code frequency analysis across all codes entered.
-- Word clouds.
+  - Basic descriptive information for individual documents including
+    character, word, sentence, and paragraph counts.
+  - Sentiment analysis at the individual document level. Words within
+    the document that appear in the specified sentiment dictionary are
+    highlighted and color coded to correspond to a histogram of the
+    sentiments within a single document.
+  - Sentiment analysis across the entire database. Varying plots are
+    provided approproate to the sentiment dictionary specified.
+  - Co-occurrence plot to examine how codes co-occur across documents.
+  - Word frequency analysis across the entire database.
+  - Code frequency analysis across all codes entered.
+  - Word clouds.
 
 Data export features:
 
-- A data table view showing all documents along with imported metadata,
-  codes, code question responses, document descriptive statistics, and
-  sentiment. Data can be exported/downloaded as CSV or Excel.
-- A raw database view is provided with the ability to export/download as
-  Excel (using multiple tabs) or raw SQLite database.
+  - A data table view showing all documents along with imported
+    metadata, codes, code question responses, document descriptive
+    statistics, and sentiment. Data can be exported/downloaded as CSV or
+    Excel.
+  - A raw database view is provided with the ability to export/download
+    as Excel (using multiple tabs) or raw SQLite database.
 
 ## Roadmap
 
-- Ability to see other coders responses (for the text questions).
-- Merge coding results into data export tab. Allow user to choose
-  aggregation method.
-- Inter-rater reliability analysis. For coding have a split view.
-- Topic modeling
-- Tokenization - allow the user to define and export/download various
-  tokenization schemes.
-- Predictive modeling - use any data (including sentiment, topics,
-  tokenizations, etc.) to predict an outcome.
-- Queuing and user roles - Create a scheme to limit access to certain
-  features depending on user role. Allow documents to be assigned to
-  users to code/score.
-- Make the app prettier / improve the design. An alternative design has
-  been started in inst/bs4dash/
-- Convert the coding tab to use the Shiny module framework.
-- New hex logo (my design skills are not great, looking for a volunteer
-  😜)
-- Submit to CRAN when development is stable.
-- Ability to use databases other than SQLite. This will require writing
-  a connector for shinymanager.
-- Reduce the number of packages dependencies. Some of the packages could
-  be moved to “Suggests” that are only required for specific modules.
-  For example, add an option to not incude sentiment analyses which
-  would eliminate the need for those to be required.
+  - Ability to see other coders responses (for the text questions).
+  - Merge coding results into data export tab. Allow user to choose
+    aggregation method.
+  - Inter-rater reliability analysis. For coding have a split view.
+  - Topic modeling
+  - Tokenization - allow the user to define and export/download various
+    tokenization schemes.
+  - Predictive modeling - use any data (including sentiment, topics,
+    tokenizations, etc.) to predict an outcome.
+  - Queuing and user roles - Create a scheme to limit access to certain
+    features depending on user role. Allow documents to be assigned to
+    users to code/score.
+  - Make the app prettier / improve the design. An alternative design
+    has been started in inst/bs4dash/
+  - Convert the coding tab to use the Shiny module framework.
+  - New hex logo (my design skills are not great, looking for a
+    volunteer 😜)
+  - Submit to CRAN when development is stable.
+  - Ability to use databases other than SQLite. This will require
+    writing a connector for shinymanager.
+  - Reduce the number of packages dependencies. Some of the packages
+    could be moved to “Suggests” that are only required for specific
+    modules. For example, add an option to not incude sentiment analyses
+    which would eliminate the need for those to be required.
