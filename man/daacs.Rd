@@ -13,7 +13,7 @@ Data frames.
 
 An object of class \code{data.frame} with 311 rows and 8 columns.
 
-An object of class \code{data.frame} with 17 rows and 4 columns.
+An object of class \code{data.frame} with 5 rows and 4 columns.
 
 An object of class \code{tbl_df} (inherits from \code{tbl}, \code{data.frame}) with 10 rows and 4 columns.
 }

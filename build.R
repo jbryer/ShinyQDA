@@ -13,98 +13,9 @@ devtools::check()
 # usethis::use_pkgdown_github_pages()
 # usethis::use_github_action("README.Rmd")
 
-################################################################################
-# Test creating a new app
-library(ShinyQDA)
-data("daacs_data", package = 'ShinyQDA')
-username <- 'admin'
-
-ShinyQDA::new_app(name = 'daacs_demo',
-				  dir = getwd(),
-				  qda_data = daacs_data,
-				  run_app = FALSE)
-
-daacs_qda <- qda('daacs_demo/qda.sqlite')
-
-data("daacs_codings", package = 'ShinyQDA')
-data("daacs_text_responses", package = 'ShinyQDA')
-data("daacs_rubric", package = 'ShinyQDA')
-
-# Add text questions
-daacs_qda$add_text_question(stem = 'Non-responsive to prompt', type = 'checkbox')
-daacs_qda$add_text_question(stem = 'Additional comments about the text', type = 'text')
-daacs_qda$get_text_questions()
-
-# Add code questions
-daacs_qda$add_code_question(
-	stem = 'Content of Essay',
-	type = 'checkbox',
-	options = c('Definition of concepts',
-				'Interpretation_strength',
-				'Interpretation_weakness',
-				'Interpretation_mixed',
-				'Interpretation_medium',
-				'Interpretation_strategies awareness',
-				'Interpretation_strategies commitment',
-				'Interpretation_judgments')
-)
-daacs_qda$add_code_question(
-	stem = 'Does this text represent',
-	type = 'checkbox',
-	options = c('Strength',
-				'Weakness',
-				'Mixed',
-				'Medium',
-				'Strategies Awareness',
-				'Strategies Commitment')
-)
-daacs_qda$add_code_question(
-	stem = 'Judgment about survey or feedback',
-	type = 'checkbox',
-	options = c('Agree',
-				'Disagree',
-				'Valuable/helpful/useful',
-				'Not valuable/helpful/useful',
-				'Other')
-)
-daacs_qda$get_code_questions()
-
-# Add codes
-categories <- list(
-	'metacognition' = c('planning', 'monitoring', 'evaluation'),
-	'motivation' = c('mindset', 'test anxiety', 'mastery orientation'),
-	'self efficacy' = c('self efficacy for online learning',
-						'self efficacy for writing',
-						'self efficacy for mathematics',
-						'self efficacy for reading'),
-	'strategies' = c('managing environment', 'understanding', 'managing time', 'help seeking'),
-	'procrastination' = c()
-)
-codes <- c(names(categories), unlist(categories)) |> unname()
-daacs_qda$add_codes(codes)
-for(i in seq_len(length(categories))) {
-	category <- names(categories)[i]
-	codes <- categories[[i]]
-	for(i in codes) {
-		daacs_qda$update_code(i, parent = category)
-	}
-}
-daacs_qda$get_codes()
-
-# Add rubric
-daacs_qda$add_rubric(
-	rubric_name = 'daacs',
-	description = 'DAACS Scoring Rubric',
-	rubric = daacs_rubric
-)
-
-shiny::runApp('daacs_demo')
-
-# Get the merged data
-daacs_merged <- qda_merge(daacs_qda, include_sentiments = TRUE)
+demo('ShinyQDA', package = 'ShinyQDA')
 
 
-unlink('daacs_demo', recursive = TRUE)
 ################################################################################
 
 # Run shiny app examples

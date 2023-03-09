@@ -12,7 +12,8 @@ new_app(
   id_column = find_primary_key_column(qda_data),
   text_column = find_document_column(qda_data),
   initialize_sentiment_dictionaries = TRUE,
-  run_app = interactive()
+  run_app = interactive(),
+  ...
 )
 }
 \arguments{
@@ -30,6 +31,8 @@ new_app(
 dictionaries into the app directory.}
 
 \item{run_app}{if TRUE the Shiny application will be started once it has been created.}
+
+\item{...}{other parameters passed to \code{\link[=qda]{qda()}}.}
 }
 \value{
 Returns a \code{\link[=qda]{qda()}} object.

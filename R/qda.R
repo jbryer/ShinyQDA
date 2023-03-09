@@ -16,6 +16,10 @@ utils::globalVariables(c('qda_id', 'qda_text', 'password'))
 #' @param file the filename and path to the file this function will save data to.
 #' @param users_passphrase passpharse used to encrypt the user authentication table.
 #'        See [shinymanager::create_db()] for more info.
+#' @param users a vector of usernames who can login to the ShinyQDA app.
+#' @param users_names a vector of names for the users.
+#' @param users_passwords a vector of passwords for the users.
+#' @param users_is_admin a logicial vector indicating if the user has administrator privileges.
 #' @return a list with functions to access and edit qualitiative data.
 #' @import RSQLite
 #' @import DBI
@@ -25,7 +29,11 @@ utils::globalVariables(c('qda_id', 'qda_text', 'password'))
 #' @export
 qda <- function(
 		file,
-		users_passphrase = 'ShinyQDA'
+		users_passphrase = 'ShinyQDA',
+		users = c('admin'),
+		users_names = users,
+		users_passwords = rep('password', length(users)),
+		users_is_admin = rep(TRUE, length(users))
 ) {
 	qda_db <- DBI::dbConnect(RSQLite::SQLite(), file)
 
@@ -56,7 +64,7 @@ qda <- function(
 	}
 
 	methods_docs['log'] <- 'Adds an entry to the log file when data has been changed. For internal use only.'
-	qda_data$log <- function(coder = Sys.info()['user'], table, description, timestamp = as.character(Sys.time())) {
+	qda_data$log <- function(coder = Sys.info()['user'], table = NA, description = NA, timestamp = as.character(Sys.time())) {
 		new_row <- data.frame(
 			coder = coder,
 			table = table,
@@ -274,7 +282,7 @@ qda <- function(
 			new_rows,
 			append = TRUE
 		)
-		qda_data$log(Sys.info()['user'], paste0('added ', nrow(new_rows), ' rows to codes'))
+		qda_data$log(Sys.info()['user'], 'codes', paste0('added ', paste0(new_rows, collapse = ', ')))
 		invisible(new_rows)
 	}
 
@@ -637,6 +645,7 @@ qda <- function(
 						   'rubric_responses',
 						   data.frame(
 						   		rubric_name = character(),
+						   		qda_id = character(),
 						   		coder = character(),
 						   		criteria = character(),
 						   		score = integer(),
@@ -645,9 +654,11 @@ qda <- function(
 	}
 
 	qda_data$delete_rubric_response <- function(rubric_name,
+												qda_id,
 												coder,
 												criteria) {
 		query <- paste0('DELETE FROM rubric_responses WHERE ',
+						'qda_id = "', qda_id, '" AND ',
 						'coder = "', coder, '" AND ',
 						'rubric_name = "', rubric_name, '" AND ',
 						'criteria = "', criteria, '"')
@@ -656,18 +667,22 @@ qda <- function(
 	}
 
 	qda_data$add_rubric_response <- function(rubric_name,
+											 qda_id,
 											 coder,
 											 criteria,
 											 score) {
 		rubric_response_new_row <- data.frame(
 			rubric_name = rubric_name,
+			qda_id = qda_id,
 			coder = coder,
 			criteria = criteria,
 			score = score,
 			date_added = as.character(Sys.time())
 		)
 		DBI::dbWriteTable(qda_db, 'rubric_responses', rubric_response_new_row, append = TRUE)
-		qda_data$log(coder, 'rubric_responses', paste0('Added new rubric response ', rubric_name, '; ', criteria, ' = ', score))
+		qda_data$log(coder, 'rubric_responses', paste0('Added new rubric response ',
+													   rubric_name, '; ', qda_id, '; ',
+													   criteria, ' = ', score))
 	}
 
 	qda_data$get_rubric_responses <- function(rubric_name, qda_id, coder) {
@@ -723,14 +738,18 @@ qda <- function(
 
 
 	if(!'credentials' %in% tables) {
-		warning('Creating default user admin with password "pass". Recommend changing the password upon first login.')
+		if(users[1] == 'admin') {
+			warning(paste0('Creating default user admin with password "',
+						   users_passwords[1],
+						   '". Recommend changing the password upon first login.'))
+		}
 		credentials <- data.frame(
-			user = "admin",
-			name = "Administrator",
-			password = 'pass',
+			user = users,
+			name = users_names,
+			password = users_passwords,
 			start = as.character(Sys.Date()),
 			expire = NA,
-			admin = TRUE,
+			admin = users_is_admin,
 			email = "",
 			comment = 'ShinyQDA coders.',
 			stringsAsFactors = TRUE)

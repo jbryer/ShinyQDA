@@ -4,13 +4,28 @@
 \alias{qda}
 \title{Data object for qualitative data analysis.}
 \usage{
-qda(file, users_passphrase = "ShinyQDA")
+qda(
+  file,
+  users_passphrase = "ShinyQDA",
+  users = c("admin"),
+  users_names = users,
+  users_passwords = rep("password", length(users)),
+  users_is_admin = rep(TRUE, length(users))
+)
 }
 \arguments{
 \item{file}{the filename and path to the file this function will save data to.}
 
 \item{users_passphrase}{passpharse used to encrypt the user authentication table.
 See \code{\link[shinymanager:create_db]{shinymanager::create_db()}} for more info.}
+
+\item{users}{a vector of usernames who can login to the ShinyQDA app.}
+
+\item{users_names}{a vector of names for the users.}
+
+\item{users_passwords}{a vector of passwords for the users.}
+
+\item{users_is_admin}{a logicial vector indicating if the user has administrator privileges.}
 }
 \value{
 a list with functions to access and edit qualitiative data.
@@ -55,8 +70,8 @@ you can manipulate the SQL database directly, we recommend using the methods
 \item \code{get_rubric(rubric_name)}
 \item \code{add_rubric(rubric_name, description, rubric, scoring_levels, enabled)}
 \item \code{update_rubric_criteria(rubric_name, criteria, score_level, description)}
-\item \code{delete_rubric_response(rubric_name, coder, criteria)}
-\item \code{add_rubric_response(rubric_name, coder, criteria, score)}
+\item \code{delete_rubric_response(rubric_name, qda_id, coder, criteria)}
+\item \code{add_rubric_response(rubric_name, qda_id, coder, criteria, score)}
 \item \code{get_rubric_responses(rubric_name, qda_id, coder)}
 \item \code{get_assignments(coder, id)}
 \item \code{get_coders()}

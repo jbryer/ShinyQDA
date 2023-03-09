@@ -8,6 +8,7 @@
 #' @param initialize_sentiment_dictionaries whether to copy the sentiment
 #'        dictionaries into the app directory.
 #' @param run_app if TRUE the Shiny application will be started once it has been created.
+#' @param ... other parameters passed to [ShinyQDA::qda()].
 #' @importFrom rstudioapi selectDirectory
 #' @importFrom utils file.edit
 #' @returns Returns a [ShinyQDA::qda()] object.
@@ -21,7 +22,8 @@ new_app <- function(
 		id_column = find_primary_key_column(qda_data),
 		text_column = find_document_column(qda_data),
 		initialize_sentiment_dictionaries = TRUE,
-		run_app = interactive()
+		run_app = interactive(),
+		...
 ) {
 	if(missing(qda_data) | is.null(id_column) | is.null(text_column)) {
 		stop('Must provide a data.frame with a primary key and document column.')
@@ -51,7 +53,7 @@ new_app <- function(
 		tmp <- textdata::lexicon_nrc(dir = app_dir)
 	}
 
-	qda <- qda(paste0(app_dir, '/qda.sqlite'))
+	qda <- qda(file = paste0(app_dir, '/qda.sqlite'), ...)
 	qda$add_text(df = qda_data,
 				 id_col = id_column,
 				 text_col = text_column,
