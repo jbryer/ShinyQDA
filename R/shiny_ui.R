@@ -106,6 +106,42 @@ shiny_ui <- function(request, debug = TRUE) {
 							shiny::plotOutput('sentiment_text_plot', height = '400px')
 						)
 					)
+				),
+				shiny::tabPanel(
+					'Tokenization',
+					shiny::sidebarLayout(
+						shiny::sidebarPanel(
+							shiny::selectInput('tokenization_type',
+											   label = 'Tokenization unit',
+											   choices = c('words', 'characters', 'ngrams'),
+											   selected = 'ngrams'),
+							shiny::numericInput('tokenizer_min_tokens',
+												label = 'Minimum tokens to include',
+												value = 2, min = 1, step = 1),
+							shiny::checkboxInput('tokenization_tolower',
+												 label = 'Lowercase',
+												 value = TRUE),
+							shiny::conditionalPanel(
+								condition = "input.tokenization_type == 'words'",
+								shiny::checkboxInput('tokenizer_strip_punct',
+													 label = 'Strip punctuation',
+													 value = TRUE),
+								shiny::checkboxInput('tokenizer_strip_numeric',
+													 'Strip numeric',
+													 value = TRUE)
+							),
+							shiny::conditionalPanel(
+								condition = "input.tokenization_type == 'ngrams'",
+								shiny::numericInput('tokenizer_ngrams_n',
+													label = 'nGrams n = ',
+													value = 2,
+													min = 1, max = 5, step = 1)
+							)
+						),
+						shiny::mainPanel(
+							shiny::plotOutput('tokenization_plot', height = '600px')
+						)
+					)
 				)
 			)
 		),

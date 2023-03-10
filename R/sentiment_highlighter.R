@@ -61,6 +61,7 @@ sentiment_highlighter <- function(text,
 		# sentiments <- tidytext::get_sentiments("nrc")
 		sentiments <- textdata::lexicon_nrc(dir = lexicon_dir)
 	} else if(lexicon[1] == 'bing') {
+		# sentiments <- tidytext::get_sentiments('bing')
 		sentiments <- tidytext::get_sentiments("bing")
 	} else if(lexicon[1] == 'afinn') {
 		# sentiments <- tidytext::get_sentiments("afinn")

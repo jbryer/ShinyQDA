@@ -18,6 +18,35 @@ demo('ShinyQDA', package = 'ShinyQDA')
 
 ################################################################################
 
+library(ShinyQDA)
+data(daacs_data)
+thetext <- daacs_data[1,]$qda_text
+
+token <- c('words', 'characters', 'character_shingles', 'ngrams', 'skip_ngrams', 'sentences', 'lines', 'paragraphs', 'ptb')
+
+tokens <- daacs_data[1,] |>
+	dplyr::select(qda_text) |>
+	tidytext::unnest_tokens(token, qda_text,
+							token = 'words',
+							to_lower = TRUE,
+							strip_punct = TRUE
+							# strip_numeric = FALSE
+							# n = 3
+							) |>
+	table() |>
+	as.data.frame() |>
+	dplyr::filter(Freq > 2)
+
+ggplot(tokens, aes(x = stats::reorder(token, Freq), y = Freq)) +
+	ggplot2::geom_bar(stat = 'identity', fill = 'grey50') +
+	ggplot2::geom_text(ggplot2::aes(label = Freq), hjust = -0.1) +
+	ggplot2::coord_flip() +
+	ggplot2::expand_limits(y = max(tokens$Freq) + max(tokens$Freq) * .05) +
+	xlab('') +
+	ggplot2::theme_minimal()
+
+################################################################################
+
 # Run shiny app examples
 shiny::runApp('inst/daacs/')
 shiny::runApp('inst/shiny_template')

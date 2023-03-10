@@ -223,6 +223,56 @@ shiny_server <- function(input, output, session) {
 					   lexicon_dir = '.')
 	})
 
+	##### Tokenizaiton view
+	# output$tokenization_text <- shiny::renderText({
+	#
+	# })
+
+	output$tokenization_plot <- shiny::renderPlot({
+		req(input$tokenization_type)
+		thetext <- qda_data()$get_text(input$selected_text) |>
+			dplyr::select(qda_text)
+		if(input$tokenization_type %in% c('ngrams', 'skip_ngrams')) {
+			tokens <- thetext |>
+				tidytext::unnest_tokens(token,
+										qda_text,
+										token = input$tokenization_type,
+										to_lower = input$tokenization_tolower,
+										n = input$tokenizer_ngrams_n
+				)
+		} else if(input$tokenization_type %in% c('words')) {
+			tokens <- thetext |>
+				tidytext::unnest_tokens(token,
+										qda_text,
+										token = input$tokenization_type,
+										to_lower = input$tokenization_tolower,
+										strip_punct = input$tokenizer_strip_punct,
+										strip_numeric = input$tokenizer_strip_numeric
+				)
+		} else if(input$tokenization_type %in% c('characters')) {
+			tokens <- thetext |>
+				tidytext::unnest_tokens(token,
+										qda_text,
+										token = input$tokenization_type,
+										to_lower = input$tokenization_tolower
+				)
+		}
+		tokens <- tokens |>
+			table() |>
+			as.data.frame() |>
+			dplyr::filter(Freq >= input$tokenizer_min_tokens)
+
+		ggplot2::ggplot(tokens, ggplot2::aes(x = stats::reorder(token, Freq), y = Freq)) +
+			ggplot2::geom_bar(stat = 'identity', fill = 'grey50') +
+			ggplot2::geom_text(ggplot2::aes(label = Freq), hjust = -0.1) +
+			ggplot2::coord_flip() +
+			ggplot2::expand_limits(y = max(tokens$Freq) + max(tokens$Freq) * .05) +
+			ggplot2::xlab('') +
+			ggplot2::theme_minimal()
+
+	})
+
+
 	############################################################################
 	##### Modal dialog to add/edit codes
 	# Show the modal dialog to add a tag
