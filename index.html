@@ -85,17 +85,24 @@
 <p>To install, use the <code>remotes</code> package:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">'jbryer/ShinyQDA'</span><span class="op">)</span></span></code></pre></div>
-<p>The <code><a href="reference/new_app.html">ShinyQDA::new_app()</a></code> function will help initialize an new application. At a minimum you need a data frame with two columns: 1. a primary key column and 2. a column containing text data. However, you may include any other columns that you may want to use in your analysis. In the example below we will use a small subset of essasy completed by students as part of the <a href="https://daacs.net" class="external-link">Diagnostic Assessment and Achievement of College Skills</a> (DAACS) project.</p>
+<p>You can demo the ShinyQDA application using sample data from the <a href="https://daacs.net" class="external-link">Diagnostic Assessment and Achievement of College Skills</a> using the following command:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/demo.html" class="external-link">demo</a></span><span class="op">(</span><span class="st">'ShinyQDA'</span>, package <span class="op">=</span> <span class="st">'ShinyQDA'</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="creating-a-new-shinyqda-application">Creating a new ShinyQDA application<a class="anchor" aria-label="anchor" href="#creating-a-new-shinyqda-application"></a>
+</h2>
+<p>The <code><a href="reference/new_app.html">ShinyQDA::new_app()</a></code> function will help initialize an new application. At a minimum you need a data frame with two columns: 1. a primary key column and 2. a column containing text data. However, you may include any other columns that you may want to use in your analysis. In the example below we will use a small subset of essasy completed by students as part of the <a href="https://daacs.net" class="external-link">Diagnostic Assessment and Achievement of College Skills</a> (DAACS) project.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">"daacs_data"</span>, package <span class="op">=</span> <span class="st">'ShinyQDA'</span><span class="op">)</span></span>
 <span><span class="fu">ShinyQDA</span><span class="fu">::</span><span class="fu"><a href="reference/new_app.html">new_app</a></span><span class="op">(</span>name <span class="op">=</span> <span class="st">'daacs_demo'</span>,</span>
 <span>                  dir <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>                  qda_data <span class="op">=</span> <span class="va">daacs_data</span><span class="op">)</span></span></code></pre></div>
 <p>The <code>new_app</code> function will create an <code>app.R</code> file, a <code>qda.sqlite</code> file (which is a SQLite database containing all the data), as well as optionally directories containing the dictionaries for conducting sentiment analysis. This will also start the Shiny application allowing you to login using the username “admin” and password “pass”. You can run the application again using the followign command:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="st">'daacs_demo'</span><span class="op">)</span></span></code></pre></div>
 <p>The <code><a href="reference/qda.html">ShinyQDA::qda()</a></code> acts as a wrapper to the database (currently using SQLlite) containing all the data. There are a number of functions available for adding, editing, and deleting data as well as accessing specific data elements. However, the <code><a href="reference/qda_merge.html">ShinyQDA::qda_merge()</a></code> function will provide a merged data frame with the original data imported along with any qualitative data analysis conducted (including sentiment analysis, tokenization, etc.).</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">daacs_qda</span> <span class="op">&lt;-</span> <span class="fu">ShinyQDA</span><span class="fu">::</span><span class="fu"><a href="reference/qda.html">qda</a></span><span class="op">(</span><span class="st">'daacs_test/qda.sqlite'</span><span class="op">)</span></span>
 <span><span class="va">daacs_merged</span> <span class="op">&lt;-</span> <span class="fu">ShinyQDA</span><span class="fu">::</span><span class="fu"><a href="reference/qda_merge.html">qda_merge</a></span><span class="op">(</span><span class="va">daacs_qda</span>, include_sentiments <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
