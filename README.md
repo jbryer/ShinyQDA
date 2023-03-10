@@ -39,6 +39,16 @@ To install, use the `remotes` package:
 remotes::install_github('jbryer/ShinyQDA')
 ```
 
+You can demo the ShinyQDA application using sample data from the
+[Diagnostic Assessment and Achievement of College
+Skills](https://daacs.net) using the following command:
+
+``` r
+demo('ShinyQDA', package = 'ShinyQDA')
+```
+
+## Creating a new ShinyQDA application
+
 The `ShinyQDA::new_app()` function will help initialize an new
 application. At a minimum you need a data frame with two columns: 1. a
 primary key column and 2. a column containing text data. However, you
