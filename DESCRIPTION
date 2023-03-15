@@ -25,6 +25,8 @@ Imports:
     dplyr,
     DT,
     ggplot2,
+    ldatuning,
+    modeltools,
     psych,
     RColorBrewer,
     reshape2,
@@ -42,6 +44,7 @@ Imports:
     tidyr,
     tidytext,
     tm,
+    topicmodels,
     wordcloud,
     wordcloud2
 Suggests: 

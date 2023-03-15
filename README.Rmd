@@ -85,6 +85,7 @@ Analysis features:
 * Word frequency analysis across the entire database.
 * Code frequency analysis across all codes entered.
 * Word clouds.
+* Topic modeling.
 
 Data export features:
 
@@ -96,7 +97,6 @@ Data export features:
 * Ability to see other coders responses (for the text questions).
 * Merge coding results into data export tab. Allow user to choose aggregation method.
 * Inter-rater reliability analysis. For coding have a split view.
-* Topic modeling
 * Tokenization - allow the user to define and export/download various tokenization schemes.
 * Predictive modeling - use any data (including sentiment, topics, tokenizations, etc.) to predict an outcome.
 * Queuing and user roles - Create a scheme to limit access to certain features depending on user role. Allow documents to be assigned to users to code/score.

@@ -195,7 +195,8 @@ shiny_ui <- function(request, debug = TRUE) {
 			),
 			shiny::tabPanel(
 				'Topic Modeling',
-				icon = shiny::icon('comments')
+				icon = shiny::icon('comments'),
+				topic_modeling_ui('ShinyQDA')
 			)
 		),
 		shiny::tabPanel(

@@ -98,6 +98,9 @@ shiny_server <- function(input, output, session) {
 	##### Sentiment Analysis ###################################################
 	sentiment_server('ShinyQDA', qda_data)
 
+	##### Topic Modeling #######################################################
+	topic_modeling_server('ShinyQDA', qda_data)
+
 	############################################################################
 	##### Text display and coding
 

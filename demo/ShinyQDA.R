@@ -3,8 +3,10 @@ unlink('daacs_demo', recursive = TRUE)
 data("daacs_data", package = 'ShinyQDA')
 username <- 'Rater1'
 
+dir <- tempdir()
+
 ShinyQDA::new_app(name = 'daacs_demo',
-				  dir = getwd(),
+				  dir = dir,
 				  qda_data = daacs_data,
 				  run_app = FALSE,
 				  users = c('Rater1', 'Rater2'),
@@ -148,4 +150,5 @@ shiny::runApp('daacs_demo')
 # Get the merged data
 # daacs_merged <- qda_merge(daacs_qda, include_sentiments = TRUE)
 
-unlink('daacs_demo', recursive = TRUE)
+# unlink('daacs_demo', recursive = TRUE)
+message(paste0('You can view the sample project here: ', dir))
