@@ -136,6 +136,7 @@ Analysis features:
   - Code frequency analysis across all codes entered.
   - Word clouds.
   - Topic modeling.
+  - Inter-rater reliability analysis. For coding have a split view.
 
 Data export features:
 
@@ -151,7 +152,6 @@ Data export features:
   - Ability to see other coders responses (for the text questions).
   - Merge coding results into data export tab. Allow user to choose
     aggregation method.
-  - Inter-rater reliability analysis. For coding have a split view.
   - Tokenization - allow the user to define and export/download various
     tokenization schemes.
   - Predictive modeling - use any data (including sentiment, topics,
@@ -172,7 +172,7 @@ Data export features:
     modules. For example, add an option to not incude sentiment analyses
     which would eliminate the need for those to be required.
 
-\#\# Code of Conduct
+## Code of Conduct
 
 Please note that the ShinyQDA project is released with a [Contributor
 Code of
