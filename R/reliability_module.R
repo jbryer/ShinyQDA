@@ -124,7 +124,7 @@ reliability_server <- function(id, qda_data) {
 					dplyr::filter(qda_id == input$reliability_selected_text &
 								  coder == input$reliability_coder1_selection)
 
-				thetext <- highlighter(thetext, codings, qda_data()$get_codes())
+				thetext <- highlighter(thetext, codings, qda_data()$get_codes(), link = FALSE)
 				# Convert line breaks to HTML line breaks
 				thetext <- gsub('\\n', '<p/>', thetext)
 				return(thetext)
@@ -145,7 +145,7 @@ reliability_server <- function(id, qda_data) {
 					dplyr::filter(qda_id == input$reliability_selected_text &
 								  coder == input$reliability_coder2_selection)
 
-				thetext <- highlighter(thetext, codings, qda_data()$get_codes())
+				thetext <- highlighter(thetext, codings, qda_data()$get_codes(), link = FALSE)
 				# Convert line breaks to HTML line breaks
 				thetext <- gsub('\\n', '<p/>', thetext)
 				return(thetext)
