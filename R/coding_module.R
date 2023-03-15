@@ -4,7 +4,7 @@
 #' @export
 coding_ui <- function(id) {
 	ns <- NS(id)
-	tagList(
+	shiny::tagList(
 		shiny::tags$head(tags$style("
 					.tooltip2 {
 					  position: relative;

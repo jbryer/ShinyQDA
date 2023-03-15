@@ -194,6 +194,11 @@ shiny_ui <- function(request, debug = TRUE) {
 				shiny::plotOutput('cooccurrence_plot', width = '100%', height = '700px')
 			),
 			shiny::tabPanel(
+				'Inter-rater Reliability',
+				icon = shiny::icon('code-compare'),
+				reliability_ui('ShinyQDA')
+			),
+			shiny::tabPanel(
 				'Topic Modeling',
 				icon = shiny::icon('comments'),
 				topic_modeling_ui('ShinyQDA')

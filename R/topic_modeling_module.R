@@ -48,7 +48,8 @@ topic_modeling_ui <- function(id) {
 					shiny::tabPanel(
 						title = 'Wordcloud',
 						shiny::uiOutput(ns('topic_selector')),
-						shiny::plotOutput(ns('topic_word_cloud'), height = '600px', width = '100%')
+						wordcloud2::wordcloud2Output(ns('topic_word_cloud2'), height = '600px', width = '100%')
+						# shiny::plotOutput(ns('topic_word_cloud'), height = '600px', width = '100%')
 					)
 				)
 			)
@@ -160,6 +161,18 @@ topic_modeling_server <- function(id, qda_data) {
 									 rot.per = 0.35,
 									 random.order = FALSE,
 									 color = RColorBrewer::brewer.pal(8, "Dark2"))
+			})
+
+			output$topic_word_cloud2 <- wordcloud2::renderWordcloud2({
+				req(input$topic_selector)
+				topicModel <- topicModels()
+				tmResult <- modeltools::posterior(topicModel)
+				nTerms <- min(input$topic_modeling_n_terms, ncol(tmResult$terms))
+				topterms <- sort(tmResult$terms[input$topic_selector,], decreasing=TRUE)[1:nTerms]
+				words <- names(topterms)
+				probabilities <- sort(tmResult$terms[input$topic_selector,], decreasing=TRUE)[1:nTerms]
+				df <- data.frame(word = words, freq = round(probabilities, digits = 4))
+				wordcloud2::wordcloud2(df, rotateRatio = .2)
 			})
 		}
 	)
