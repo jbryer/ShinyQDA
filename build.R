@@ -16,6 +16,23 @@ devtools::check()
 demo('ShinyQDA', package = 'ShinyQDA')
 
 
+shiny::runApp('inst/daacs_demo/')
+
+daacs_data <- qda('inst/daacs_demo/qda.sqlite')
+text_data <- daacs_data$get_text()
+codings <- daacs_data$get_codings()
+codes <- daacs_data$get_codes()
+tab <- table(codings$qda_id, codings$coder)
+double_codings <- row.names(tab)[apply(tab, 1, FUN = function(x) { sum(x > 0) >= 2 })]
+
+codings <- codings |>
+	dplyr::filter(qda_id %in% double_codings)
+
+text_data <- text_data |>
+	dplyr::filter(qda_id %in% double_codings)
+
+
+
 ################################################################################
 
 library(ShinyQDA)
