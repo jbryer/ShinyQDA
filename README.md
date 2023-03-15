@@ -171,3 +171,10 @@ Data export features:
     could be moved to “Suggests” that are only required for specific
     modules. For example, add an option to not incude sentiment analyses
     which would eliminate the need for those to be required.
+
+\#\# Code of Conduct
+
+Please note that the ShinyQDA project is released with a [Contributor
+Code of
+Conduct](https://jbryer.github.io/ShinyQDA/CODE_OF_CONDUCT.html). By
+contributing to this project, you agree to abide by its terms.
