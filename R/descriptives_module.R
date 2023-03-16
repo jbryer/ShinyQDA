@@ -1,15 +1,25 @@
 utils::globalVariables(c('qda_id', 'qda_text', 'token', 'Code', 'Count'))
 
+descriptives_dependencies <- c('tm', 'wordcloud', 'wordcloud2', 'RColorBrewer')
+
 #' UI for the descriptive statistics.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @export
 #' @importFrom shiny NS
-#' @importFrom shinyTree shinyTree renderTree
-#' @importFrom RColorBrewer brewer.pal.info
 #' @importFrom stats reorder
 descriptives_ui <- function(id) {
 	ns <- shiny::NS(id)
+
+	if(!check_dependencies(descriptives_dependencies)) {
+		return(
+			shiny::tagList(
+				shiny::p(paste0('Not all required packages are installed for this module. Install the following packages: ',
+								paste0(descriptives_dependencies, collapse = ', ')))
+			)
+		)
+	}
+
 	shiny::tagList(
 		shiny::sidebarLayout(
 			shiny::sidebarPanel(
@@ -86,21 +96,18 @@ descriptives_ui <- function(id) {
 	)
 }
 
-
-
 #' Server for the descriptive statistics.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @param qda_data QDA data object, see [ShinyQDA::qda()].
 #' @export
-#' @importFrom wordcloud wordcloud
-#' @importFrom RColorBrewer brewer.pal brewer.pal.info
-#' @importFrom wordcloud2 wordcloud2 renderWordcloud2 wordcloud2Output
-#' @import tm
 descriptives_server <- function(id, qda_data) {
 	shiny::moduleServer(
 		id,
 		function(input, output, session) {
+			if(!check_dependencies(descriptives_dependencies)) {
+				return()
+			}
 			output$word_frequency_plot <- shiny::renderPlot({
 				df <- qda_data()$get_text() |>
 					dplyr::select(qda_id, qda_text)

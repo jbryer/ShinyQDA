@@ -1,13 +1,23 @@
 utils::globalVariables(c('children', 'x', 'y', 'value'))
 
+codebook_dependencies <- c('shinyTree', 'shinyjs')
+
 #' UI for the codebook.
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @export
 #' @importFrom shiny NS
-#' @importFrom shinyTree shinyTree renderTree get_selected
 codebook_ui <- function(id) {
 	ns <- shiny::NS(id)
+	if(!check_dependencies(codebook_dependencies)) {
+		return(
+			shiny::tagList(
+				shiny::p(paste0('Not all required packages are installed for this module. Install the following packages: ',
+								paste0(codebook_dependencies, collapse = ', ')))
+			)
+		)
+	}
+
 	tagList(
 		shiny::sidebarLayout(
 			shiny::sidebarPanel(
@@ -41,12 +51,15 @@ codebook_ui <- function(id) {
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @param qda_data QDA data object, see [ShinyQDA::qda()].
-#' @importFrom shinyjs runjs enable disable useShinyjs removeCssClass addCssClass
 #' @export
 codebook_server <- function(id, qda_data) {
 	shiny::moduleServer(
 		id,
 		function(input, output, session) {
+			if(!check_dependencies(codebook_dependencies)) {
+				return()
+			}
+
 			shiny::observeEvent(input$cancel_modal, {
 				add_code_message('')
 				shiny::removeModal()

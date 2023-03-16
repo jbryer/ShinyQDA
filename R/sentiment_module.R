@@ -52,11 +52,7 @@ sentiment_ui <- function(id) {
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @param qda_data QDA data object, see [ShinyQDA::qda()].
 #' @export
-#' @importFrom wordcloud wordcloud
-#' @importFrom RColorBrewer brewer.pal brewer.pal.info
-#' @importFrom wordcloud2 wordcloud2 renderWordcloud2 wordcloud2Output
 #' @importFrom psych describeBy
-#' @import tm
 sentiment_server <- function(id, qda_data) {
 	shiny::moduleServer(
 		id,

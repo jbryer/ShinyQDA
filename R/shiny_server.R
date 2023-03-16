@@ -8,11 +8,9 @@ utils::globalVariables(c("password", "qda_id", "coder", "qda_text", "answer",
 #' @param session Shiny session object.
 #' @importFrom shiny renderPrint reactive reactiveVal reactivePoll reactiveValuesToList renderUI HTML selectizeInput renderText req observe observeEvent showModal modalDialog removeModal actionButton uiOutput tagList checkboxGroupInput textAreaInput radioButtons div req
 #' @importFrom textutils HTMLencode
-#' @importFrom shinyjs enable disable
+#' @importFrom shinyjs enable disable runjs
 #' @importFrom DT datatable renderDataTable JS formatRound
 #' @importFrom shinymanager secure_server check_credentials
-#' @importFrom shinyTree renderTree
-#' @importFrom shinyjs runjs
 #' @importFrom stringr str_squish str_remove_all
 #' @export
 shiny_server <- function(input, output, session) {

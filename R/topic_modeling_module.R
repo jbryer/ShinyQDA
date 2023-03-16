@@ -1,3 +1,5 @@
+topic_modeling_dependencies <- c('wordcloud2', 'ldatuning', 'modeltools', 'topicmodels', 'RColorBrewer')
+
 #' UI for the topic modeling analysis
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
@@ -5,6 +7,16 @@
 #' @importFrom shiny NS
 topic_modeling_ui <- function(id) {
 	ns <- shiny::NS(id)
+
+	if(!check_dependencies(topic_modeling_dependencies)) {
+		return(
+			shiny::tagList(
+				shiny::p(paste0('Not all required packages are installed for this module. Install the following packages: ',
+								paste0(topic_modeling_dependencies, collapse = ', ')))
+			)
+		)
+	}
+
 	shiny::tagList(
 		shiny::sidebarLayout(
 			shiny::sidebarPanel(
@@ -65,8 +77,6 @@ topic_modeling_ui <- function(id) {
 	)
 }
 
-
-
 #' Server for the sentiment analysis.
 #'
 #' Much of the code and analysis was adapted from https://ladal.edu.au/topicmodels.html
@@ -74,17 +84,14 @@ topic_modeling_ui <- function(id) {
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @param qda_data QDA data object, see [ShinyQDA::qda()].
 #' @export
-#' @importFrom wordcloud wordcloud
-#' @importFrom RColorBrewer brewer.pal brewer.pal.info
-#' @importFrom wordcloud2 wordcloud2 renderWordcloud2 wordcloud2Output
-#' @importFrom ldatuning FindTopicsNumber FindTopicsNumber_plot
-#' @importFrom modeltools posterior
-#' @importFrom topicmodels LDA terms
-#' @import tm
 topic_modeling_server <- function(id, qda_data) {
 	shiny::moduleServer(
 		id,
 		function(input, output, session) {
+			if(!check_dependencies(topic_modeling_dependencies)) {
+				return()
+			}
+
 			dtm <- shiny::reactive({
 				textdata <- qda_data()$get_text()[,c('qda_id', 'qda_text')]
 				names(textdata) <- c('doc_id', 'text')
