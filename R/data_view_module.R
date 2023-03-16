@@ -152,7 +152,8 @@ data_view_server <- function(id, qda_data) {
 				txt_data <- df[input$text_table_rows_selected, , drop = FALSE]
 				txt <- txt_data$qda_text
 				id <- txt_data$qda_id
-				codings <- qda_data()$get_codings(id = id)
+				codings <- qda_data()$get_codings(id = id) |>
+					dplyr::filter(coder == txt_data[1,]$coder)
 				if(nrow(codings) > 0) {
 					txt <- highlighter(txt, codings, qda_data()$get_codes(), link = FALSE)
 				}
