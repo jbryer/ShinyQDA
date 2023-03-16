@@ -16,6 +16,9 @@
     <loc>https://jbryer.github.io/ShinyQDA/reference/ShinyQDA-package.html</loc>
   </url>
   <url>
+    <loc>https://jbryer.github.io/ShinyQDA/reference/check_dependencies.html</loc>
+  </url>
+  <url>
     <loc>https://jbryer.github.io/ShinyQDA/reference/codebook_server.html</loc>
   </url>
   <url>
@@ -68,6 +71,9 @@
   </url>
   <url>
     <loc>https://jbryer.github.io/ShinyQDA/reference/lexicon_colors.html</loc>
+  </url>
+  <url>
+    <loc>https://jbryer.github.io/ShinyQDA/reference/missing_dependencies.html</loc>
   </url>
   <url>
     <loc>https://jbryer.github.io/ShinyQDA/reference/modalDialog2.html</loc>
