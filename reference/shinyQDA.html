@@ -54,6 +54,7 @@
 <span>  enable_admin <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  keep_token <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  users_passphrase <span class="op">=</span> <span class="st">"ShinyQDA"</span>,</span>
+<span>  username <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.info.html" class="external-link">Sys.info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="st">"user"</span><span class="op">]</span>,</span>
 <span>  <span class="va">...</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -80,6 +81,10 @@ token can be shared between users.</p></dd>
 
 <dt>users_passphrase</dt>
 <dd><p>passphrase to pass to <code>shinymanager</code>.</p></dd>
+
+
+<dt>username</dt>
+<dd><p>if <code>authenticate</code> is FALSE this is the username used to run the app.</p></dd>
 
 
 <dt>...</dt>
