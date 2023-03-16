@@ -5,6 +5,7 @@ usethis::use_tidy_description()
 
 devtools::document()
 devtools::install(upgrade = 'never')
+devtools::install(upgrade = 'never', build_vignettes = TRUE)
 devtools::build_readme()
 devtools::build()
 devtools::check()

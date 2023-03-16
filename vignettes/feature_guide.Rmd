@@ -5,10 +5,6 @@ date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     toc: true
-bibliography: references.bib
-csl: apa.csl
-link-citations: yes
-nocite: '@*'
 # Package indexing
 vignette: >
   %\VignetteIndexEntry{Feature Guide}
