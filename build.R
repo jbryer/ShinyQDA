@@ -51,7 +51,7 @@ ggplot(tokens, aes(x = stats::reorder(token, Freq), y = Freq)) +
 ################################################################################
 
 # Run shiny app examples
-shiny::runApp('inst/daacs/')
+shiny::runApp('inst/daacs_demo/')
 shiny::runApp('inst/shiny_template')
 shiny::runApp('inst/daacs_writing/')
 
@@ -62,7 +62,8 @@ unlink('ShinyQDA.sqlite')
 usethis::use_package('topicmodels', type = 'Imports')
 usethis::use_package('writexl', type = 'Suggests')
 
-qda_data <- ShinyQDA::qda('inst/daacs/daacs.sqlite')
+daacs_qda <- ShinyQDA::qda('inst/daacs_demo/qda.sqlite')
+qda_data <- ShinyQDA::qda('inst/daacs_demo/qda.sqlite')
 qda_data <- ShinyQDA::qda('inst/daacs_writing/daacs_writing.sqlite')
 
 DBI::dbListTables(qda_data$db_conn)
