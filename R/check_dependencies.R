@@ -20,5 +20,5 @@ missing_dependencies <- function(dependencies) {
 #'         using the [base::requireNamespace()] function.
 #' @export
 check_dependencies <- function(dependencies) {
-	return(length(missing_dependencies) == 0)
+	return(length(missing_dependencies(dependencies)) == 0)
 }

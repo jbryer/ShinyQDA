@@ -13,11 +13,11 @@ devtools::check()
 # usethis::use_pkgdown_github_pages()
 # usethis::use_github_action("README.Rmd")
 
-demo('ShinyQDA', package = 'ShinyQDA')
-
+demo('daacs', package = 'ShinyQDA')
 
 shiny::runApp('inst/daacs_demo/')
 
+shiny::runApp(paste0(find.package('ShinyQDA'), '/daacs_demo/'))
 
 ################################################################################
 

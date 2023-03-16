@@ -1,4 +1,3 @@
-ShinyQDA			This will start the ShinyQDA using a small sample of data from the Diagnostic Assessment and Achievement of College Skills.
 data_export			Example of how to export all the tables in the SQLite database to an Excel file (with separate tabs).
 cooccurance_plot	Example of creating a co-occurance plot.
 word_frequencies	Example of tokenizing text and creating a word frequency plot.
