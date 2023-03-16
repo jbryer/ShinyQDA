@@ -29,7 +29,7 @@ The `ShinyQDA` package is designed to assist researchers with the analysis of qu
 To install, use the `remotes` package:
 
 ```{r, eval = FALSE}
-remotes::install_github('jbryer/ShinyQDA')
+remotes::install_github('jbryer/ShinyQDA', dependencies = c('Depends', 'Imports', 'Suggests))
 ```
 
 You can demo the ShinyQDA application using sample data from the [Diagnostic Assessment and Achievement of College Skills](https://daacs.net) using the following command:
