@@ -26,6 +26,11 @@ topic_modeling_ui <- function(id) {
 									label = 'Number of terms to preview',
 									value = 40,
 									min = 1, max = Inf),
+				shiny::selectInput(inputId = ns('topic_modeling_metrics'),
+								   label = 'Metrics',
+								   choices = c("Griffiths2004", "CaoJuan2009", "Arun2010", "Deveaud2014"),
+								   selected = c("CaoJuan2009",  "Deveaud2014"),
+								   multiple = TRUE),
 				shiny::hr(),
 				shiny::h4('Model Selection'),
 				shiny::numericInput(inputId = ns('topic_modeling_k'),
@@ -47,7 +52,10 @@ topic_modeling_ui <- function(id) {
 					),
 					shiny::tabPanel(
 						title = 'Wordcloud',
-						shiny::uiOutput(ns('topic_selector')),
+						shiny::uiOutput(ns('topic_selector_ui')),
+						# shiny::selectInput(ns('topic_selector'),
+						# 				   label = 'Select topic',
+						# 				   choices = c()),
 						wordcloud2::wordcloud2Output(ns('topic_word_cloud2'), height = '600px', width = '100%')
 						# shiny::plotOutput(ns('topic_word_cloud'), height = '600px', width = '100%')
 					)
@@ -107,13 +115,15 @@ topic_modeling_server <- function(id, qda_data) {
 			})
 
 			output$topics_number_plot <- shiny::renderPlot({
+				req(input$topic_modeling_metrics)
+
 				# TODO: should have some kind of status for the user as this may take a while to render
 				result <- ldatuning::FindTopicsNumber(
 					dtm(),
 					topics = seq(from = input$topic_modeling_try_topics[1],
 								 to = input$topic_modeling_try_topics[2],
 								 by = input$topic_modeling_try_topics_step),
-					metrics = c("CaoJuan2009",  "Deveaud2014"), # TODO: Make parameters
+					metrics = input$topic_modeling_metrics, # TODO: Make parameters
 					method = "Gibbs",
 					control = list(seed = 2112, iter = 500, verbose = 0),
 					verbose = FALSE
@@ -133,14 +143,17 @@ topic_modeling_server <- function(id, qda_data) {
 				topicmodels::terms(topicModel, input$topic_modeling_n_terms)
 			})
 
-			output$topic_selector <- shiny::renderUI({
+			output$topic_selector_ui <- shiny::renderUI({
+				req(input$topic_modeling_k)
 				ns <- session$ns
+
 				choices <- 1:input$topic_modeling_k
 				topicModel <- topicModels()
 				tmResult <- modeltools::posterior(topicModel)
 
-				names(choices) <- paste0('Topic ', 1:input$topic_modeling_k, ': ', apply(tmResult$terms, 1, FUN = function(x) {
-					paste0(names(sort(x, decreasing = TRUE)[1:4]), collapse = ';')
+				names(choices) <- paste0('Topic ', 1:input$topic_modeling_k, ': ',
+										 apply(tmResult$terms, 1, FUN = function(x) {
+					paste0(names(sort(x, decreasing = TRUE)[1:5]), collapse = ';')
 				}))
 
 				shiny::selectInput(inputId = ns('topic_selector'),
@@ -148,6 +161,22 @@ topic_modeling_server <- function(id, qda_data) {
 								   choices = choices,
 								   selected = 1)
 			})
+
+			# observe({
+			# 	ns <- session$ns
+			# 	choices <- 1:input$topic_modeling_k
+			# 	topicModel <- topicModels()
+			# 	tmResult <- modeltools::posterior(topicModel)
+			#
+			# 	names(choices) <- paste0('Topic ', 1:input$topic_modeling_k, ': ',
+			# 							 apply(tmResult$terms, 1, FUN = function(x) {
+			# 							 	paste0(names(sort(x, decreasing = TRUE)[1:5]), collapse = ';')
+			# 							 }))
+			#
+			# 	shiny::updateSelectInput(session,
+			# 							 ns('topic_selector'),
+			# 							 choices = choices)
+			# })
 
 			output$topic_word_cloud <- shiny::renderPlot({
 				req(input$topic_selector)

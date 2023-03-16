@@ -7,6 +7,7 @@
 #'        it allow to refresh the application in the browser, but careful the
 #'        token can be shared between users.
 #' @param users_passphrase passphrase to pass to `shinymanager`.
+#' @param username if `authenticate` is FALSE this is the username used to run the app.
 #' @param ... other parameters passed to [shiny::runApp()] and [shiny::shinyApp()].
 #' @export
 #' @importFrom shiny runApp shinyApp
@@ -16,9 +17,11 @@ shinyQDA <- function(qda_data_file = 'ShinyQDA.sqlite',
 					 enable_admin = TRUE,
 					 keep_token = TRUE,
 					 users_passphrase = 'ShinyQDA',
+					 username = Sys.info()['user'],
 					 ...) {
 	shiny_env <- new.env()
 	assign('qda_data_file', qda_data_file, shiny_env)
+	assign('username', username, shiny_env)
 	environment(shiny_ui) <- shiny_env
 	environment(shiny_server) <- shiny_env
 

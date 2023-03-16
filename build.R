@@ -19,36 +19,6 @@ demo('ShinyQDA', package = 'ShinyQDA')
 shiny::runApp('inst/daacs_demo/')
 
 
-daacs_data <- ShinyQDA::qda('inst/daacs_demo/qda.sqlite')
-text_data <- daacs_data$get_text()
-codings <- daacs_data$get_codings()
-codes <- daacs_data$get_codes()
-tab <- table(codings$qda_id, codings$coder)
-double_codings <- row.names(tab)[apply(tab, 1, FUN = function(x) { sum(x > 0) >= 2 })]
-codings <- codings |>
-	dplyr::filter(qda_id %in% double_codings) |>
-	dplyr::filter(qda_id == '1')
-text_data <- text_data |>
-	dplyr::filter(qda_id %in% double_codings) |>
-	dplyr::filter(qda_id == '1')
-
-codes <- codings |>
-	dplyr::filter(coder == 'Rater1') |>
-	dplyr::filter(codes != '') |>
-	dplyr::select(codes)
-codes <- unlist(strsplit(codes[,1,drop=TRUE], ';')) |>
-	table() |>
-	as.data.frame()
-
-ggplot2::ggplot(codes, aes(x = Var1, y = Freq)) +
-	ggplot2::geom_bar(stat = 'identity', color = 'grey50') +
-	ggplot2::geom_text(aes(label = Freq), hjust = -0.5) +
-	ggplot2::coord_flip() +
-	ggplot2::theme_minimal() +
-	ggplot2::xlab('')
-
-
-
 ################################################################################
 
 library(ShinyQDA)

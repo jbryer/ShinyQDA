@@ -1,5 +1,5 @@
 utils::globalVariables(c("password", "qda_id", "coder", "qda_text", "answer",
-						 "criteria", "."))
+						 "criteria", ".", "username"))
 
 #' Shiny Server for QDA
 #'
@@ -60,11 +60,16 @@ shiny_server <- function(input, output, session) {
 	})
 
 	get_username <- shiny::reactive({
-		username <- shiny::reactiveValuesToList(res_auth)$user
-		if(is.null(username)) {
-			username <- Sys.info()['user']
+		auth_username <- shiny::reactiveValuesToList(res_auth)$user
+		if(is.null(auth_username)) {
+			if(is.null(username)) {
+				auth_username <- Sys.info()['user']
+			} else {
+				auth_username <- username
+			}
+
 		}
-		return(username)
+		return(auth_username)
 	})
 
 	get_users <- shiny::reactive({
@@ -548,7 +553,7 @@ shiny_server <- function(input, output, session) {
 		codes <- qda_data()$get_codings(input$selected_text)
 		if(nrow(codes) > 0) {
 			coders <- unique(c(get_username(), codes$coder))
-			ui <- shiny::checkboxGroupInput(
+			ui <- shiny::radioButtons(
 				inputId = 'text_coder',
 				label = 'Coders who coded this text:',
 				choices = coders,

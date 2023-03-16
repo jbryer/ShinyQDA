@@ -10,6 +10,7 @@ shinyQDA(
   enable_admin = TRUE,
   keep_token = TRUE,
   users_passphrase = "ShinyQDA",
+  username = Sys.info()["user"],
   ...
 )
 }
@@ -25,6 +26,8 @@ it allow to refresh the application in the browser, but careful the
 token can be shared between users.}
 
 \item{users_passphrase}{passphrase to pass to \code{shinymanager}.}
+
+\item{username}{if \code{authenticate} is FALSE this is the username used to run the app.}
 
 \item{...}{other parameters passed to \code{\link[shiny:runApp]{shiny::runApp()}} and \code{\link[shiny:shinyApp]{shiny::shinyApp()}}.}
 }
