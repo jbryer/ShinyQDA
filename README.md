@@ -149,6 +149,8 @@ Data export features:
 
 ## Roadmap
 
+  - Documentation - Need to document how to use the app for end users.
+    Can always enhance the code documentation as well.
   - Ability to see other coders responses (for the text questions).
   - Merge coding results into data export tab. Allow user to choose
     aggregation method.
