@@ -36,7 +36,7 @@ interchangeably.*
 To install, use the `remotes` package:
 
 ``` r
-remotes::install_github('jbryer/ShinyQDA')
+remotes::install_github('jbryer/ShinyQDA', dependencies = c('Depends', 'Imports', 'Suggests))
 ```
 
 You can demo the ShinyQDA application using sample data from the
@@ -44,7 +44,7 @@ You can demo the ShinyQDA application using sample data from the
 Skills](https://daacs.net) using the following command:
 
 ``` r
-demo('ShinyQDA', package = 'ShinyQDA')
+shiny::runApp(paste0(find.package('ShinyQDA'), '/daacs_demo/'))
 ```
 
 ## Creating a new ShinyQDA application
