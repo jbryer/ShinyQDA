@@ -51,6 +51,7 @@
 <li class="nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
+    <a class="dropdown-item" href="articles/feature_guide.html">Feature Guide</a>
     <a class="dropdown-item" href="articles/setup.html">Setting Up a ShinyQDA Project</a>
   </div>
 </li>
@@ -89,11 +90,10 @@
 <h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
 <p>To install, use the <code>remotes</code> package:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">'jbryer/ShinyQDA'</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">'jbryer/ShinyQDA'</span>, <span class="at">dependencies =</span> <span class="fu">c</span>(<span class="st">'Depends'</span>, <span class="st">'Imports'</span>, <span class="st">'Suggests))</span></span></code></pre></div>
 <p>You can demo the ShinyQDA application using sample data from the <a href="https://daacs.net" class="external-link">Diagnostic Assessment and Achievement of College Skills</a> using the following command:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/demo.html" class="external-link">demo</a></span><span class="op">(</span><span class="st">'ShinyQDA'</span>, package <span class="op">=</span> <span class="st">'ShinyQDA'</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste0</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/find.package.html" class="external-link">find.package</a></span><span class="op">(</span><span class="st">'ShinyQDA'</span><span class="op">)</span>, <span class="st">'/daacs_demo/'</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="creating-a-new-shinyqda-application">Creating a new ShinyQDA application<a class="anchor" aria-label="anchor" href="#creating-a-new-shinyqda-application"></a>
