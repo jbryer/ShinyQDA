@@ -1,8 +1,9 @@
 pandoc: 2.19.2
 pkgdown: 2.0.7
 pkgdown_sha: ~
-articles: {}
-last_built: 2023-03-16T12:02Z
+articles:
+  setup: setup.html
+last_built: 2023-03-16T17:05Z
 urls:
   reference: https://jbryer.github.io/ShinyQDA/reference
   article: https://jbryer.github.io/ShinyQDA/articles
