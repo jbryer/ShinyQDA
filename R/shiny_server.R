@@ -179,6 +179,25 @@ shiny_server <- function(input, output, session) {
 		)
 	})
 
+	output$text_variables <- shiny::renderUI({
+		shiny::req(input$selected_text)
+		shiny::isolate({
+			text <- qda_data()$get_text(input$selected_text)
+		})
+		if(nrow(text) == 0) {
+			return()
+		}
+		vars <- names(text)
+		vars <- vars[!vars %in% c('qda_text', 'qda_id')]
+		ui <- list()
+		for(i in vars) {
+			ui[[length(ui) + 1]] <- shiny::div(shiny::strong(i), ': ',
+											   text[1,i,drop = TRUE],
+											   shiny::br() )
+		}
+		do.call(shiny::div, ui)
+	})
+
 	# Text output. Note that this will replace new lines (i.e. \n) with <p/>
 	output$text_output <- shiny::renderText({
 		# Force refresh if a code/tag has been added, deleted, or edited

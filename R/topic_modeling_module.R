@@ -130,7 +130,7 @@ topic_modeling_server <- function(id, qda_data) {
 					topics = seq(from = input$topic_modeling_try_topics[1],
 								 to = input$topic_modeling_try_topics[2],
 								 by = input$topic_modeling_try_topics_step),
-					metrics = input$topic_modeling_metrics, # TODO: Make parameters
+					metrics = input$topic_modeling_metrics,
 					method = "Gibbs",
 					control = list(seed = 2112, iter = 500, verbose = 0),
 					verbose = FALSE

@@ -1,5 +1,6 @@
 ---
-output: github_document
+output: 
+  github_document
 editor_options: 
   chunk_output_type: console
 ---
@@ -12,14 +13,11 @@ editor_options:
 [![R-CMD-check](https://github.com/jbryer/ShinyQDA/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/jbryer/ShinyQDA/actions/workflows/R-CMD-check.yaml)
 `r badger::badge_devel("jbryer/ShinyQDA", "blue")`
 `r badger::badge_cran_release("ShinyQDA")`
-`r badger::badge_last_commit("jbryer/ShinyQDA")`
 <!-- badges: end -->
 
 Package documentation: https://jbryer.github.io/ShinyQDA/
 
 The `ShinyQDA` package is designed to assist researchers with the analysis of qualitative data. As the name suggests, the premise is that much of the interaction with the package will be done through a [Shiny](https://shiny.rstudio.com) application. However, all the functionality in the Shiny application is available through through the R command line as well. `ShinyQDA` attempts to set in between traditional qualitative data analysis that involves researchers coding and/or scoring (using rubrics) documents/text and natural language processing such as sentiment analysis, topic modeling, and text encoding (i.e. tokenization). By using Shiny, multiple researchers can access the application to code and/or score documents. 
-
-*Note: Qualitative data researchers tend to refer to the text they analyze as documents. Natural language processing researchers tend to refer to the data as text data. We try to use the phrase most appropriate for how a feature may be used, but they can often be used interchangeably.*
 
 
 ![Screencast of ShinyQDA](man/figures/ShinyQDA_screencast.gif)
@@ -58,7 +56,7 @@ shiny::runApp('daacs_demo')
 The `ShinyQDA::qda()` acts as a wrapper to the database (currently using SQLlite) containing all the data. There are a number of functions available for adding, editing, and deleting data as well as accessing specific data elements. However, the `ShinyQDA::qda_merge()` function will provide a merged data frame with the original data imported along with any qualitative data analysis conducted (including sentiment analysis, tokenization, etc.).
 
 ```{r, eval = FALSE}
-daacs_qda <- ShinyQDA::qda('daacs_test/qda.sqlite')
+daacs_qda <- ShinyQDA::qda('daacs_demo/qda.sqlite')
 daacs_merged <- ShinyQDA::qda_merge(daacs_qda, include_sentiments = TRUE)
 ```
 
@@ -96,6 +94,8 @@ Data export features:
 ## Roadmap
 
 * Documentation - Need to document how to use the app for end users. Can always enhance the code documentation as well.
+* Cache topic models so they don't have to be estimated each time.
+* Have multiple text columns
 * Ability to see other coders responses (for the text questions).
 * Merge coding results into data export tab. Allow user to choose aggregation method.
 * Tokenization - allow the user to define and export/download various tokenization schemes.
@@ -106,7 +106,7 @@ Data export features:
 * New hex logo (my design skills are not great, looking for a volunteer 😜)
 * Submit to CRAN when development is stable.
 * Ability to use databases other than SQLite. This will require writing a connector for shinymanager.
-* Reduce the number of packages dependencies. Some of the packages could be moved to "Suggests" that are only required for specific modules. For example, add an option to not incude sentiment analyses which would eliminate the need for those to be required.
+* Reduce the number of packages dependencies. Some of the packages could be moved to "Suggests" that are only required for specific modules. For example, add an option to not include sentiment analyses which would eliminate the need for those to be required.
 
 
 ## Code of Conduct

@@ -66,11 +66,13 @@ shiny_ui <- function(request, debug = TRUE) {
 							# shiny::p('Selected id: ', shiny::textOutput('selected_id')),
 							shiny::actionButton('add_tag_button', 'Add Code'),
 							shiny::hr(),
-							shiny::uiOutput('text_info'),
-							shiny::hr(),
 							shiny::uiOutput('text_coders_ui'),
 							shiny::hr(),
-							shiny::uiOutput('questions_ui')
+							shiny::uiOutput('questions_ui'),
+							shiny::hr(),
+							shiny::uiOutput('text_info'),
+							shiny::hr(),
+							shiny::uiOutput('text_variables')
 						),
 						shiny::mainPanel(
 							width = 8,
