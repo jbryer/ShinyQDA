@@ -82,11 +82,9 @@
 
 <p>Package documentation: <a href="https://jbryer.github.io/ShinyQDA/" class="uri">https://jbryer.github.io/ShinyQDA/</a></p>
 <p>The <code>ShinyQDA</code> package is designed to assist researchers with the analysis of qualitative data. As the name suggests, the premise is that much of the interaction with the package will be done through a <a href="https://shiny.rstudio.com" class="external-link">Shiny</a> application. However, all the functionality in the Shiny application is available through through the R command line as well. <code>ShinyQDA</code> attempts to set in between traditional qualitative data analysis that involves researchers coding and/or scoring (using rubrics) documents/text and natural language processing such as sentiment analysis, topic modeling, and text encoding (i.e. tokenization). By using Shiny, multiple researchers can access the application to code and/or score documents.</p>
-<p><em>Note: Qualitative data researchers tend to refer to the text they analyze as documents. Natural language processing researchers tend to refer to the data as text data. We try to use the phrase most appropriate for how a feature may be used, but they can often be used interchangeably.</em></p>
-<div class="figure">
-<img src="reference/figures/ShinyQDA_screencast.gif" alt=""><p class="caption">Screencast of ShinyQDA</p>
-</div>
-<div class="section level2">
+<figure><img src="reference/figures/ShinyQDA_screencast.gif" alt="Screencast of ShinyQDA"><figcaption aria-hidden="true">
+Screencast of ShinyQDA
+</figcaption></figure><div class="section level2">
 <h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
 <p>To install, use the <code>remotes</code> package:</p>
@@ -109,7 +107,7 @@
 <code class="sourceCode R"><span><span class="fu">shiny</span><span class="fu">::</span><span class="fu"><a href="https://shiny.rstudio.com/reference/shiny/latest/runApp.html" class="external-link">runApp</a></span><span class="op">(</span><span class="st">'daacs_demo'</span><span class="op">)</span></span></code></pre></div>
 <p>The <code><a href="reference/qda.html">ShinyQDA::qda()</a></code> acts as a wrapper to the database (currently using SQLlite) containing all the data. There are a number of functions available for adding, editing, and deleting data as well as accessing specific data elements. However, the <code><a href="reference/qda_merge.html">ShinyQDA::qda_merge()</a></code> function will provide a merged data frame with the original data imported along with any qualitative data analysis conducted (including sentiment analysis, tokenization, etc.).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">daacs_qda</span> <span class="op">&lt;-</span> <span class="fu">ShinyQDA</span><span class="fu">::</span><span class="fu"><a href="reference/qda.html">qda</a></span><span class="op">(</span><span class="st">'daacs_test/qda.sqlite'</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">daacs_qda</span> <span class="op">&lt;-</span> <span class="fu">ShinyQDA</span><span class="fu">::</span><span class="fu"><a href="reference/qda.html">qda</a></span><span class="op">(</span><span class="st">'daacs_demo/qda.sqlite'</span><span class="op">)</span></span>
 <span><span class="va">daacs_merged</span> <span class="op">&lt;-</span> <span class="fu">ShinyQDA</span><span class="fu">::</span><span class="fu"><a href="reference/qda_merge.html">qda_merge</a></span><span class="op">(</span><span class="va">daacs_qda</span>, include_sentiments <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
@@ -151,6 +149,8 @@
 </h2>
 <ul>
 <li>Documentation - Need to document how to use the app for end users. Can always enhance the code documentation as well.</li>
+<li>Cache topic models so they don’t have to be estimated each time.</li>
+<li>Have multiple text columns</li>
 <li>Ability to see other coders responses (for the text questions).</li>
 <li>Merge coding results into data export tab. Allow user to choose aggregation method.</li>
 <li>Tokenization - allow the user to define and export/download various tokenization schemes.</li>
@@ -213,7 +213,6 @@
 <li><a href="https://github.com/jbryer/ShinyQDA/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/jbryer/ShinyQDA/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a></li>
 <li><a href="https://github.com/jbryer/ShinyQDA" class="external-link"><img src="https://img.shields.io/badge/devel%20version-0.5.0-blue.svg"></a></li>
 <li><a href="https://cran.r-project.org/package=ShinyQDA" class="external-link"><img src="https://www.r-pkg.org/badges/version/ShinyQDA"></a></li>
-<li><a href="https://github.com/jbryer/ShinyQDA/commits/main" class="external-link"><img src="https://img.shields.io/github/last-commit/jbryer/ShinyQDA.svg"></a></li>
 </ul>
 </div>
 
