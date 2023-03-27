@@ -82,9 +82,10 @@
 
 <p>Package documentation: <a href="https://jbryer.github.io/ShinyQDA/" class="uri">https://jbryer.github.io/ShinyQDA/</a></p>
 <p>The <code>ShinyQDA</code> package is designed to assist researchers with the analysis of qualitative data. As the name suggests, the premise is that much of the interaction with the package will be done through a <a href="https://shiny.rstudio.com" class="external-link">Shiny</a> application. However, all the functionality in the Shiny application is available through through the R command line as well. <code>ShinyQDA</code> attempts to set in between traditional qualitative data analysis that involves researchers coding and/or scoring (using rubrics) documents/text and natural language processing such as sentiment analysis, topic modeling, and text encoding (i.e. tokenization). By using Shiny, multiple researchers can access the application to code and/or score documents.</p>
-<figure><img src="reference/figures/ShinyQDA_screencast.gif" alt="Screencast of ShinyQDA"><figcaption aria-hidden="true">
-Screencast of ShinyQDA
-</figcaption></figure><div class="section level2">
+<div class="figure">
+<img src="reference/figures/ShinyQDA_screencast.gif" alt=""><p class="caption">Screencast of ShinyQDA</p>
+</div>
+<div class="section level2">
 <h2 id="getting-started">Getting Started<a class="anchor" aria-label="anchor" href="#getting-started"></a>
 </h2>
 <p>To install, use the <code>remotes</code> package:</p>
@@ -161,7 +162,7 @@ Screencast of ShinyQDA
 <li>New hex logo (my design skills are not great, looking for a volunteer 😜)</li>
 <li>Submit to CRAN when development is stable.</li>
 <li>Ability to use databases other than SQLite. This will require writing a connector for shinymanager.</li>
-<li>Reduce the number of packages dependencies. Some of the packages could be moved to “Suggests” that are only required for specific modules. For example, add an option to not incude sentiment analyses which would eliminate the need for those to be required.</li>
+<li>Reduce the number of packages dependencies. Some of the packages could be moved to “Suggests” that are only required for specific modules. For example, add an option to not include sentiment analyses which would eliminate the need for those to be required.</li>
 </ul>
 </div>
 <div class="section level2">
