@@ -61,7 +61,7 @@ shiny_ui <- function(request, debug = TRUE) {
 					'Code Editor',
 					shiny::sidebarLayout(
 						shiny::sidebarPanel(
-							# style = "height: 90vh; overflow-y: auto;",
+							style = "height: 75vh; overflow-y: auto;",
 							width = 4,
 							# shiny::p('Selected id: ', shiny::textOutput('selected_id')),
 							shiny::actionButton('add_tag_button', 'Add Code'),
