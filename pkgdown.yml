@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   feature_guide: feature_guide.html
   setup: setup.html
-last_built: 2023-10-24T00:31Z
+last_built: 2024-02-08T16:59Z
 urls:
   reference: https://jbryer.github.io/ShinyQDA/reference
   article: https://jbryer.github.io/ShinyQDA/articles
