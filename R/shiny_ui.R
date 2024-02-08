@@ -72,7 +72,9 @@ shiny_ui <- function(request, debug = TRUE) {
 							shiny::hr(),
 							shiny::uiOutput('text_info'),
 							shiny::hr(),
-							shiny::uiOutput('text_variables')
+							shiny::uiOutput('text_variables'),
+							shiny::hr(),
+							shiny::uiOutput('text_codes_select_ui')
 						),
 						shiny::mainPanel(
 							width = 8,

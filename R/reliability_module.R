@@ -7,6 +7,7 @@ reliability_ui <- function(id) {
 	ns <- shiny::NS(id)
 	shiny::tagList(
 		shiny::uiOutput(ns('reliability_text_selection')),
+		shiny::uiOutput(ns('reliability_text_codes_select_ui')),
 		shiny::fluidRow(
 			shiny::column(
 				width = 6,
@@ -73,6 +74,19 @@ reliability_server <- function(id, qda_data) {
 								   width = '100%')
 			})
 
+			output$reliability_text_codes_select_ui <- shiny::renderUI({
+				codes <- qda_data()$get_codes()$code
+				ns <- session$ns
+				shiny::selectizeInput(
+					inputId = ns('reliability_text_codes_to_view'),
+					label = 'Codes to view',
+					choices = codes,
+					selected = codes,
+					multiple = TRUE,
+					width = '100%'
+				)
+			})
+
 			output$reliability_coder1_selection <- shiny::renderUI({
 				req(input$reliability_selected_text)
 				ns <- session$ns
@@ -124,6 +138,12 @@ reliability_server <- function(id, qda_data) {
 					dplyr::filter(qda_id == input$reliability_selected_text &
 								  coder == input$reliability_coder1_selection)
 
+				if(nrow(codings) > 0) {
+					rows <- grep(pattern = paste0(input$reliability_text_codes_to_view, collapse = '|'),
+								 x = codings$codes)
+					codings <- codings[rows,]
+				}
+
 				thetext <- highlighter(thetext, codings, qda_data()$get_codes(), link = FALSE)
 				# Convert line breaks to HTML line breaks
 				thetext <- gsub('\\n', '<p/>', thetext)
@@ -145,6 +165,12 @@ reliability_server <- function(id, qda_data) {
 					dplyr::filter(qda_id == input$reliability_selected_text &
 								  coder == input$reliability_coder2_selection)
 
+				if(nrow(codings) > 0) {
+					rows <- grep(pattern = paste0(input$reliability_text_codes_to_view, collapse = '|'),
+								 x = codings$codes)
+					codings <- codings[rows,]
+				}
+
 				thetext <- highlighter(thetext, codings, qda_data()$get_codes(), link = FALSE)
 				# Convert line breaks to HTML line breaks
 				thetext <- gsub('\\n', '<p/>', thetext)
@@ -155,9 +181,15 @@ reliability_server <- function(id, qda_data) {
 				req(input$reliability_selected_text)
 				req(input$reliability_coder1_selection)
 
+				all_codes <- input$reliability_text_codes_to_view
 				shiny::isolate({
 					codings <- qda_data()$get_codings()
-					all_codes <- qda_data()$get_codes()
+					# all_codes <- qda_data()$get_codes()
+					if(nrow(codings) > 0) {
+						rows <- grep(pattern = paste0(input$reliability_text_codes_to_view, collapse = '|'),
+									 x = codings$codes)
+						codings <- codings[rows,]
+					}
 				})
 
 				codes <- codings |>
@@ -175,7 +207,7 @@ reliability_server <- function(id, qda_data) {
 					ggplot2::coord_flip() +
 					ggplot2::theme_minimal() +
 					ggplot2::xlab('') +
-					ggplot2::scale_x_discrete(limits = all_codes$code) +
+					ggplot2::scale_x_discrete(limits = all_codes) +
 					ggplot2::ggtitle(paste0('Distribution of codes by ', input$reliability_coder1_selection))
 			})
 
@@ -183,9 +215,15 @@ reliability_server <- function(id, qda_data) {
 				req(input$reliability_selected_text)
 				req(input$reliability_coder2_selection)
 
+				all_codes <- input$reliability_text_codes_to_view
 				shiny::isolate({
 					codings <- qda_data()$get_codings()
-					all_codes <- qda_data()$get_codes()
+					# all_codes <- qda_data()$get_codes()
+					if(nrow(codings) > 0) {
+						rows <- grep(pattern = paste0(input$reliability_text_codes_to_view, collapse = '|'),
+									 x = codings$codes)
+						codings <- codings[rows,]
+					}
 				})
 
 				codes <- codings |>
@@ -203,7 +241,7 @@ reliability_server <- function(id, qda_data) {
 					ggplot2::coord_flip() +
 					ggplot2::theme_minimal() +
 					ggplot2::xlab('') +
-					ggplot2::scale_x_discrete(limits = all_codes$code) +
+					ggplot2::scale_x_discrete(limits = all_codes) +
 					ggplot2::ggtitle(paste0('Distribution of codes by ', input$reliability_coder2_selection))
 			})
 		}

@@ -218,9 +218,11 @@ shiny_server <- function(input, output, session) {
 		thetext <- thetext[1,1,drop=TRUE]
 		# Highlight codes
 		codings <- qda_data$get_codings(input$selected_text)
-		# if(!is.null(input$text_coder)) {
-			codings <- codings |> dplyr::filter(coder %in% input$text_coder)
-		# }
+		codings <- codings |> dplyr::filter(coder %in% input$text_coder)
+		if(nrow(codings) > 0) {
+			rows <- grep(pattern = paste0(input$text_codes_to_view, collapse = '|'), x = codings$codes)
+			codings <- codings[rows,]
+		}
 		if(nrow(codings) > 0) {
 			thetext <- highlighter(thetext, codings, qda_data$get_codes())
 		}
@@ -583,6 +585,19 @@ shiny_server <- function(input, output, session) {
 				selected = get_username())
 		}
 		return(ui)
+	})
+
+	############################################################################
+	# Select box for codes to view
+	output$text_codes_select_ui <- shiny::renderUI({
+		codes <- qda_data()$get_codes()$code
+		shiny::selectizeInput(
+			inputId = 'text_codes_to_view',
+			label = 'Codes to view',
+			choices = codes,
+			selected = codes,
+			multiple = TRUE
+		)
 	})
 
 	############################################################################
