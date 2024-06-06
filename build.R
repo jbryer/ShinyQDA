@@ -20,6 +20,8 @@ shiny::runApp('inst/daacs_demo/')
 
 shiny::runApp(paste0(find.package('ShinyQDA'), '/daacs_demo/'))
 
+install.packages(c('wordcloud2', 'ldatuning', 'modeltools', 'topicmodels', 'RColorBrewer'))
+
 ################################################################################
 
 library(ShinyQDA)
@@ -60,8 +62,8 @@ ShinyQDA::shinyQDA()
 unlink('ShinyQDA.sqlite')
 
 # Add package imports
-usethis::use_package('topicmodels', type = 'Imports')
-usethis::use_package('writexl', type = 'Suggests')
+# usethis::use_package('topicmodels', type = 'Imports')
+# usethis::use_package('writexl', type = 'Suggests')
 
 daacs_qda <- ShinyQDA::qda('inst/daacs_demo/qda.sqlite')
 qda_data <- ShinyQDA::qda('inst/daacs_demo/qda.sqlite')

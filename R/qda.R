@@ -104,7 +104,7 @@ qda <- function(
 	#        See [DBI::dbWriteTable()] for more info.
 	# @param append if TRUE data will be appended to existing data.
 	#        See [DBI::dbWriteTable()] for more info.
-	qda_data$add_text <- function(df, id_col, text_col, overwrite = TRUE, append = FALSE) {
+	qda_data$add_text <- function(df, id_col, text_col, overwrite = FALSE, append = TRUE) {
 		if(missing(id_col)) {
 			stop('id_col parameter is required. This should be a primary key.')
 		}
