@@ -1,165 +1,57 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/404.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/CODE_OF_CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/LICENSE.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/articles/feature_guide.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/articles/setup.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/index.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/ShinyQDA-package.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/check_dependencies.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/codebook_server.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/codebook_ui.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/coding_server.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/coding_ui.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/color_palette.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/cooccurance_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/daacs.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/data_view_server.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/data_view_ui.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/descriptives_server.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/descriptives_ui.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/find_document_column.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/find_primary_key_column.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/get_coding_table.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/get_colors.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/highlighter.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/lexicon_colors.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/missing_dependencies.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/modalDialog2.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/new_app.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/qda.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/qda_datatable.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/qda_merge.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/qda_view_server.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/qda_view_ui.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/question_responses_to_data_frame.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/questions_server.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/questions_ui.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/reliability_server.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/reliability_ui.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/rubric_edit_server.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/rubric_edit_ui.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/sentiment_highlighter.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/sentiment_plot.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/sentiment_server.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/sentiment_ui.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/shinyQDA.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/shiny_server.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/shiny_ui.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/text_truncate.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/text_wrap_mod.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/topic_modeling_server.html</loc>
-  </url>
-  <url>
-    <loc>https://jbryer.github.io/ShinyQDA/reference/topic_modeling_ui.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://jbryer.github.io/ShinyQDA/404.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/CODE_OF_CONDUCT.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/LICENSE.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/articles/feature_guide.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/articles/index.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/articles/setup.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/authors.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/index.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/ShinyQDA-package.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/check_dependencies.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/codebook_server.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/codebook_ui.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/coding_server.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/coding_ui.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/color_palette.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/cooccurance_plot.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/daacs.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/data_view_server.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/data_view_ui.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/descriptives_server.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/descriptives_ui.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/find_document_column.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/find_primary_key_column.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/get_coding_table.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/get_colors.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/highlighter.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/index.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/lexicon_colors.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/missing_dependencies.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/modalDialog2.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/new_app.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/qda.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/qda_datatable.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/qda_merge.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/qda_view_server.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/qda_view_ui.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/question_responses_to_data_frame.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/questions_server.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/questions_ui.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/reliability_server.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/reliability_ui.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/rubric_edit_server.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/rubric_edit_ui.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/sentiment_highlighter.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/sentiment_plot.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/sentiment_server.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/sentiment_ui.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/shinyQDA.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/shiny_server.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/shiny_ui.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/text_truncate.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/text_wrap_mod.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/topic_modeling_server.html</loc></url>
+<url><loc>https://jbryer.github.io/ShinyQDA/reference/topic_modeling_ui.html</loc></url>
 </urlset>
+
