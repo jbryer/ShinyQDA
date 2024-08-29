@@ -5,6 +5,7 @@ date: "`r Sys.Date()`"
 output: 
   rmarkdown::html_vignette:
     toc: true
+abstract: "ShinyQDA is an R package and Shiny application designed to fill the gap between traditional qualitative data analysis (QDA) and natural language processing (NLP) techniques such as tokenization, sentiment analysis, and topic modeling. The QDA features include the ability to code text using a flexible coding system as well as using rubrics. Tools for evaluating inter-rater reliability, code frequencies, and co-occurrence are provided. Users can leverage the NLP features to augment the QDA including the ability to see how these methods apply to individual text documents as well as across the entire dataset. Utility functions are provided for working with the data in R when moving beyond the features available in the Shiny application."
 bibliography: references.bib
 csl: apa.csl
 link-citations: yes

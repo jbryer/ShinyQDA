@@ -145,7 +145,7 @@ topic_modeling_server <- function(id, qda_data) {
 				tm::nTerms(DTM)
 			})
 
-			output$terms_table <- shiny::renderDataTable({
+			output$terms_table <- DT::renderDT({
 				topicModel <- topicModels()
 				topicmodels::terms(topicModel, input$topic_modeling_n_terms)
 			})

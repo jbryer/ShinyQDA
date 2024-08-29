@@ -9,7 +9,7 @@ utils::globalVariables(c("password", "qda_id", "coder", "qda_text", "answer",
 #' @importFrom shiny renderPrint reactive reactiveVal reactivePoll reactiveValuesToList renderUI HTML selectizeInput renderText req observe observeEvent showModal modalDialog removeModal actionButton uiOutput tagList checkboxGroupInput textAreaInput radioButtons div req
 #' @importFrom textutils HTMLencode
 #' @importFrom shinyjs enable disable runjs
-#' @importFrom DT datatable renderDataTable JS formatRound
+#' @importFrom DT datatable renderDT JS formatRound
 #' @importFrom shinymanager secure_server check_credentials
 #' @importFrom stringr str_squish str_remove_all
 #' @export
@@ -74,7 +74,7 @@ shiny_server <- function(input, output, session) {
 		qda_data()$get_coders()
 	})
 
-	output$coders_table <- DT::renderDataTable({
+	output$coders_table <- DT::renderDT({
 		get_users() |> dplyr::select(!password)
 	})
 
@@ -783,7 +783,7 @@ shiny_server <- function(input, output, session) {
 	##### Table outputs ########################################################
 
 	# Coding table for the selected text
-	output$coding_table <- DT::renderDataTable({
+	output$coding_table <- DT::renderDT({
 		shiny::req(input$selected_text)
 		codes <- qda_data()$get_codings()
 		if(nrow(codes) == 0) {

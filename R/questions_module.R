@@ -41,13 +41,13 @@ questions_server <- function(id, qda_data, page_length = 20) {
 			selected_text_stem <- shiny::reactiveVal('')
 
 			##### Tables
-			output$text_questions_table <- DT::renderDataTable({
+			output$text_questions_table <- DT::renderDT({
 				input$update_text_question
 				input$confirm_text_question_delete
 				qda_data()$get_text_questions() |> qda_datatable()
 			})
 
-			output$code_questions_table <- DT::renderDataTable({
+			output$code_questions_table <- DT::renderDT({
 				input$update_code_question
 				input$confirm_code_question_delete
 				qda_data()$get_code_questions() |> qda_datatable()

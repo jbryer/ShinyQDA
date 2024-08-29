@@ -36,7 +36,7 @@ qda_view_server <- function(id, qda_data) {
 					local({
 						this_table_name <- names(tables)[i]
 						this_table <- tables[[i]]
-						output[[paste0('raw_data_', this_table_name)]] <- DT::renderDataTable({
+						output[[paste0('raw_data_', this_table_name)]] <- DT::renderDT({
 							this_table |> qda_datatable()
 						})
 					})

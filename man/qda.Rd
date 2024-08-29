@@ -43,7 +43,7 @@ you can manipulate the SQL database directly, we recommend using the methods
 \item \code{log(coder, table, description, timestamp)}
 \item \code{get_log()}
 \item \code{get_last_update()}
-\item \code{add_text(df, id_col, text_col, overwrite, append)}
+\item \code{add_text(df, id_col, text_col, overwrite)}
 \item \code{get_text(id)}
 \item \code{add_coding(id, text, start, end, codes, coder)}
 \item \code{update_coding(coding_id, codes)}

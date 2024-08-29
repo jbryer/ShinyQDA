@@ -102,9 +102,7 @@ qda <- function(
 	# @param text_col name of the column containing the text to be coded.
 	# @param overwrite if TRUE existing data will be overwritten.
 	#        See [DBI::dbWriteTable()] for more info.
-	# @param append if TRUE data will be appended to existing data.
-	#        See [DBI::dbWriteTable()] for more info.
-	qda_data$add_text <- function(df, id_col, text_col, overwrite = FALSE, append = TRUE) {
+	qda_data$add_text <- function(df, id_col, text_col, overwrite = FALSE) {
 		if(missing(id_col)) {
 			stop('id_col parameter is required. This should be a primary key.')
 		}
@@ -126,7 +124,7 @@ qda <- function(
 						  'text_data',
 						  df,
 						  overwrite = overwrite,
-						  append = append)
+						  append = !overwrite)
 		qda_data$log(Sys.info()['user'], 'text_data', paste0('added ', nrow(df), ' rows to text_data'))
 	}
 

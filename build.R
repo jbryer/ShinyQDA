@@ -16,6 +16,9 @@ devtools::check()
 
 demo('daacs', package = 'ShinyQDA')
 
+library(ShinyQDA)
+shiny::runApp(paste0(find.package('ShinyQDA'), '/daacs_demo/'))
+
 shiny::runApp('inst/daacs_demo/')
 
 shiny::runApp(paste0(find.package('ShinyQDA'), '/daacs_demo/'))

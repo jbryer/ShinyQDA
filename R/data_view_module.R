@@ -75,6 +75,7 @@ grouped_colunns <- c('Codings' = 'code_',
 #'
 #' @param id An ID string that corresponds with the ID used to call the module's UI function.
 #' @param qda_data QDA data object, see [ShinyQDA::qda()].
+#' @importFrom DT renderDT
 #' @export
 data_view_server <- function(id, qda_data) {
 	shiny::moduleServer(
@@ -126,7 +127,7 @@ data_view_server <- function(id, qda_data) {
 			})
 
 			# Table view of the data
-			output$text_table <- DT::renderDataTable({
+			output$text_table <- DT::renderDT({
 				df <- get_text_data_view()
 				if('qda_text' %in% names(df)) {
 					df$qda_text <- ShinyQDA::text_truncate(df$qda_text, width = 100)
@@ -175,7 +176,7 @@ data_view_server <- function(id, qda_data) {
 				)
 			})
 
-			output$text_details_text_questions <- DT::renderDataTable({
+			output$text_details_text_questions <- DT::renderDT({
 				df <- get_text_data()
 				txt_data <- df[input$text_table_rows_selected, , drop = FALSE]
 				id <- txt_data$qda_id
@@ -194,7 +195,7 @@ data_view_server <- function(id, qda_data) {
 					)
 			})
 
-			output$text_details_code_questions <- DT::renderDataTable({
+			output$text_details_code_questions <- DT::renderDT({
 				df <- get_text_data()
 				txt_data <- df[input$text_table_rows_selected, , drop = FALSE]
 				id <- txt_data$qda_id

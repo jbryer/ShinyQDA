@@ -4,7 +4,7 @@
 \name{ShinyQDA-package}
 \alias{ShinyQDA}
 \alias{ShinyQDA-package}
-\title{ShinyQDA: R Package and Shiny Application for the Analysis of Qualitative Data}
+\title{ShinyQDA: Shiny Application for the Analysis of Qualitative Data}
 \description{
 This package provides tools to conduct qualitative data analysis (QDA) in R. The Shiny application provide an interactive way to code qualitative data. Utility functions are provided to then analyze the data in R. Data is stored in a SQL database and works with any database that works with the DBI R package.
 }
