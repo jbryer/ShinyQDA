@@ -1,10 +1,10 @@
 pandoc: 3.1.11
-pkgdown: 2.1.0
+pkgdown: 2.1.1
 pkgdown_sha: ~
 articles:
   feature_guide: feature_guide.html
   setup: setup.html
-last_built: 2024-08-29T14:48Z
+last_built: 2024-09-25T14:41Z
 urls:
   reference: https://jbryer.github.io/ShinyQDA/reference
   article: https://jbryer.github.io/ShinyQDA/articles
