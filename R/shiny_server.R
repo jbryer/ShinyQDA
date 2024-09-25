@@ -343,6 +343,8 @@ shiny_server <- function(input, output, session) {
 
 	# Save the tag and close the modal
 	shiny::observeEvent(input$add_tag, {
+		shinyjs::disable('add_tag') # Trying to prevent double clicks
+
 		text_selection <- text_selection()
 		thetext <- qda_data()$get_text(input$selected_text) |>
 			dplyr::select(qda_text)

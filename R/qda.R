@@ -218,24 +218,37 @@ qda <- function(
 	# @param id the text
 	# @param code_id the id for the coding
 	qda_data$get_codings <- function(id, coding_id) {
+		codings <- data.frame()
 		if(missing(id) & missing(coding_id)) {
-			DBI::dbReadTable(qda_db, 'codings')
+			codings <- DBI::dbReadTable(qda_db, 'codings')
 		} else if(missing(coding_id)) {
-			DBI::dbGetQuery(
+			codings <- DBI::dbGetQuery(
 				qda_db,
 				paste0('SELECT * FROM codings WHERE qda_id = "', id, '"')
 			)
 		} else if(missing(id)) {
-			DBI::dbGetQuery(
+			codings <- DBI::dbGetQuery(
 				qda_db,
 				paste0('SELECT * FROM codings WHERE coding_id = "', coding_id, '"')
 			)
 		} else {
-			DBI::dbGetQuery(
+			codings <- DBI::dbGetQuery(
 				qda_db,
 				paste0('SELECT * FROM codings WHERE coding_id = "', coding_id, '" AND qda_id = "', id, '"')
 			)
 		}
+		if(nrow(codings) > 0) {
+			# There was a bug where adding a code could have been called more than
+			# once probably because the user double clicked the "Add" button.
+			# The button is now disabled on the first click within the "shiny_server.R"
+			# script. In case duplicats still get through, or for legacy apps, this
+			# will remove the duplicate codings.
+			dups <- duplicated(codings[,c('qda_id', 'text', 'codes', 'coder')])
+			if(sum(dups) > 0) {
+				codings <- codings[!dups,]
+			}
+		}
+		return(codings)
 	}
 
 	##### codes ################################################################
