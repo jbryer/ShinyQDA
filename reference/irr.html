@@ -46,7 +46,13 @@ The resulting data.frame will have the following columns:</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">irr</span><span class="op">(</span><span class="va">qda_data</span>, min_ratings <span class="op">=</span> <span class="fl">5</span>, <span class="va">coders</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">irr</span><span class="op">(</span></span>
+<span>  <span class="va">qda_data</span>,</span>
+<span>  codings <span class="op">=</span> <span class="va">qda_data</span><span class="op">$</span><span class="fu">get_codings</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>  min_ratings <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  <span class="va">coders</span>,</span>
+<span>  include_zero_codes <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -66,6 +72,11 @@ for the IRR statistics to be calculated.</p></dd>
 <dd><p>a character vector of coders to include in the IRR calculations.
 If omitted then all coders will be used.</p></dd>
 
+
+<dt id="arg-include-zero-codes">include_zero_codes<a class="anchor" aria-label="anchor" href="#arg-include-zero-codes"></a></dt>
+<dd><p>include text docuements where none of the coders
+applied a code to that text.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -76,7 +87,8 @@ If omitted then all coders will be used.</p></dd>
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
 
 <ul><li><p><code>code</code> - the code.</p></li>
-<li><p><code>n_text</code> - the number of text documents with at least two coders.</p></li>
+<li><p><code>n_text</code> - total number of text documents coded.</p></li>
+<li><p><code>n_double_coded</code> - the number of text documents with at least two coders.</p></li>
 <li><p><code>n_codes</code> - the total number of times this code has been used.</p></li>
 <li><p><code>n_text_with_code</code> - the number of text documents with this code.</p></li>
 <li><p><code>pra</code> - Exact percent rater agreement. This compares the number of times
