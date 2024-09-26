@@ -4,7 +4,13 @@
 \alias{irr}
 \title{Calculate inter-rater reliability statistics}
 \usage{
-irr(qda_data, min_ratings = 5, coders)
+irr(
+  qda_data,
+  codings = qda_data$get_codings(),
+  min_ratings = 5,
+  coders,
+  include_zero_codes = TRUE
+)
 }
 \arguments{
 \item{qda_data}{a \code{qda} object.}
@@ -14,6 +20,9 @@ for the IRR statistics to be calculated.}
 
 \item{coders}{a character vector of coders to include in the IRR calculations.
 If omitted then all coders will be used.}
+
+\item{include_zero_codes}{include text docuements where none of the coders
+applied a code to that text.}
 }
 \value{
 a data.frame with inter-rater reliability (IRR) statistics for each code
@@ -26,7 +35,8 @@ The resulting data.frame will have the following columns:
 \details{
 \itemize{
 \item \code{code} - the code.
-\item \code{n_text} - the number of text documents with at least two coders.
+\item \code{n_text} - total number of text documents coded.
+\item \code{n_double_coded} - the number of text documents with at least two coders.
 \item \code{n_codes} - the total number of times this code has been used.
 \item \code{n_text_with_code} - the number of text documents with this code.
 \item \code{pra} - Exact percent rater agreement. This compares the number of times

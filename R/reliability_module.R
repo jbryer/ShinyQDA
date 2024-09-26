@@ -9,7 +9,16 @@ reliability_ui <- function(id) {
 		shiny::tabsetPanel(
 			shiny::tabPanel(
 				title = 'Summary',
-				shiny::uiOutput(ns('reliability_coders')),
+				shiny::fluidRow(
+					shiny::column(
+						width = 3,
+						shiny::uiOutput(ns('reliability_timeframe'))
+					),
+					shiny::column(
+						width = 9,
+						shiny::uiOutput(ns('reliability_coders'))
+					)
+				),
 				DT::dataTableOutput(ns('reliability_summary'))
 			),
 			shiny::tabPanel(
@@ -59,9 +68,31 @@ reliability_server <- function(id, qda_data) {
 								   width = '100%')
 			})
 
+			output$reliability_timeframe <- shiny::renderUI({
+				ns <- session$ns
+				codings <- qda_data()$get_codings()
+				codings$date_added <- as.Date(codings$date_added)
+				shiny::dateRangeInput(
+					inputId = ns('reliability_timeframe'),
+					label = 'Timeframe',
+					min = min(codings$date_added),
+					max = max(codings$date_added),
+					start = min(codings$date_added),
+					end = max(codings$date_added)
+				)
+			})
+
 			output$reliability_summary <- DT::renderDT({
 				req(input$reliability_coders)
-				df <- irr(qda_data(), coders = input$reliability_coders)
+				req(input$reliability_timeframe)
+				codings <- qda_data()$get_codings()
+				if(nrow(codings) > 0) {
+					codings <- codings |>
+						dplyr::mutate(date_added <- as.Date(date_added)) |>
+						dplyr::filter(date_added >= input$reliability_timeframe[1] &
+									  date_added <= input$reliability_timeframe[2])
+				}
+				df <- irr(codings = codings, coders = input$reliability_coders)
 				df$code <- as.factor(df$code)
 				DT::datatable(
 					df,

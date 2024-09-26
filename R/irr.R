@@ -20,12 +20,18 @@
 #'        for the IRR statistics to be calculated.
 #' @param coders a character vector of coders to include in the IRR calculations.
 #'        If omitted then all coders will be used.
+#' @param include_zero_codes include text docuements where none of the coders
+#'        applied a code to that text.
 #' @return a data.frame with inter-rater reliability (IRR) statistics for each code
 #'         (see `qda_data$get_codes()`) and pair of coders.
 #' @importFrom psych ICC
 #' @export
-irr <- function(qda_data, min_ratings = 5, coders) {
-	codings <- qda_data$get_codings()
+irr <- function(qda_data,
+				codings = qda_data$get_codings(),
+				min_ratings = 5,
+				coders,
+				include_zero_codes = TRUE) {
+	# codings <- qda_data$get_codings()
 
 	codings2 <- apply(codings[,c('qda_id', 'coder', 'codes')], 1, FUN = function(x) {
 		codes <- strsplit(x['codes'], ';')[[1]]
@@ -67,15 +73,22 @@ irr <- function(qda_data, min_ratings = 5, coders) {
 			dplyr::select(qda_id, coder, dplyr::all_of(irr_code)) |>
 			reshape2::dcast(qda_id ~ coder, value.var = irr_code)
 
-		n_non_zero <- apply(code_ratings[,-1], 1, FUN = function(x) {
+		if(!include_zero_codes) {
+			zero_rows <- apply(code_ratings[,-1], 1, FUN = function(x) {
+				sum(x, na.rm = TRUE) == 0
+			})
+			code_ratings <- code_ratings[!zero_rows,]
+		}
+
+		n_text_with_code <- apply(code_ratings[,-1], 1, FUN = function(x) {
 			sum(x, na.rm = TRUE) > 0
 		}) |> sum()
 
 		n_codes <- sum(code_ratings[,-1], na.rm = TRUE)
 
-		n_raters <- apply(code_ratings[,-1], 1, FUN = function(x) {
-			sum(!is.na(x))
-		})
+		# n_raters <- apply(code_ratings[,-1], 1, FUN = function(x) {
+		# 	sum(!is.na(x))
+		# })
 		agree <- apply(code_ratings[,-1], 1, FUN = function(x) {
 			x <- x[!is.na(x)]
 			if(length(x) == 1) {
@@ -84,22 +97,22 @@ irr <- function(qda_data, min_ratings = 5, coders) {
 				return(length(unique(x)) == 1)
 			}
 		})
-		n_text = sum(!is.na(agree))
+		n_double_coded = sum(!is.na(agree))
 
-		if(n_text > min_ratings & n_non_zero > min_ratings) {
+		if(n_double_coded > min_ratings & n_text_with_code > min_ratings) {
 			icc <- data.frame(type = c('ICC1', 'ICC2', 'ICC3', 'ICC1k', 'ICC2k', 'ICC3k'),
 							  ICC = rep(NA, 6))
-			suppressWarnings({suppressMessages({
+			suppressWarnings({suppressMessages({ # Maybe this isn't a good thing.
 				try({ icc <- psych::ICC(code_ratings[,-1])$results }, silent = TRUE)
 			})})
 
 			irr_summary <- rbind(irr_summary, data.frame(
 				code = irr_code,
 				n_text = nrow(code_ratings),
-				n_double_coded = n_text,
+				n_double_coded = n_double_coded,
 				n_codes = n_codes,
-				n_text_with_code = n_non_zero,
-				pra = sum(agree, na.rm = TRUE) / n_text,
+				n_text_with_code = n_text_with_code,
+				pra = sum(agree, na.rm = TRUE) / n_double_coded,
 				icc1 = icc[1,]$ICC,
 				icc2 = icc[2,]$ICC,
 				icc3 = icc[3,]$ICC,
@@ -111,9 +124,9 @@ irr <- function(qda_data, min_ratings = 5, coders) {
 			irr_summary <- rbind(irr_summary, data.frame(
 				code = irr_code,
 				n_text = nrow(code_ratings),
-				n_double_coded = n_text,
+				n_double_coded = n_double_coded,
 				n_codes = n_codes,
-				n_text_with_code = n_non_zero,
+				n_text_with_code = n_text_with_code,
 				pra = NA,
 				icc1 = NA,
 				icc2 = NA,
