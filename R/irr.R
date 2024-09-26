@@ -5,6 +5,7 @@
 #'
 #' * `code` - the code.
 #' * `n_text` - the number of text documents with at least two coders.
+#' * `n_codes` - the total number of times this code has been used.
 #' * `n_text_with_code` - the number of text documents with this code.
 #' * `pra` - Exact percent rater agreement. This compares the number of times
 #'           the code was used for each text document.
@@ -65,7 +66,11 @@ irr <- function(qda_data, min_ratings = 5, coders) {
 			dplyr::select(qda_id, coder, dplyr::all_of(irr_code)) |>
 			reshape2::dcast(qda_id ~ coder, value.var = irr_code)
 
-		n_non_zero <- sum(code_ratings[,-1], na.rm = TRUE)
+		n_non_zero <- apply(code_ratings[,-1], 1, FUN = function(x) {
+			sum(x, na.rm = TRUE) > 0
+		}) |> sum()
+
+		n_codes <- sum(code_ratings[,-1], na.rm = TRUE)
 
 		n_raters <- apply(code_ratings[,-1], 1, FUN = function(x) {
 			sum(!is.na(x))
@@ -90,6 +95,7 @@ irr <- function(qda_data, min_ratings = 5, coders) {
 			irr_summary <- rbind(irr_summary, data.frame(
 				code = irr_code,
 				n_text = n_text,
+				n_codes = n_codes,
 				n_text_with_code = n_non_zero,
 				pra = sum(agree, na.rm = TRUE) / n_text,
 				icc1 = icc[1,]$ICC,
@@ -103,6 +109,7 @@ irr <- function(qda_data, min_ratings = 5, coders) {
 			irr_summary <- rbind(irr_summary, data.frame(
 				code = irr_code,
 				n_text = n_text,
+				n_codes = n_codes,
 				n_text_with_code = n_non_zero,
 				pra = NA,
 				icc1 = NA,

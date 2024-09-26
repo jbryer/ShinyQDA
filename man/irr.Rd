@@ -27,6 +27,7 @@ The resulting data.frame will have the following columns:
 \itemize{
 \item \code{code} - the code.
 \item \code{n_text} - the number of text documents with at least two coders.
+\item \code{n_codes} - the total number of times this code has been used.
 \item \code{n_text_with_code} - the number of text documents with this code.
 \item \code{pra} - Exact percent rater agreement. This compares the number of times
 the code was used for each text document.
