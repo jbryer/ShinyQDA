@@ -245,6 +245,7 @@ qda <- function(
 			# will remove the duplicate codings.
 			dups <- duplicated(codings[,c('qda_id', 'text', 'codes', 'coder')])
 			if(sum(dups) > 0) {
+				message('There were duplicate codings found. They will be removed before returning.')
 				codings <- codings[!dups,]
 			}
 		}

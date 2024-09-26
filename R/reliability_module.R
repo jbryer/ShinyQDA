@@ -6,27 +6,36 @@
 reliability_ui <- function(id) {
 	ns <- shiny::NS(id)
 	shiny::tagList(
-		shiny::uiOutput(ns('reliability_text_selection')),
-		shiny::uiOutput(ns('reliability_text_codes_select_ui')),
-		shiny::fluidRow(
-			shiny::column(
-				width = 6,
-				shiny::uiOutput(ns('reliability_coder1_selection')),
-				shiny::htmlOutput(ns('reliability_text1')),
-				shiny::hr(),
-				shiny::plotOutput(ns('reliability_plot1'), height = '500px')
+		shiny::tabsetPanel(
+			shiny::tabPanel(
+				title = 'Summary',
+				shiny::uiOutput(ns('reliability_coders')),
+				DT::dataTableOutput(ns('reliability_summary'))
 			),
-			shiny::column(
-				width = 6,
-				shiny::uiOutput(ns('reliability_coder2_selection')),
-				shiny::htmlOutput(ns('reliability_text2')),
-				shiny::hr(),
-				shiny::plotOutput(ns('reliability_plot2'), height = '500px')
+			shiny::tabPanel(
+				title = 'By Text Document',
+					shiny::uiOutput(ns('reliability_text_selection')),
+					shiny::uiOutput(ns('reliability_text_codes_select_ui')),
+					shiny::fluidRow(
+						shiny::column(
+							width = 6,
+							shiny::uiOutput(ns('reliability_coder1_selection')),
+							shiny::htmlOutput(ns('reliability_text1')),
+							shiny::hr(),
+							shiny::plotOutput(ns('reliability_plot1'), height = '500px')
+						),
+						shiny::column(
+							width = 6,
+							shiny::uiOutput(ns('reliability_coder2_selection')),
+							shiny::htmlOutput(ns('reliability_text2')),
+							shiny::hr(),
+							shiny::plotOutput(ns('reliability_plot2'), height = '500px')
+						)
+					)
 			)
 		)
 	)
 }
-
 
 
 #' Server for the inter-rater reliability analysis.
@@ -38,6 +47,38 @@ reliability_server <- function(id, qda_data) {
 	shiny::moduleServer(
 		id,
 		function(input, output, session) {
+			output$reliability_coders <- shiny::renderUI({
+				ns <- session$ns
+				coders <- qda_data()$get_coders()
+				coders <- coders$user
+				shiny::selectInput(inputId = ns('reliability_coders'),
+								   label = 'Coders',
+								   choices = coders,
+								   multiple = TRUE,
+								   selected = coders,
+								   width = '100%')
+			})
+
+			output$reliability_summary <- DT::renderDT({
+				req(input$reliability_coders)
+				df <- irr(qda_data(), coders = input$reliability_coders)
+				df$code <- as.factor(df$code)
+				DT::datatable(
+					df,
+					rownames = FALSE,
+					filter = 'top',
+					options = list(
+						# https://stackoverflow.com/questions/50922686/freeze-header-and-footer-in-datatable-shiny
+						# scrollX = TRUE,
+						# scrollY = "400px"
+						pageLength = 40
+					),
+					selection = 'single'
+				) |>
+					DT::formatPercentage(columns = c('pra')) |>
+					DT::formatRound(digits = 3, columns = c('icc1', 'icc2', 'icc3', 'icc1k', 'icc2k', 'icc3k'))
+			})
+
 			output$reliability_text_selection <- shiny::renderUI({
 				ns <- session$ns
 
