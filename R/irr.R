@@ -20,8 +20,11 @@
 #'        for the IRR statistics to be calculated.
 #' @param coders a character vector of coders to include in the IRR calculations.
 #'        If omitted then all coders will be used.
-#' @param include_zero_codes include text docuements where none of the coders
+#' @param include_zero_codes include text documents where none of the coders
 #'        applied a code to that text.
+#' @param codings data frame of the codings on which to calculate IRR. This allows
+#'        for calculating IRR metrics on a subset of the codings (e.g. select
+#'        only a few coders).
 #' @return a data.frame with inter-rater reliability (IRR) statistics for each code
 #'         (see `qda_data$get_codes()`) and pair of coders.
 #' @importFrom psych ICC
