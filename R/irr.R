@@ -4,7 +4,8 @@
 #' The resulting data.frame will have the following columns:
 #'
 #' * `code` - the code.
-#' * `n_text` - the number of text documents with at least two coders.
+#' * `n_text` - total number of text documents coded.
+#' * `n_double_coded` - the number of text documents with at least two coders.
 #' * `n_codes` - the total number of times this code has been used.
 #' * `n_text_with_code` - the number of text documents with this code.
 #' * `pra` - Exact percent rater agreement. This compares the number of times
@@ -94,7 +95,8 @@ irr <- function(qda_data, min_ratings = 5, coders) {
 
 			irr_summary <- rbind(irr_summary, data.frame(
 				code = irr_code,
-				n_text = n_text,
+				n_text = nrow(code_ratings),
+				n_double_coded = n_text,
 				n_codes = n_codes,
 				n_text_with_code = n_non_zero,
 				pra = sum(agree, na.rm = TRUE) / n_text,
@@ -108,7 +110,8 @@ irr <- function(qda_data, min_ratings = 5, coders) {
 		} else {
 			irr_summary <- rbind(irr_summary, data.frame(
 				code = irr_code,
-				n_text = n_text,
+				n_text = nrow(code_ratings),
+				n_double_coded = n_text,
 				n_codes = n_codes,
 				n_text_with_code = n_non_zero,
 				pra = NA,
