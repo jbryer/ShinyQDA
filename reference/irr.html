@@ -63,6 +63,12 @@ The resulting data.frame will have the following columns:</p>
 <dd><p>a <code>qda</code> object.</p></dd>
 
 
+<dt id="arg-codings">codings<a class="anchor" aria-label="anchor" href="#arg-codings"></a></dt>
+<dd><p>data frame of the codings on which to calculate IRR. This allows
+for calculating IRR metrics on a subset of the codings (e.g. select
+only a few coders).</p></dd>
+
+
 <dt id="arg-min-ratings">min_ratings<a class="anchor" aria-label="anchor" href="#arg-min-ratings"></a></dt>
 <dd><p>the minimal number of text documents that are double coded
 for the IRR statistics to be calculated.</p></dd>
@@ -74,7 +80,7 @@ If omitted then all coders will be used.</p></dd>
 
 
 <dt id="arg-include-zero-codes">include_zero_codes<a class="anchor" aria-label="anchor" href="#arg-include-zero-codes"></a></dt>
-<dd><p>include text docuements where none of the coders
+<dd><p>include text documents where none of the coders
 applied a code to that text.</p></dd>
 
 </dl></div>
