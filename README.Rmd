@@ -15,8 +15,8 @@ editor_options:
 `r badger::badge_cran_release("ShinyQDA")`
 <!-- badges: end -->
 
-**Package documentation**: [https://jbryer.github.io/ShinyQDA/](https://jbryer.github.io/ShinyQDA/]()  
-**Slides**: [inst/slides/Intro_ShinyQDA.pdf]()
+**Package documentation**: [https://jbryer.github.io/ShinyQDA/](https://jbryer.github.io/ShinyQDA/)  
+**Slides**: [inst/slides/Intro_ShinyQDA.pdf](https://github.com/jbryer/ShinyQDA/blob/main/inst/slides/Intro_ShinyQDA.pdf)
 
 The `ShinyQDA` R package is designed to assist researchers with the analysis of qualitative data. As the name suggests, the premise is that much of the interaction with the package will be done through a [Shiny](https://shiny.rstudio.com) application. However, all the functionality in the Shiny application is accessible through R commands. The core functionality of `ShinyQDA` allows researchers to highlight passages and code passages. The application also allows for scoring text documents using rubrics. Tools for conducting validity analysis using co-occurrence plots and code frequency is provided. In addition to traditional qualitative data analysis, `ShinyQDA` utilizes natural language processing to conduct sentiment analysis, topic modeling, and text encoding (i.e. tokenization). `ShinyQDA` can be used locally by a single researcher or be deployed to a Shiny server so that multiple researchers can access the application to code and/or score documents.
 

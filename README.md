@@ -8,7 +8,9 @@
 [![](https://www.r-pkg.org/badges/version/ShinyQDA)](https://cran.r-project.org/package=ShinyQDA)
 <!-- badges: end -->
 
-Package documentation: <https://jbryer.github.io/ShinyQDA/>
+**Package documentation**: <https://jbryer.github.io/ShinyQDA/>  
+**Slides**:
+[inst/slides/Intro_ShinyQDA.pdf](https://github.com/jbryer/ShinyQDA/blob/main/inst/slides/Intro_ShinyQDA.pdf)
 
 The `ShinyQDA` R package is designed to assist researchers with the
 analysis of qualitative data. As the name suggests, the premise is that
@@ -36,7 +38,7 @@ alt="Screencast of ShinyQDA" />
 To install, use the `remotes` package:
 
 ``` r
-remotes::install_github('jbryer/ShinyQDA', dependencies = c('Depends', 'Imports', 'Suggests'))
+remotes::install_github('jbryer/ShinyQDA', dependencies = c('Depends', 'Imports', 'Suggests))
 ```
 
 You can demo the ShinyQDA application using sample data from the
