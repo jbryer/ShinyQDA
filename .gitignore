@@ -14,7 +14,6 @@ inst/daacs_demo/loughran
 inst/daacs_demo/nrc
 inst/daacs_demo/qda.sqlite
 inst/daacs_old
-inst/slides
 inst/doc
 nrc/
 afinn/
@@ -24,3 +23,4 @@ inst/bs4dash/
 Abstract.docx
 .Rapp.history
 sri2022/
+angela_playground/
