@@ -10,6 +10,10 @@ devtools::build_readme()
 devtools::build()
 devtools::check()
 
+# Build Slides
+rmarkdown::render(input = 'inst/slides/Intro_ShinyQDA.Rmd')
+old_wd <- setwd('inst/slides/'); pagedown::chrome_print('Intro_ShinyQDA.html'); setwd(old_wd)
+
 # Setup Github actions (only need to run once per project)
 # usethis::use_pkgdown_github_pages()
 # usethis::use_github_action("README.Rmd")

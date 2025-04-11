@@ -44,14 +44,6 @@ options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
 # And Rstudio::conf 2020: https://github.com/rstudio-conf-2020/slide-templates/tree/master/xaringan
 # This slide deck shows a lot of the features of Xaringan: https://www.kirenz.com/slides/xaringan-demo-slides.html
 
-# To use, add this to the slide title:   `r I(hexes(c("DATA606")))`
-# It will use images in the images/hex_stickers directory (i.e. the filename is the parameter)
-hexes <- function(x) {
-	x <- rev(sort(x))
-	markup <- function(pkg) glue::glue('<img src="images/hex/{pkg}.png" class="title-hex">')
-	res <- purrr::map_chr(x, markup)
-	paste0(res, collapse = "")
-}
 ```
 
 
