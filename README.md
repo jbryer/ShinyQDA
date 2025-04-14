@@ -38,7 +38,7 @@ alt="Screencast of ShinyQDA" />
 To install, use the `remotes` package:
 
 ``` r
-remotes::install_github('jbryer/ShinyQDA', dependencies = c('Depends', 'Imports', 'Suggests))
+remotes::install_github('jbryer/ShinyQDA', dependencies = c('Depends', 'Imports', 'Suggests'))
 ```
 
 You can demo the ShinyQDA application using sample data from the
